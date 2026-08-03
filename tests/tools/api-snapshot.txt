@@ -1,0 +1,1513 @@
+plato\arr	class
+plato\arr::del(&$array, $key)	public static method
+plato\arr::filter_prefixed(array $array, string $prefix, bool $remove_prefix = true)	public static method
+plato\arr::filter_value(array $array, $value)	public static method
+plato\arr::get($array, $key = null, $default = null)	public static method
+plato\arr::group_by(array $rows, $key)	public static method
+plato\arr::is_assoc(array $arr)	public static method
+plato\arr::key_exists($array, $key)	public static method
+plato\arr::merge(array $array, array ...$arrays)	public static method
+plato\arr::merge_assoc(array $array, array ...$arrays)	public static method
+plato\arr::pluck(array $rows, ?string $value = null, ?string $index = null)	public static method
+plato\arr::set(&$array, $key, $value = null)	public static method
+plato\arr::sort(array $rows, $key, string $direction = 'asc')	public static method
+plato\arr::tree( array $rows, string $id_key = 'id', string $parent_key = 'pid', string $children_key = 'children', $root = 0 )	public static method
+plato\cache\cache	class
+plato\cache\cache::config(?string $key = null)	public static method
+plato\cache\cache::configure(array $config)	public static method
+plato\cache\cache::dec($key, int $step = 1)	public static method
+plato\cache\cache::del($key)	public static method
+plato\cache\cache::expire($key, int $cachetime)	public static method
+plato\cache\cache::free()	public static method
+plato\cache\cache::free_mem(bool $flush_driver = false)	public static method
+plato\cache\cache::get($key, $default = false)	public static method
+plato\cache\cache::has($key)	public static method
+plato\cache\cache::inc($key, int $step = 1)	public static method
+plato\cache\cache::remember($key, $cachetime, callable $producer)	public static method
+plato\cache\cache::remember_forever($key, callable $producer)	public static method
+plato\cache\cache::repository()	public static method
+plato\cache\cache::reset()	public static method
+plato\cache\cache::set($key, $value, $cachetime = null)	public static method
+plato\cache\cache::tags($tags)	public static method
+plato\cache\cache::ttl($key)	public static method
+plato\cache\file	class : store
+plato\cache\file::$is_single	public property
+plato\cache\file::__construct($cache_file = 'filecache_data', $is_single = false)	public method
+plato\cache\file::__destruct()	public method
+plato\cache\file::close()	public method
+plato\cache\file::del($key)	public method
+plato\cache\file::expire($key, $expire)	public method
+plato\cache\file::factory($cachefile = '')	public static method
+plato\cache\file::flush()	public method
+plato\cache\file::get($key, $default = false)	public method
+plato\cache\file::get_list($key)	public method
+plato\cache\file::has($key)	public method
+plato\cache\file::inc($key, $step = 1)	public method
+plato\cache\file::open()	public method
+plato\cache\file::rebuild($isforce = false)	public method
+plato\cache\file::set($key, $value, $expire = 0)	public method
+plato\cache\file::ttl($key)	public method
+plato\cache\memcached	class : store
+plato\cache\memcached::__construct(array $config = [])	public method
+plato\cache\memcached::client()	public method
+plato\cache\memcached::close()	public method
+plato\cache\memcached::del($key)	public method
+plato\cache\memcached::expire($key, $expire)	public method
+plato\cache\memcached::flush()	public method
+plato\cache\memcached::get($key, $default = false)	public method
+plato\cache\memcached::has($key)	public method
+plato\cache\memcached::inc($key, $step = 1)	public method
+plato\cache\memcached::set($key, $value, $expire = 0)	public method
+plato\cache\memcached::ttl($key)	public method
+plato\cache\memory	class : store
+plato\cache\memory::close()	public method
+plato\cache\memory::del($key)	public method
+plato\cache\memory::expire($key, $expire)	public method
+plato\cache\memory::flush()	public method
+plato\cache\memory::get($key, $default = false)	public method
+plato\cache\memory::has($key)	public method
+plato\cache\memory::inc($key, $step = 1)	public method
+plato\cache\memory::set($key, $value, $expire = 0)	public method
+plato\cache\memory::ttl($key)	public method
+plato\cache\redis	class : store
+plato\cache\redis::__construct(string $name, ?array $config = null)	public method
+plato\cache\redis::__destruct()	public method
+plato\cache\redis::client()	public method
+plato\cache\redis::close(?string $name = null)	public method
+plato\cache\redis::config(?string $key = null)	public static method
+plato\cache\redis::configure(array $config)	public static method
+plato\cache\redis::del($key, ...$more)	public method
+plato\cache\redis::expire($key, $expire)	public method
+plato\cache\redis::flush()	public method
+plato\cache\redis::get($key, $default = false)	public method
+plato\cache\redis::has($key)	public method
+plato\cache\redis::inc($key, $step = 1)	public method
+plato\cache\redis::infos()	public method
+plato\cache\redis::instance(string $name = 'redis', ?array $config = null)	public static method
+plato\cache\redis::reset()	public static method
+plato\cache\redis::scan($pattern)	public method
+plato\cache\redis::set($key, $value, $expire = 0)	public method
+plato\cache\redis::set_nx($key, $value, $expire = 0)	public method
+plato\cache\redis::ttl($key)	public method
+plato\cache\repository	class
+plato\cache\repository::__construct( ?store $store, string $prefix = '', int $cache_time = 7200, bool $memoize = true )	public method
+plato\cache\repository::close()	public method
+plato\cache\repository::dec($key, int $step = 1)	public method
+plato\cache\repository::del($key)	public method
+plato\cache\repository::expire($key, int $cachetime)	public method
+plato\cache\repository::free_mem(bool $flush_store = false)	public method
+plato\cache\repository::get($key, $default = false)	public method
+plato\cache\repository::has($key)	public method
+plato\cache\repository::inc($key, int $step = 1)	public method
+plato\cache\repository::remember($key, $cachetime, callable $producer)	public method
+plato\cache\repository::remember_forever($key, callable $producer)	public method
+plato\cache\repository::set($key, $value, $cachetime = null)	public method
+plato\cache\repository::store()	public method
+plato\cache\repository::tags($tags)	public method
+plato\cache\repository::ttl($key)	public method
+plato\cache\store	interface
+plato\cache\store::close()	public method
+plato\cache\store::del($key)	public method
+plato\cache\store::expire($key, $expire)	public method
+plato\cache\store::flush()	public method
+plato\cache\store::get($key, $default = false)	public method
+plato\cache\store::has($key)	public method
+plato\cache\store::inc($key, $step = 1)	public method
+plato\cache\store::set($key, $value, $expire = 0)	public method
+plato\cache\store::ttl($key)	public method
+plato\cache\tags	class
+plato\cache\tags::__construct(repository $repository, array $tags)	public method
+plato\cache\tags::del($key)	public method
+plato\cache\tags::flush()	public method
+plato\cache\tags::get($key, $default = false)	public method
+plato\cache\tags::has($key)	public method
+plato\cache\tags::key($key)	public method
+plato\cache\tags::remember($key, $cachetime, callable $producer)	public method
+plato\cache\tags::set($key, $value, $cachetime = null)	public method
+plato\cast	class
+plato\cast::TYPES	public const
+plato\cast::to($val, string $type = '', bool $throw = false)	public static method
+plato\cli	class
+plato\cli::$STDERR	protected static property
+plato\cli::$STDOUT	protected static property
+plato\cli::$args	public static property
+plato\cli::$background_colors	protected static property
+plato\cli::$foreground_colors	protected static property
+plato\cli::$nocolor	public static property
+plato\cli::$readline_support	public static property
+plato\cli::$wait_msg	public static property
+plato\cli::alert($text = '', $foreground = 'light_purple', $background = null)	public static method
+plato\cli::beep($num = 1)	public static method
+plato\cli::boot()	public static method
+plato\cli::booted()	public static method
+plato\cli::clear_screen()	public static method
+plato\cli::color($text, $foreground, $background = null, $format = null)	public static method
+plato\cli::critical($text = '', $foreground = 'light_red', $background = null)	public static method
+plato\cli::debug($text = '', $foreground = 'light_green', $background = null)	public static method
+plato\cli::emergency($text = '', $foreground = 'light_blue', $background = null)	public static method
+plato\cli::error($text = '', $foreground = 'light_red', $background = null)	public static method
+plato\cli::info($text = '', $foreground = 'light_white', $background = null)	public static method
+plato\cli::input($prefix = '')	public static method
+plato\cli::is_windows()	public static method
+plato\cli::new_line($num = 1)	public static method
+plato\cli::notice($text = '', $foreground = 'light_cyan', $background = null)	public static method
+plato\cli::option($name, $default = null)	public static method
+plato\cli::prompt()	public static method
+plato\cli::set_option($name, $value = null)	public static method
+plato\cli::spawn($call, $output = '/dev/null')	public static method
+plato\cli::stderr($fh = null)	public static method
+plato\cli::stdout($fh = null)	public static method
+plato\cli::wait($seconds = 0, $countdown = false)	public static method
+plato\cli::warning($text = '', $foreground = 'light_yellow', $background = null)	public static method
+plato\cli::write($text = '', $foreground = null, $background = null)	public static method
+plato\config	class
+plato\config::all($alias = true)	public method
+plato\config::del($key)	public method
+plato\config::flush()	public static method
+plato\config::get($key = null, $default = null, $alias = true)	public method
+plato\config::has($key)	public method
+plato\config::instance($module = 'config')	public static method
+plato\config::load()	public method
+plato\config::reload()	public method
+plato\config::set($key, $value)	public method
+plato\config::set_alias($key, $value)	public method
+plato\console\command	interface
+plato\console\command::handle(string $name)	public static method
+plato\console\command::names()	public static method
+plato\console\command::requires()	public static method
+plato\console\command::usage(string $name)	public static method
+plato\console\console	class
+plato\console\console::FAILURE	public const
+plato\console\console::OK	public const
+plato\console\console::argument(int $position, $default = null)	public static method
+plato\console\console::arguments()	public static method
+plato\console\console::commands()	public static method
+plato\console\console::fail(string $text)	public static method
+plato\console\console::input(array $argv)	public static method
+plato\console\console::line(string $text = '')	public static method
+plato\console\console::option(string $name, $default = null)	public static method
+plato\console\console::path(string $key)	public static method
+plato\console\console::register(string $class)	public static method
+plato\console\console::root()	public static method
+plato\console\console::run(array $argv, string $root)	public static method
+plato\console\console::success(string $text)	public static method
+plato\console\console::warn(string $text)	public static method
+plato\console\cron	class
+plato\console\cron::due(string $expression, int $timestamp)	public static method
+plato\console\cron::next(string $expression, int $timestamp)	public static method
+plato\console\cron::parse(string $expression)	public static method
+plato\console\make	class : command
+plato\console\make::handle(string $name)	public static method
+plato\console\make::names()	public static method
+plato\console\make::requires()	public static method
+plato\console\make::usage(string $name)	public static method
+plato\console\migrate	class : command
+plato\console\migrate::handle(string $name)	public static method
+plato\console\migrate::names()	public static method
+plato\console\migrate::requires()	public static method
+plato\console\migrate::usage(string $name)	public static method
+plato\console\queue	class : command
+plato\console\queue::handle(string $name)	public static method
+plato\console\queue::names()	public static method
+plato\console\queue::requires()	public static method
+plato\console\queue::usage(string $name)	public static method
+plato\console\schedule	class : command
+plato\console\schedule::config(?string $key = null)	public static method
+plato\console\schedule::configure(array $config)	public static method
+plato\console\schedule::handle(string $name)	public static method
+plato\console\schedule::inspect()	public static method
+plato\console\schedule::names()	public static method
+plato\console\schedule::requires()	public static method
+plato\console\schedule::reset()	public static method
+plato\console\schedule::tasks()	public static method
+plato\console\schedule::usage(string $name)	public static method
+plato\console\seed	class : command
+plato\console\seed::handle(string $name)	public static method
+plato\console\seed::names()	public static method
+plato\console\seed::requires()	public static method
+plato\console\seed::usage(string $name)	public static method
+plato\database\blueprint	class
+plato\database\blueprint::__construct(string $table, string $action = 'create')	public method
+plato\database\blueprint::action()	public method
+plato\database\blueprint::big_integer(string $name)	public method
+plato\database\blueprint::binary(string $name)	public method
+plato\database\blueprint::boolean(string $name)	public method
+plato\database\blueprint::char(string $name, int $length = 32)	public method
+plato\database\blueprint::charset(string $charset, ?string $collation = null)	public method
+plato\database\blueprint::columns()	public method
+plato\database\blueprint::commands()	public method
+plato\database\blueprint::comment(string $comment)	public method
+plato\database\blueprint::date(string $name)	public method
+plato\database\blueprint::datetime(string $name)	public method
+plato\database\blueprint::decimal(string $name, int $precision = 10, int $scale = 2)	public method
+plato\database\blueprint::double(string $name)	public method
+plato\database\blueprint::drop_column($columns)	public method
+plato\database\blueprint::drop_index(string $name)	public method
+plato\database\blueprint::drop_primary()	public method
+plato\database\blueprint::drop_unique(string $name)	public method
+plato\database\blueprint::engine(string $engine)	public method
+plato\database\blueprint::enum(string $name, array $values)	public method
+plato\database\blueprint::float(string $name)	public method
+plato\database\blueprint::fulltext($columns, ?string $name = null)	public method
+plato\database\blueprint::id(string $name = 'id')	public method
+plato\database\blueprint::index($columns, ?string $name = null)	public method
+plato\database\blueprint::integer(string $name)	public method
+plato\database\blueprint::json(string $name)	public method
+plato\database\blueprint::long_text(string $name)	public method
+plato\database\blueprint::medium_text(string $name)	public method
+plato\database\blueprint::option(string $key, $value)	public method
+plato\database\blueprint::options(?string $key = null, $default = null)	public method
+plato\database\blueprint::primary($columns, ?string $name = null)	public method
+plato\database\blueprint::rename(string $to)	public method
+plato\database\blueprint::rename_column(string $from, string $to)	public method
+plato\database\blueprint::small_integer(string $name)	public method
+plato\database\blueprint::soft_deletes(string $name = 'deleted_at')	public method
+plato\database\blueprint::string(string $name, int $length = 191)	public method
+plato\database\blueprint::table()	public method
+plato\database\blueprint::text(string $name)	public method
+plato\database\blueprint::time(string $name)	public method
+plato\database\blueprint::timestamp(string $name)	public method
+plato\database\blueprint::timestamps()	public method
+plato\database\blueprint::tiny_integer(string $name)	public method
+plato\database\blueprint::unique($columns, ?string $name = null)	public method
+plato\database\column	class
+plato\database\column::__construct(string $name, string $type, array $attributes = [])	public method
+plato\database\column::after(string $column)	public method
+plato\database\column::auto_increment(bool $value = true)	public method
+plato\database\column::change()	public method
+plato\database\column::charset(string $charset)	public method
+plato\database\column::collation(string $collation)	public method
+plato\database\column::comment(string $comment)	public method
+plato\database\column::first()	public method
+plato\database\column::get(?string $key = null, $default = null)	public method
+plato\database\column::has(string $key)	public method
+plato\database\column::index()	public method
+plato\database\column::name()	public method
+plato\database\column::nullable(bool $value = true)	public method
+plato\database\column::primary()	public method
+plato\database\column::type()	public method
+plato\database\column::unique()	public method
+plato\database\column::unsigned(bool $value = true)	public method
+plato\database\column::use_current(bool $on_update = false)	public method
+plato\database\compiler\clauses	trait
+plato\database\compiler\clauses::_compile_aggregate(query $q)	protected method
+plato\database\compiler\clauses::_compile_groups(query $q)	protected method
+plato\database\compiler\clauses::_compile_joins(query $q, array &$bindings)	protected method
+plato\database\compiler\clauses::_compile_limit(query $q)	protected method
+plato\database\compiler\clauses::_compile_lock(query $q)	protected method
+plato\database\compiler\clauses::_compile_nested(array $wheres, array &$bindings)	protected method
+plato\database\compiler\clauses::_compile_orders(query $q)	protected method
+plato\database\compiler\clauses::_compile_source(query $q, array &$bindings)	protected method
+plato\database\compiler\clauses::_compile_unions(query $q, array &$bindings)	protected method
+plato\database\compiler\clauses::_compile_upsert_set(array $columns, array &$bindings)	protected method
+plato\database\compiler\clauses::_compile_where(array $where, array &$bindings)	protected method
+plato\database\compiler\clauses::_compile_where_in(array $where, array &$bindings)	protected method
+plato\database\compiler\clauses::_compile_wheres(array $wheres, array &$bindings, string $keyword)	protected method
+plato\database\compiler\ddl	trait
+plato\database\compiler\ddl::$_types	protected property
+plato\database\compiler\ddl::_columnize(array $columns)	protected method
+plato\database\compiler\ddl::_compile_alter(blueprint $table)	protected method
+plato\database\compiler\ddl::_compile_column(column $column)	protected method
+plato\database\compiler\ddl::_compile_create(blueprint $table)	protected method
+plato\database\compiler\ddl::_compile_table_options(blueprint $table)	protected method
+plato\database\compiler\ddl::_compile_type(column $column)	protected method
+plato\database\compiler\ddl::_inline_keys(blueprint $table)	protected method
+plato\database\compiler\ddl::compile_column_exists(string $table, string $column)	public method
+plato\database\compiler\ddl::compile_schema(blueprint $table)	public method
+plato\database\compiler\ddl::compile_table_exists(string $table)	public method
+plato\database\compiler\identifiers	trait
+plato\database\compiler\identifiers::$_operators	protected property
+plato\database\compiler\identifiers::_json_path(string $path)	protected method
+plato\database\compiler\identifiers::_operator(string $operator)	protected method
+plato\database\compiler\identifiers::_wrap_column($column)	protected method
+plato\database\compiler\identifiers::_wrap_segment(string $segment)	protected method
+plato\database\compiler\identifiers::wrap($value)	public method
+plato\database\compiler\identifiers::wrap_aliased($value)	public method
+plato\database\compiler\identifiers::wrap_table($table)	public method
+plato\database\compiler\values	trait
+plato\database\compiler\values::_normalise($value)	protected method
+plato\database\compiler\values::escape_literal($value)	public method
+plato\database\compiler\values::interpolate(string $sql, array $bindings)	public method
+plato\database\compiler\values::parameter($value, array &$bindings)	public method
+plato\database\connection	abstract class
+plato\database\connection::$_adhoc	protected static property
+plato\database\connection::$_config	protected property
+plato\database\connection::$_default	protected static property
+plato\database\connection::$_drivers	protected static property
+plato\database\connection::$_epoch	protected property
+plato\database\connection::$_grammar	protected property
+plato\database\connection::$_instances	protected static property
+plato\database\connection::$_name	protected property
+plato\database\connection::$_scope	protected property
+plato\database\connection::$_transactions	protected property
+plato\database\connection::__construct(string $name, array $config, ?string $scope = null)	public method
+plato\database\connection::__toString()	public method
+plato\database\connection::_affect($handle, string $sql, array $bindings)	protected method
+plato\database\connection::_attempt(string $sql, array $bindings, bool $write, Closure $work)	protected method
+plato\database\connection::_begin($handle)	protected method
+plato\database\connection::_commit($handle)	protected method
+plato\database\connection::_cursor($handle, string $sql, array $bindings)	protected method
+plato\database\connection::_disconnect()	protected method
+plato\database\connection::_fetch($handle, string $sql, array $bindings)	protected method
+plato\database\connection::_forget_transaction()	protected method
+plato\database\connection::_grammar_class()	protected method
+plato\database\connection::_guard_fork()	protected method
+plato\database\connection::_handle(bool $write)	protected method
+plato\database\connection::_insert($handle, string $sql, array $bindings)	protected method
+plato\database\connection::_is_deadlock(Throwable $e)	protected method
+plato\database\connection::_is_lost_connection(Throwable $e)	protected method
+plato\database\connection::_log(string $sql, array $bindings, float $seconds = 0.0, bool $write = true)	protected method
+plato\database\connection::_read_config()	protected static method
+plato\database\connection::_release_savepoint($handle, string $name)	protected method
+plato\database\connection::_rollback($handle)	protected method
+plato\database\connection::_rollback_savepoint($handle, string $name)	protected method
+plato\database\connection::_savepoint($handle, string $name)	protected method
+plato\database\connection::_savepoint_name(int $level)	protected method
+plato\database\connection::_share_key(string $role)	protected method
+plato\database\connection::begin()	public method
+plato\database\connection::commit()	public method
+plato\database\connection::config(?string $key = null, $default = null)	public method
+plato\database\connection::cursor(query $q)	public method
+plato\database\connection::delete(query $q)	public method
+plato\database\connection::disconnect()	public method
+plato\database\connection::driver()	public method
+plato\database\connection::grammar()	public method
+plato\database\connection::in_transaction()	public method
+plato\database\connection::insert(query $q, array $rows)	public method
+plato\database\connection::instance(?string $name = null)	public static method
+plato\database\connection::make(string $driver, array $settings, string $name = 'ad-hoc')	public static method
+plato\database\connection::name()	public method
+plato\database\connection::prefix()	public method
+plato\database\connection::purge(?string $name = null)	public static method
+plato\database\connection::register_driver(string $driver, string $class)	public static method
+plato\database\connection::rollback()	public method
+plato\database\connection::select(query $q)	public method
+plato\database\connection::select_raw(string $sql, array $bindings = [], bool $write = false)	public method
+plato\database\connection::set_default(?string $name)	public static method
+plato\database\connection::statement(string $sql, array $bindings = [])	public method
+plato\database\connection::table(string $table)	public method
+plato\database\connection::table_prefix(?string $sql = null)	public method
+plato\database\connection::table_schema(string $table)	public method
+plato\database\connection::tables()	public method
+plato\database\connection::transaction(Closure $callback, int $attempts = 1)	public method
+plato\database\connection::transaction_level()	public method
+plato\database\connection::update(query $q, array $values)	public method
+plato\database\connection::update_batch(query $q, array $rows, string $key)	public method
+plato\database\connection::update_json(query $q, string $column, array $pairs)	public method
+plato\database\connection::upsert(query $q, array $rows, array $update)	public method
+plato\database\db	class
+plato\database\db::begin(?string $name = null)	public static method
+plato\database\db::commit(?string $name = null)	public static method
+plato\database\db::connection(?string $name = null)	public static method
+plato\database\db::flush_log()	public static method
+plato\database\db::last_query()	public static method
+plato\database\db::log_limit()	public static method
+plato\database\db::logging()	public static method
+plato\database\db::logging_override()	public static method
+plato\database\db::prefix(?string $name = null)	public static method
+plato\database\db::purge(?string $name = null)	public static method
+plato\database\db::queries()	public static method
+plato\database\db::raw(string $value, array $bindings = [])	public static method
+plato\database\db::record(string $name, string $sql, array $bindings, float $seconds, bool $write)	public static method
+plato\database\db::rollback(?string $name = null)	public static method
+plato\database\db::select_raw(string $sql, array $bindings = [], ?string $name = null)	public static method
+plato\database\db::set_default(?string $name)	public static method
+plato\database\db::set_log_limit(int $limit)	public static method
+plato\database\db::set_logging(?bool $enabled)	public static method
+plato\database\db::statement(string $sql, array $bindings = [], ?string $name = null)	public static method
+plato\database\db::table(string $table, ?string $name = null)	public static method
+plato\database\db::table_prefix(?string $sql = null, ?string $name = null)	public static method
+plato\database\db::table_schema(string $table, ?string $name = null)	public static method
+plato\database\db::tables(?string $name = null)	public static method
+plato\database\db::total_time()	public static method
+plato\database\db::transaction(Closure $callback, int $attempts = 1, ?string $name = null)	public static method
+plato\database\driver\clickhouse	class : connection
+plato\database\driver\clickhouse::$_endpoint	protected property
+plato\database\driver\clickhouse::$_summary	protected property
+plato\database\driver\clickhouse::_affect($handle, string $sql, array $bindings)	protected method
+plato\database\driver\clickhouse::_database()	protected method
+plato\database\driver\clickhouse::_disconnect()	protected method
+plato\database\driver\clickhouse::_fetch($handle, string $sql, array $bindings)	protected method
+plato\database\driver\clickhouse::_grammar_class()	protected method
+plato\database\driver\clickhouse::_handle(bool $write)	protected method
+plato\database\driver\clickhouse::_insert($handle, string $sql, array $bindings)	protected method
+plato\database\driver\clickhouse::_is_lost_connection(Throwable $e)	protected method
+plato\database\driver\clickhouse::_post(string $endpoint, string $statement)	protected method
+plato\database\driver\clickhouse::summary()	public method
+plato\database\driver\clickhouse::table_schema(string $table)	public method
+plato\database\driver\clickhouse::tables()	public method
+plato\database\driver\mongodb	class : connection
+plato\database\driver\mongodb::$_operators	protected property
+plato\database\driver\mongodb::_affect($handle, string $sql, array $bindings)	protected method
+plato\database\driver\mongodb::_aggregate_cursor(query $q)	protected method
+plato\database\driver\mongodb::_basic_clause(array $where)	protected method
+plato\database\driver\mongodb::_bulk()	protected method
+plato\database\driver\mongodb::_clause(array $where)	protected method
+plato\database\driver\mongodb::_collection(query $q)	protected method
+plato\database\driver\mongodb::_database()	protected method
+plato\database\driver\mongodb::_disconnect()	protected method
+plato\database\driver\mongodb::_expr_operator(string $operator)	protected method
+plato\database\driver\mongodb::_fetch($handle, string $sql, array $bindings)	protected method
+plato\database\driver\mongodb::_filter(array $wheres)	protected method
+plato\database\driver\mongodb::_find_options(query $q)	protected method
+plato\database\driver\mongodb::_handle(bool $write)	protected method
+plato\database\driver\mongodb::_insert($handle, string $sql, array $bindings)	protected method
+plato\database\driver\mongodb::_is_lost_connection(Throwable $e)	protected method
+plato\database\driver\mongodb::_label(string $what, query $q, array $filter)	protected method
+plato\database\driver\mongodb::_like_to_regex(string $pattern)	protected method
+plato\database\driver\mongodb::_namespace(query $q)	protected method
+plato\database\driver\mongodb::_read(query $q, array $filter, array $options)	protected method
+plato\database\driver\mongodb::_reject_unsupported(query $q)	protected method
+plato\database\driver\mongodb::_write(query $q, $bulk, string $what)	protected method
+plato\database\driver\mongodb::aggregate(string $collection, array $pipeline, array $options = [])	public method
+plato\database\driver\mongodb::command(array $command)	public method
+plato\database\driver\mongodb::cursor(query $q)	public method
+plato\database\driver\mongodb::delete(query $q)	public method
+plato\database\driver\mongodb::insert(query $q, array $rows)	public method
+plato\database\driver\mongodb::select(query $q)	public method
+plato\database\driver\mongodb::select_raw(string $sql, array $bindings = [], bool $write = false)	public method
+plato\database\driver\mongodb::statement(string $sql, array $bindings = [])	public method
+plato\database\driver\mongodb::tables()	public method
+plato\database\driver\mongodb::update(query $q, array $values)	public method
+plato\database\driver\mongodb::update_batch(query $q, array $rows, string $key)	public method
+plato\database\driver\mongodb::update_json(query $q, string $column, array $pairs)	public method
+plato\database\driver\mongodb::upsert(query $q, array $rows, array $update)	public method
+plato\database\driver\mysql	class : connection
+plato\database\driver\mysql::$_deadlock_codes	protected property
+plato\database\driver\mysql::$_lost_connection_codes	protected property
+plato\database\driver\mysql::_affect($handle, string $sql, array $bindings)	protected method
+plato\database\driver\mysql::_begin($handle)	protected method
+plato\database\driver\mysql::_commit($handle)	protected method
+plato\database\driver\mysql::_cursor($handle, string $sql, array $bindings)	protected method
+plato\database\driver\mysql::_dial(array $endpoint)	protected method
+plato\database\driver\mysql::_disconnect()	protected method
+plato\database\driver\mysql::_driver_code(Throwable $e)	protected method
+plato\database\driver\mysql::_dsn(array $endpoint)	protected method
+plato\database\driver\mysql::_endpoint(array $settings)	protected method
+plato\database\driver\mysql::_fetch($handle, string $sql, array $bindings)	protected method
+plato\database\driver\mysql::_handle(bool $write)	protected method
+plato\database\driver\mysql::_insert($handle, string $sql, array $bindings)	protected method
+plato\database\driver\mysql::_is_deadlock(Throwable $e)	protected method
+plato\database\driver\mysql::_is_lost_connection(Throwable $e)	protected method
+plato\database\driver\mysql::_message_has(Throwable $e, array $needles)	protected method
+plato\database\driver\mysql::_param_type($value)	protected method
+plato\database\driver\mysql::_prepare(PDO $handle, string $sql, array $bindings)	protected method
+plato\database\driver\mysql::_quote_setting(string $value)	protected method
+plato\database\driver\mysql::_read_endpoints()	protected method
+plato\database\driver\mysql::_release_savepoint($handle, string $name)	protected method
+plato\database\driver\mysql::_rollback($handle)	protected method
+plato\database\driver\mysql::_rollback_savepoint($handle, string $name)	protected method
+plato\database\driver\mysql::_savepoint($handle, string $name)	protected method
+plato\database\driver\mysql::_session_statements()	protected method
+plato\database\driver\mysql::_write_endpoint()	protected method
+plato\database\driver\mysql::table_schema(string $table)	public method
+plato\database\driver\mysql::tables()	public method
+plato\database\expression	class
+plato\database\expression::$_bindings	protected property
+plato\database\expression::$_value	protected property
+plato\database\expression::__construct(string $value, array $bindings = [])	public method
+plato\database\expression::__toString()	public method
+plato\database\expression::bindings()	public method
+plato\database\expression::value()	public method
+plato\database\grammar	class
+plato\database\grammar::$_prefix	protected property
+plato\database\grammar::__construct(string $prefix = '')	public method
+plato\database\grammar::compile_delete(query $q)	public method
+plato\database\grammar::compile_insert(query $q, array $rows, array $update = [])	public method
+plato\database\grammar::compile_select(query $q)	public method
+plato\database\grammar::compile_update(query $q, array $values)	public method
+plato\database\grammar::compile_update_batch(query $q, array $rows, string $key)	public method
+plato\database\grammar::compile_update_json(query $q, string $column, array $pairs)	public method
+plato\database\grammar::prefix()	public method
+plato\database\grammar::substitute_prefix(string $sql)	public method
+plato\database\grammar\clickhouse	class : grammar
+plato\database\grammar\clickhouse::$_types	protected property
+plato\database\grammar\clickhouse::$_unsigned_types	protected property
+plato\database\grammar\clickhouse::_compile_alter(blueprint $table)	protected method
+plato\database\grammar\clickhouse::_compile_column(column $column)	protected method
+plato\database\grammar\clickhouse::_compile_create(blueprint $table)	protected method
+plato\database\grammar\clickhouse::_compile_settings(query $q)	protected method
+plato\database\grammar\clickhouse::_compile_source(query $q, array &$bindings)	protected method
+plato\database\grammar\clickhouse::_compile_type(column $column)	protected method
+plato\database\grammar\clickhouse::_number(string $value)	protected method
+plato\database\grammar\clickhouse::_require_where(query $q, string $what)	protected method
+plato\database\grammar\clickhouse::compile_column_exists(string $table, string $column)	public method
+plato\database\grammar\clickhouse::compile_delete(query $q)	public method
+plato\database\grammar\clickhouse::compile_insert(query $q, array $rows, array $update = [])	public method
+plato\database\grammar\clickhouse::compile_select(query $q)	public method
+plato\database\grammar\clickhouse::compile_table_exists(string $table)	public method
+plato\database\grammar\clickhouse::compile_update(query $q, array $values)	public method
+plato\database\grammar\clickhouse::compile_update_batch(query $q, array $rows, string $key)	public method
+plato\database\grammar\clickhouse::compile_update_json(query $q, string $column, array $pairs)	public method
+plato\database\grammar\clickhouse::escape_literal($value)	public method
+plato\database\migration	abstract class
+plato\database\migration::down()	public method
+plato\database\migration::up()	public method
+plato\database\migrator	class
+plato\database\migrator::$_connection	protected property
+plato\database\migrator::$_path	protected property
+plato\database\migrator::$_table	protected property
+plato\database\migrator::__construct(string $path, string $table = '#PB#_migrations', ?string $connection = null)	public method
+plato\database\migrator::_acquire_lock()	protected method
+plato\database\migrator::_batch(int $batch)	protected method
+plato\database\migrator::_db()	protected method
+plato\database\migrator::_ensure_repository()	protected method
+plato\database\migrator::_files()	protected method
+plato\database\migrator::_forget(string $filename)	protected method
+plato\database\migrator::_latest_batch()	protected method
+plato\database\migrator::_load(string $filename)	protected method
+plato\database\migrator::_lock_name()	protected method
+plato\database\migrator::_record(string $filename, int $batch)	protected method
+plato\database\migrator::_release_lock()	protected method
+plato\database\migrator::_repository()	protected method
+plato\database\migrator::migrate()	public method
+plato\database\migrator::rollback()	public method
+plato\database\migrator::status()	public method
+plato\database\query	class
+plato\database\query::$_connection	protected property
+plato\database\query::$aggregate	public property
+plato\database\query::$columns	public property
+plato\database\query::$distinct	public property
+plato\database\query::$groups	public property
+plato\database\query::$havings	public property
+plato\database\query::$ignore	public property
+plato\database\query::$index_hint	public property
+plato\database\query::$joins	public property
+plato\database\query::$limit	public property
+plato\database\query::$lock	public property
+plato\database\query::$max_limit	public property
+plato\database\query::$offset	public property
+plato\database\query::$options	public property
+plato\database\query::$orders	public property
+plato\database\query::$table	public property
+plato\database\query::$union_alias	public property
+plato\database\query::$unions	public property
+plato\database\query::$use_master	public property
+plato\database\query::$wheres	public property
+plato\database\query::__construct(connection $connection, string $table = '')	public method
+plato\database\query::_add_basic(string $column, string $operator, $value, string $boolean)	protected method
+plato\database\query::_add_nested(Closure $callback, string $boolean)	protected method
+plato\database\query::_aggregate(string $function, string $column)	protected method
+plato\database\query::_bare(string $column)	protected method
+plato\database\query::_rows(array $values)	protected method
+plato\database\query::as_union_table(string $alias = 'u')	public method
+plato\database\query::avg(string $column)	public method
+plato\database\query::chunk(int $size, callable $callback)	public method
+plato\database\query::connection()	public method
+plato\database\query::count(string $column = '*')	public method
+plato\database\query::cursor()	public method
+plato\database\query::delete($id = null, string $key = 'id')	public method
+plato\database\query::distinct(bool $value = true)	public method
+plato\database\query::exists()	public method
+plato\database\query::first()	public method
+plato\database\query::force_index(string ...$names)	public method
+plato\database\query::from($table)	public method
+plato\database\query::get()	public method
+plato\database\query::group_by(...$columns)	public method
+plato\database\query::having($column, $operator = null, $value = null, string $boolean = 'AND')	public method
+plato\database\query::having_raw(string $sql, array $bindings = [], string $boolean = 'AND')	public method
+plato\database\query::ignore(bool $value = true)	public method
+plato\database\query::insert(array $values)	public method
+plato\database\query::join($table, $first, ?string $operator = null, ?string $second = null, string $type = 'INNER')	public method
+plato\database\query::left_join($table, $first, ?string $operator = null, ?string $second = null)	public method
+plato\database\query::limit(?int $number)	public method
+plato\database\query::lock_for_update()	public method
+plato\database\query::lock_shared()	public method
+plato\database\query::max(string $column)	public method
+plato\database\query::max_select_limit(?int $number)	public method
+plato\database\query::min(string $column)	public method
+plato\database\query::offset(?int $number)	public method
+plato\database\query::on_master(bool $value = true)	public method
+plato\database\query::option(string $key, $value = true)	public method
+plato\database\query::or_having($column, $operator = null, $value = null)	public method
+plato\database\query::or_where($column, $operator = null, $value = null)	public method
+plato\database\query::order_by($column, string $direction = 'asc')	public method
+plato\database\query::order_by_raw(string $sql)	public method
+plato\database\query::page(int $page, int $size)	public method
+plato\database\query::pluck(string $column, ?string $key = null)	public method
+plato\database\query::right_join($table, $first, ?string $operator = null, ?string $second = null)	public method
+plato\database\query::select(...$columns)	public method
+plato\database\query::sum(string $column)	public method
+plato\database\query::to_raw_sql()	public method
+plato\database\query::to_sql()	public method
+plato\database\query::union($query, bool $all = false, array $bindings = [])	public method
+plato\database\query::union_all($query, array $bindings = [])	public method
+plato\database\query::update(array $values)	public method
+plato\database\query::update_batch(array $rows, string $key)	public method
+plato\database\query::update_json(string $column, array $pairs)	public method
+plato\database\query::upsert(array $values, array $update)	public method
+plato\database\query::value($column)	public method
+plato\database\query::where($column, $operator = null, $value = null, string $boolean = 'AND')	public method
+plato\database\query::where_between(string $column, $min, $max, string $boolean = 'AND', bool $not = false)	public method
+plato\database\query::where_column(string $first, string $operator, string $second, string $boolean = 'AND')	public method
+plato\database\query::where_find_in_set(string $column, $value, string $boolean = 'AND')	public method
+plato\database\query::where_in(string $column, $values, string $boolean = 'AND', bool $not = false)	public method
+plato\database\query::where_not_between(string $column, $min, $max, string $boolean = 'AND')	public method
+plato\database\query::where_not_in(string $column, $values, string $boolean = 'AND')	public method
+plato\database\query::where_not_null(string $column, string $boolean = 'AND')	public method
+plato\database\query::where_null(string $column, string $boolean = 'AND', bool $not = false)	public method
+plato\database\query::where_raw(string $sql, array $bindings = [], string $boolean = 'AND')	public method
+plato\database\schema	class
+plato\database\schema::create(string $table, Closure $callback, ?string $name = null)	public static method
+plato\database\schema::drop(string $table, ?string $name = null)	public static method
+plato\database\schema::drop_if_exists(string $table, ?string $name = null)	public static method
+plato\database\schema::has_column(string $table, string $column, ?string $name = null)	public static method
+plato\database\schema::has_table(string $table, ?string $name = null)	public static method
+plato\database\schema::on(?string $name)	public static method
+plato\database\schema::rename(string $from, string $to, ?string $name = null)	public static method
+plato\database\schema::sql(string $table, Closure $callback, string $action = 'create', ?string $name = null)	public static method
+plato\database\schema::table(string $table, Closure $callback, ?string $name = null)	public static method
+plato\database\seeder	abstract class
+plato\database\seeder::call($names)	public method
+plato\database\seeder::locate(string $path)	public static method
+plato\database\seeder::ran()	public static method
+plato\database\seeder::run()	public method
+plato\database\seeder::run_file(string $name)	public static method
+plato\date	class
+plato\date::UNITS	public const
+plato\date::config(?string $key = null)	public static method
+plato\date::configure(array $config)	public static method
+plato\date::convert( $datetime = null, ?string $to = null, ?string $format = null, ?string $from = null )	public static method
+plato\date::diff_days($from, $to = null, ?string $timezone = null)	public static method
+plato\date::duration(int $seconds, array $units = self::UNITS, string $separator = ' ')	public static method
+plato\date::format($datetime = null, ?string $format = null, ?string $timezone = null)	public static method
+plato\date::make($datetime = null, ?string $timezone = null)	public static method
+plato\date::millis()	public static method
+plato\date::modify( $datetime, string $modify, ?string $format = null, ?string $timezone = null )	public static method
+plato\date::month_range($date = null, ?string $timezone = null)	public static method
+plato\date::now(?string $timezone = null)	public static method
+plato\date::offset(?string $timezone = null, ?string $against = null)	public static method
+plato\date::parts(int $seconds)	public static method
+plato\date::reset()	public static method
+plato\date::timestamp($datetime = null, ?string $timezone = null)	public static method
+plato\date::valid(string $value, $formats = ['Y-m-d', 'Y-m-d H:i:s'])	public static method
+plato\date::week_range(int $week, ?int $year = null, ?string $timezone = null)	public static method
+plato\date::zone(?string $timezone = null)	public static method
+plato\debug\benchmark	class
+plato\debug\benchmark::$marker	public static property
+plato\debug\benchmark::elapsed_memory($point1 = '', $point2 = '', $decimals = 2)	public static method
+plato\debug\benchmark::elapsed_time($point1 = '', $point2 = '', $decimals = 4)	public static method
+plato\debug\benchmark::mark($name, $value = '')	public static method
+plato\debug\error_handler	class
+plato\debug\error_handler::$_debug_error_msg	public static property
+plato\debug\error_handler::$_debug_errortype	public static property
+plato\debug\error_handler::$_debug_mt_info	public static property
+plato\debug\error_handler::$_debug_mt_time	public static property
+plato\debug\error_handler::$_debug_safe_ip	public static property
+plato\debug\error_handler::CLI_FAILURE	public const
+plato\debug\error_handler::capture()	public static method
+plato\debug\error_handler::debug_hidden($hidden = true)	public static method
+plato\debug\error_handler::error_handler($errno, $errstr, $errfile, $errline, $errcontext = [])	public static method
+plato\debug\error_handler::exception_handler($e)	public static method
+plato\debug\error_handler::exception_reply(\Throwable $e)	public static method
+plato\debug\error_handler::fmt_code($errno, $errstr)	public static method
+plato\debug\error_handler::format_errstr($errno, $errstr, $errfile, $errline, $errcontext)	public static method
+plato\debug\error_handler::reset()	public static method
+plato\debug\error_handler::show_error()	public static method
+plato\debug\error_handler::shutdown_handler()	public static method
+plato\debug\error_handler::strip_tags($errstr)	public static method
+plato\debug\error_handler::test_debug_mt($optmsg)	public static method
+plato\debug\profiler	class
+plato\debug\profiler::$_available_sections	protected property
+plato\debug\profiler::$_compile_benchmarks	protected property
+plato\debug\profiler::$_compile_config	protected property
+plato\debug\profiler::$_compile_controller_info	protected property
+plato\debug\profiler::$_compile_cookie_data	protected property
+plato\debug\profiler::$_compile_get	protected property
+plato\debug\profiler::$_compile_http_headers	protected property
+plato\debug\profiler::$_compile_memory_usage	protected property
+plato\debug\profiler::$_compile_post	protected property
+plato\debug\profiler::$_compile_queries	protected property
+plato\debug\profiler::$_compile_session_data	protected property
+plato\debug\profiler::$_compile_uri_string	protected property
+plato\debug\profiler::$_instance	protected static property
+plato\debug\profiler::$_query_toggle_count	protected property
+plato\debug\profiler::$config	public static property
+plato\debug\profiler::$enable_profiler	public property
+plato\debug\profiler::__construct($config = [])	public method
+plato\debug\profiler::_compile_benchmarks()	protected method
+plato\debug\profiler::_compile_config()	protected method
+plato\debug\profiler::_compile_controller_info()	protected method
+plato\debug\profiler::_compile_cookie_data()	protected method
+plato\debug\profiler::_compile_get()	protected method
+plato\debug\profiler::_compile_http_headers()	protected method
+plato\debug\profiler::_compile_memory_usage()	protected method
+plato\debug\profiler::_compile_post()	protected method
+plato\debug\profiler::_compile_queries()	protected method
+plato\debug\profiler::_compile_session_data()	protected method
+plato\debug\profiler::_compile_uri_string()	protected method
+plato\debug\profiler::_emphasise_sql($html)	protected method
+plato\debug\profiler::_query_sql(array $query)	protected method
+plato\debug\profiler::_summary()	protected method
+plato\debug\profiler::enable_profiler($val = true)	public method
+plato\debug\profiler::instance()	public static method
+plato\debug\profiler::reset()	public static method
+plato\debug\profiler::run()	public method
+plato\debug\profiler::set_sections($config)	public method
+plato\debug\profiler_middleware	class
+plato\debug\profiler_middleware::handle(callable $next)	public method
+plato\event	class
+plato\event::ON_ERROR	public const
+plato\event::ON_EXCEPTION	public const
+plato\event::ON_FILTER	public const
+plato\event::ON_REQUEST	public const
+plato\event::ON_RESPONSE	public const
+plato\event::ON_SQL	public const
+plato\event::bind($event, $method, $times = null)	public static method
+plato\event::off($event, $fh = null)	public static method
+plato\event::on($event, $method)	public static method
+plato\event::on_exception($event, $code, $params = [])	public static method
+plato\event::on_filter($event)	public static method
+plato\event::on_request($event)	public static method
+plato\event::on_response($event)	public static method
+plato\event::on_sql($event, ?string $sql = null, ?string $db_name = null, $query_time = 0)	public static method
+plato\event::one($event, $method)	public static method
+plato\event::start()	public static method
+plato\event::trigger($event, array $params = [])	public static method
+plato\exception\auth_exception	class : plato_exception
+plato\exception\bootstrap_exception	class : plato_exception
+plato\exception\config_exception	class : plato_exception
+plato\exception\controller_exception	class : plato_exception
+plato\exception\event_exception	class : plato_exception
+plato\exception\plato_exception	class : \Exception
+plato\exception\plato_exception::$params	protected property
+plato\exception\plato_exception::__construct($params = [], $code = 0, ?Throwable $previous = null)	public method
+plato\exception\plato_exception::params()	public method
+plato\exception\queue_exception	class : plato_exception
+plato\exception\request_exception	class : plato_exception
+plato\exception\request_exception::status()	public method
+plato\exception\route_exception	class : plato_exception
+plato\exception\route_exception::$_status	protected static property
+plato\exception\route_exception::status()	public method
+plato\exception\server_exception	class : plato_exception
+plato\exception\storage_exception	class : plato_exception
+plato\file	class
+plato\file::file_ext($filename)	public static method
+plato\file::get_img_url($img_url, $suffix = '')	public static method
+plato\file::path_exists($path)	public static method
+plato\file::put_file($file, $content, $flag = 0)	public static method
+plato\http\body	class
+plato\http\body::bare_mime($value)	public static method
+plato\http\body::parse(string $raw, string $content_header, string $method)	public static method
+plato\http\body::xml_to_array($xmls)	public static method
+plato\http\client	class
+plato\http\client::__construct(array $config = [])	public method
+plato\http\client::config(?string $key = null)	public method
+plato\http\client::configure(array $config)	public method
+plato\http\client::delete(string $url, array $options = [])	public method
+plato\http\client::get(string $url, array $options = [])	public method
+plato\http\client::http_request($data, $multi = false)	public method
+plato\http\client::middleware(callable $middleware)	public method
+plato\http\client::pool(array $requests)	public method
+plato\http\client::post(string $url, $body = null, array $options = [])	public method
+plato\http\client::put(string $url, $body = null, array $options = [])	public method
+plato\http\client::request(string $method, string $url, array $options = [])	public method
+plato\http\client::reset()	public method
+plato\http\client_response	class
+plato\http\client_response::__construct( int $status, string $body = '', array $headers = [], array $info = [], ?string $error = null, int $attempts = 1 )	public method
+plato\http\client_response::attempts()	public method
+plato\http\client_response::body()	public method
+plato\http\client_response::client_error()	public method
+plato\http\client_response::error()	public method
+plato\http\client_response::failed()	public method
+plato\http\client_response::header(string $name, ?string $default = null)	public method
+plato\http\client_response::headers()	public method
+plato\http\client_response::info(?string $key = null, $default = null)	public method
+plato\http\client_response::json(bool $associative = true)	public method
+plato\http\client_response::ok()	public method
+plato\http\client_response::server_error()	public method
+plato\http\client_response::status()	public method
+plato\http\client_response::to_legacy()	public method
+plato\http\envelope	class
+plato\http\envelope::$_active	protected static property
+plato\http\envelope::$_client	protected static property
+plato\http\envelope::$_config	protected static property
+plato\http\envelope::$_csrf	protected static property
+plato\http\envelope::$_defaults	protected static property
+plato\http\envelope::_client_name()	protected static method
+plato\http\envelope::_clients()	protected static method
+plato\http\envelope::_context(string $direction, string $client)	protected static method
+plato\http\envelope::_fresh(array $data, $client)	protected static method
+plato\http\envelope::client()	public static method
+plato\http\envelope::config(?string $key = null)	public static method
+plato\http\envelope::configure(array $config)	public static method
+plato\http\envelope::csrf()	public static method
+plato\http\envelope::is_active()	public static method
+plato\http\envelope::is_configured()	public static method
+plato\http\envelope::register()	public static method
+plato\http\envelope::reset($config = false)	public static method
+plato\http\envelope::resolve()	public static method
+plato\http\pipeline	class
+plato\http\pipeline::config()	public static method
+plato\http\pipeline::configure(array $map)	public static method
+plato\http\pipeline::for_route(string $ct, string $ac)	public static method
+plato\http\pipeline::matches(string $pattern, string $ct, string $ac)	public static method
+plato\http\pipeline::reset()	public static method
+plato\http\pipeline::run(array $middleware, callable $destination)	public static method
+plato\http\reply	class
+plato\http\reply::__construct(int $status = 200, array $headers = [], $content = '')	public method
+plato\http\reply::body()	public method
+plato\http\reply::emit_body()	public method
+plato\http\reply::headers()	public method
+plato\http\reply::status()	public method
+plato\http\reply::with_body(string $body)	public method
+plato\http\reply::with_header(string $name, string $value)	public method
+plato\http\reply::with_status(int $status)	public method
+plato\http\req	class
+plato\http\req::$_headers	protected static property
+plato\http\req::$_raw	protected static property
+plato\http\req::$cookies	public static property
+plato\http\req::$deletes	public static property
+plato\http\req::$forms	public static property
+plato\http\req::$gets	public static property
+plato\http\req::$jsons	public static property
+plato\http\req::$patchs	public static property
+plato\http\req::$posts	public static property
+plato\http\req::$puts	public static property
+plato\http\req::$throw_error	public static property
+plato\http\req::$xmls	public static property
+plato\http\req::_hydrate()	protected static method
+plato\http\req::all()	public static method
+plato\http\req::assign_values(array &$data, $method = 'GET')	public static method
+plato\http\req::back_url($gourl = '')	public static method
+plato\http\req::base_url($uri = '', $protocol = null)	public static method
+plato\http\req::capture()	public static method
+plato\http\req::config(?string $key = null)	public static method
+plato\http\req::configure(array $config)	public static method
+plato\http\req::content_type()	public static method
+plato\http\req::cookie($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::country()	public static method
+plato\http\req::delete($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::domain($domain = null)	public static method
+plato\http\req::get($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::headers($index = null, $default = null)	public static method
+plato\http\req::host($default = '')	public static method
+plato\http\req::ip($default = '0.0.0.0')	public static method
+plato\http\req::is_ajax()	public static method
+plato\http\req::is_cli()	public static method
+plato\http\req::is_json()	public static method
+plato\http\req::item($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::json($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::language()	public static method
+plato\http\req::method()	public static method
+plato\http\req::patch($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::path()	public static method
+plato\http\req::port($default = '')	public static method
+plato\http\req::post($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::protocol()	public static method
+plato\http\req::put($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::query_string($default = '')	public static method
+plato\http\req::raw()	public static method
+plato\http\req::redirect($gourl = '')	public static method
+plato\http\req::referrer($default = '')	public static method
+plato\http\req::remote_port($default = '')	public static method
+plato\http\req::replace_input(array $data)	public static method
+plato\http\req::reset_config()	public static method
+plato\http\req::reset_input()	public static method
+plato\http\req::server($index = null, $default = null)	public static method
+plato\http\req::set_raw($raw)	public static method
+plato\http\req::set_redirect($gourl = '')	public static method
+plato\http\req::url()	public static method
+plato\http\req::user_agent($default = '')	public static method
+plato\http\req::xml($index = null, $default = null, $filter_type = '')	public static method
+plato\http\req::xml_to_array($xmls)	public static method
+plato\http\resp	class
+plato\http\resp::JSON_FLAGS	public const
+plato\http\resp::config(?string $key = null)	public static method
+plato\http\resp::configure(array $config)	public static method
+plato\http\resp::cookie(string $name, string $value, array $options = [])	public static method
+plato\http\resp::download(string $path, ?string $name = null, ?string $mime = null)	public static method
+plato\http\resp::encode($data, int $flags = self::JSON_FLAGS)	public static method
+plato\http\resp::file(string $path, ?string $mime = null)	public static method
+plato\http\resp::forget_cookie(string $name, array $options = [])	public static method
+plato\http\resp::header(string $name, string $value)	public static method
+plato\http\resp::headers(array $headers)	public static method
+plato\http\resp::html(string $html, ?int $status = null)	public static method
+plato\http\resp::json($data, ?int $status = null, int $flags = self::JSON_FLAGS)	public static method
+plato\http\resp::no_cache()	public static method
+plato\http\resp::pending()	public static method
+plato\http\resp::prepared()	public static method
+plato\http\resp::raw(string $content, ?string $mime = null, ?int $status = null)	public static method
+plato\http\resp::redirect(string $url, int $status = 302)	public static method
+plato\http\resp::reset()	public static method
+plato\http\resp::reset_config()	public static method
+plato\http\resp::response($code = 0, $data = [], $msg = 'successful')	public static method
+plato\http\resp::response_error($code = -1, $msg = 'faild')	public static method
+plato\http\resp::restore(array $pending)	public static method
+plato\http\resp::send(reply $reply)	public static method
+plato\http\resp::send_headers()	public static method
+plato\http\resp::sent()	public static method
+plato\http\resp::set_encryption(string $key, string $context, bool $compress = true)	public static method
+plato\http\resp::status(int $code)	public static method
+plato\http\resp::stream(callable $writer, ?string $mime = null, ?int $status = null)	public static method
+plato\http\resp::text(string $text, ?int $status = null)	public static method
+plato\http\resp::type(string $mime, string $charset = 'utf-8')	public static method
+plato\http\rewrite	class
+plato\http\rewrite::$is_load	protected static property
+plato\http\rewrite::$rules	public static property
+plato\http\rewrite::_apply($subject)	protected static method
+plato\http\rewrite::_compile($source)	protected static method
+plato\http\rewrite::_load_rule()	protected static method
+plato\http\rewrite::convert_html(&$html)	public static method
+plato\http\rewrite::convert_url($url)	public static method
+plato\http\rewrite::reset()	public static method
+plato\http\route	class
+plato\http\route::$_ac	protected static property
+plato\http\route::$_action	protected static property
+plato\http\route::$_auth_modes	protected static property
+plato\http\route::$_config	protected static property
+plato\http\route::$_crypto_resolver	protected static property
+plato\http\route::$_ct	protected static property
+plato\http\route::$_defaults	protected static property
+plato\http\route::$_known_methods	protected static property
+plato\http\route::$_method	protected static property
+plato\http\route::$_redirect	protected static property
+plato\http\route::$_resolved	protected static property
+plato\http\route::$_segments	protected static property
+plato\http\route::$_source	protected static property
+plato\http\route::AUTH_NONE	public const
+plato\http\route::AUTH_OPTIONAL	public const
+plato\http\route::AUTH_REQUIRED	public const
+plato\http\route::METHOD_CLI	public const
+plato\http\route::SOURCE_CRYPTO	public const
+plato\http\route::SOURCE_MANUAL	public const
+plato\http\route::SOURCE_PATH	public const
+plato\http\route::_accept($ct, $ac, $method, array $segments, $source)	protected static method
+plato\http\route::_canonical(array $segments)	protected static method
+plato\http\route::_declared_actions($controller)	protected static method
+plato\http\route::_is_crypto_entry(array $parsed)	protected static method
+plato\http\route::_is_routable_method($controller, $ac, $declared_here = true)	protected static method
+plato\http\route::_method()	protected static method
+plato\http\route::_parse($uri)	protected static method
+plato\http\route::_request_uri()	protected static method
+plato\http\route::_resolve_crypto()	protected static method
+plato\http\route::_safe_uri()	protected static method
+plato\http\route::ac()	public static method
+plato\http\route::action()	public static method
+plato\http\route::actions($controller)	public static method
+plato\http\route::assign($ct, $ac = null, $method = 'CLI', array $segments = [])	public static method
+plato\http\route::auth_mode()	public static method
+plato\http\route::check_action($controller, $ac, $method)	public static method
+plato\http\route::config(?string $key = null)	public static method
+plato\http\route::configure(array $config)	public static method
+plato\http\route::crypto_required()	public static method
+plato\http\route::ct()	public static method
+plato\http\route::detect_method(array $server)	public static method
+plato\http\route::http_methods()	public static method
+plato\http\route::is_resolved()	public static method
+plato\http\route::matches(array $patterns)	public static method
+plato\http\route::method()	public static method
+plato\http\route::method_allowed($method, $allowed)	public static method
+plato\http\route::name()	public static method
+plato\http\route::redirect()	public static method
+plato\http\route::register_crypto_resolver(callable $resolver)	public static method
+plato\http\route::requires_auth()	public static method
+plato\http\route::reset($config = false)	public static method
+plato\http\route::resolve($uri = null, $method = null)	public static method
+plato\http\route::segments()	public static method
+plato\http\route::source()	public static method
+plato\http\route::url($ct, $ac = null, array $params = [], array $segments = [])	public static method
+plato\http\route::valid_methods($methods)	public static method
+plato\http\route::valid_name($name)	public static method
+plato\http\route::valid_segment($segment)	public static method
+plato\http\upload	class
+plato\http\upload::$files	public static property
+plato\http\upload::$filter_filename	public static property
+plato\http\upload::all()	public static method
+plato\http\upload::capture(array &$files)	public static method
+plato\http\upload::exists($field, $item = '')	public static method
+plato\http\upload::extension($field, $item = '')	public static method
+plato\http\upload::extension_is($field, $allowed = array('csv'), $item = '')	public static method
+plato\http\upload::info($field, $item = '')	public static method
+plato\http\upload::move($field, $path, $item = '')	public static method
+plato\http\upload::reset()	public static method
+plato\http\upload::set($field, $value)	public static method
+plato\http\upload::tmp_name($field, $default = '', $item = '')	public static method
+plato\lock	class
+plato\lock::bind(?redis $client)	public static method
+plato\lock::config(?string $key = null)	public static method
+plato\lock::configure(array $config)	public static method
+plato\lock::expire(string $name, ?int $expire = null)	public static method
+plato\lock::guard(string $name, callable $work, int $timeout = 0, ?int $expire = null)	public static method
+plato\lock::is_locking(string $name)	public static method
+plato\lock::lock( string $name, int $timeout = 0, ?int $expire = null, ?int $wait_interval_us = null )	public static method
+plato\lock::owns(string $name)	public static method
+plato\lock::reset()	public static method
+plato\lock::ttl(string $name)	public static method
+plato\lock::unlock(string $name)	public static method
+plato\log	class
+plato\log::$levels	public static property
+plato\log::ALERT	public const
+plato\log::ALL	public const
+plato\log::CRITICAL	public const
+plato\log::DEBUG	public const
+plato\log::EMERGENCY	public const
+plato\log::ERROR	public const
+plato\log::FATAL	public const
+plato\log::INFO	public const
+plato\log::NONE	public const
+plato\log::NOTICE	public const
+plato\log::TRACE	public const
+plato\log::WARNING	public const
+plato\log::_need_logging($level)	protected static method
+plato\log::alert($msg, $context = null)	public static method
+plato\log::boot()	public static method
+plato\log::context(array $data)	public static method
+plato\log::critical($msg, $context = null)	public static method
+plato\log::debug($msg, $context = null)	public static method
+plato\log::emergency($msg, $context = null)	public static method
+plato\log::error($msg, $context = null)	public static method
+plato\log::fatal($msg, $context = null)	public static method
+plato\log::forget_context(?array $keys = null)	public static method
+plato\log::info($msg, $context = null)	public static method
+plato\log::initialize()	public static method
+plato\log::is_terminal()	public static method
+plato\log::log($level, $msg, $context = null)	public static method
+plato\log::memory($key = "memory")	public static method
+plato\log::new_rid()	public static method
+plato\log::notice($msg, $context = null)	public static method
+plato\log::save()	public static method
+plato\log::shared_context()	public static method
+plato\log::time($key = "time")	public static method
+plato\log::trace($msg, $context = null)	public static method
+plato\log::warn($msg, $context = null)	public static method
+plato\log::warning($msg, $context = null)	public static method
+plato\log::write($level, $msg, $context = null)	public static method
+plato\paginator	class
+plato\paginator::meta($total, $page = 1, $page_size = 10)	public static method
+plato\plato	class
+plato\plato::$_app_path	protected static property
+plato\plato::$_data_path	protected static property
+plato\plato::$_defaults	protected static property
+plato\plato::$_env_path	protected static property
+plato\plato::$_start_mem	protected static property
+plato\plato::$_start_time	protected static property
+plato\plato::$_timestamp	protected static property
+plato\plato::$ac	public static property
+plato\plato::$auth	public static property
+plato\plato::$config	public static property
+plato\plato::$ct	public static property
+plato\plato::app_path($sub = '')	public static method
+plato\plato::app_total()	public static method
+plato\plato::cache_path($sub = '')	public static method
+plato\plato::config($key = null, $default = null)	public static method
+plato\plato::controller_class($ct)	public static method
+plato\plato::data_path($sub = '')	public static method
+plato\plato::debug()	public static method
+plato\plato::editor()	public static method
+plato\plato::env()	public static method
+plato\plato::env_path()	public static method
+plato\plato::fmt_code($code, $params = [])	public static method
+plato\plato::framework_path($sub = '')	public static method
+plato\plato::handle(?array $req_data = null)	public static method
+plato\plato::is_env($env)	public static method
+plato\plato::log_path($sub = '')	public static method
+plato\plato::registry(?array $config = [])	public static method
+plato\plato::reset_request()	public static method
+plato\plato::restamp()	public static method
+plato\plato::run(?array $req_data = null)	public static method
+plato\plato::start_mem()	public static method
+plato\plato::start_time()	public static method
+plato\plato::timestamp()	public static method
+plato\pool	class
+plato\pool::stop()	public static method
+plato\pool::stopping()	public static method
+plato\pool::supervise(callable $work, $workers = 1, array $options = [])	public static method
+plato\psr\cache	class : CacheInterface
+plato\psr\cache::clear()	public method
+plato\psr\cache::delete(string $key)	public method
+plato\psr\cache::deleteMultiple(iterable $keys)	public method
+plato\psr\cache::get(string $key, mixed $default = null)	public method
+plato\psr\cache::getMultiple(iterable $keys, mixed $default = null)	public method
+plato\psr\cache::has(string $key)	public method
+plato\psr\cache::set(string $key, mixed $value, null|int|DateInterval $ttl = null)	public method
+plato\psr\cache::setMultiple(iterable $values, null|int|DateInterval $ttl = null)	public method
+plato\psr\invalid_argument	class : base, contract
+plato\psr\logger	class : LoggerInterface
+plato\psr\logger::alert($message, array $context = [])	public method
+plato\psr\logger::critical($message, array $context = [])	public method
+plato\psr\logger::debug($message, array $context = [])	public method
+plato\psr\logger::emergency($message, array $context = [])	public method
+plato\psr\logger::error($message, array $context = [])	public method
+plato\psr\logger::info($message, array $context = [])	public method
+plato\psr\logger::log($level, $message, array $context = [])	public method
+plato\psr\logger::notice($message, array $context = [])	public method
+plato\psr\logger::warning($message, array $context = [])	public method
+plato\queue\delayable	interface
+plato\queue\delayable::migrate_delayed($queues, int $limit = 128)	public method
+plato\queue\delayable::push_delay(string $queue, $data, int $delay, array $options = [])	public method
+plato\queue\driver	interface
+plato\queue\driver::ack(message $msg)	public method
+plato\queue\driver::close()	public method
+plato\queue\driver::configure(array $config)	public method
+plato\queue\driver::fail(message $msg, ?string $error = null)	public method
+plato\queue\driver::pop($queues, int $timeout_ms = 1000)	public method
+plato\queue\driver::push(string $queue, $data, array $options = [])	public method
+plato\queue\driver::release(message $msg, int $delay = 0)	public method
+plato\queue\driver::size(string $queue)	public method
+plato\queue\kafka	class : driver
+plato\queue\kafka::ack(message $msg)	public method
+plato\queue\kafka::close()	public method
+plato\queue\kafka::configure(array $config)	public method
+plato\queue\kafka::dead_letter_topic(string $queue)	public method
+plato\queue\kafka::fail(message $msg, ?string $error = null)	public method
+plato\queue\kafka::pop($queues, int $timeout_ms = 1000)	public method
+plato\queue\kafka::push(string $queue, $data, array $options = [])	public method
+plato\queue\kafka::release(message $msg, int $delay = 0)	public method
+plato\queue\kafka::size(string $queue)	public method
+plato\queue\message	class
+plato\queue\message::__construct(string $queue, $payload, array $meta = [])	public method
+plato\queue\message::attempted()	public method
+plato\queue\message::attempts()	public method
+plato\queue\message::created_at()	public method
+plato\queue\message::decode($json, $handle = null)	public static method
+plato\queue\message::delay()	public method
+plato\queue\message::encode()	public method
+plato\queue\message::error()	public method
+plato\queue\message::from_array($row, $handle = null)	public static method
+plato\queue\message::handle()	public method
+plato\queue\message::id()	public method
+plato\queue\message::new_id()	public static method
+plato\queue\message::payload()	public method
+plato\queue\message::queue()	public method
+plato\queue\message::reset()	public method
+plato\queue\message::set_error($error)	public method
+plato\queue\message::set_handle($handle)	public method
+plato\queue\message::set_queue(string $queue)	public method
+plato\queue\message::to_array()	public method
+plato\queue\queue	class
+plato\queue\queue::ack(message $msg)	public static method
+plato\queue\queue::can_delay(?string $name = null)	public static method
+plato\queue\queue::close()	public static method
+plato\queue\queue::config(?string $key = null)	public static method
+plato\queue\queue::configure(array $config)	public static method
+plato\queue\queue::connection(?string $name = null)	public static method
+plato\queue\queue::driver(?string $name = null)	public static method
+plato\queue\queue::fail(message $msg, ?string $error = null)	public static method
+plato\queue\queue::migrate_delayed($queues, int $limit = 128)	public static method
+plato\queue\queue::pop($queues, int $timeout_ms = 1000)	public static method
+plato\queue\queue::push(string $queue, $data, array $options = [])	public static method
+plato\queue\queue::register_driver(string $name, string $class)	public static method
+plato\queue\queue::release(message $msg, int $delay = 0)	public static method
+plato\queue\queue::reset()	public static method
+plato\queue\queue::size(string $queue)	public static method
+plato\queue\redis	class : driver, delayable
+plato\queue\redis::ack(message $msg)	public method
+plato\queue\redis::close()	public method
+plato\queue\redis::configure(array $config)	public method
+plato\queue\redis::fail(message $msg, ?string $error = null)	public method
+plato\queue\redis::migrate_delayed($queues, int $limit = 128)	public method
+plato\queue\redis::pending(string $queue)	public method
+plato\queue\redis::pop($queues, int $timeout_ms = 1000)	public method
+plato\queue\redis::push(string $queue, $data, array $options = [])	public method
+plato\queue\redis::push_delay(string $queue, $data, int $delay, array $options = [])	public method
+plato\queue\redis::release(message $msg, int $delay = 0)	public method
+plato\queue\redis::retry_failed(string $queue, int $limit = 0)	public method
+plato\queue\redis::size(string $queue)	public method
+plato\queue\stream	class : driver, delayable
+plato\queue\stream::ack(message $msg)	public method
+plato\queue\stream::close()	public method
+plato\queue\stream::configure(array $config)	public method
+plato\queue\stream::fail(message $msg, ?string $error = null)	public method
+plato\queue\stream::migrate_delayed($queues, int $limit = 128)	public method
+plato\queue\stream::pending(string $queue)	public method
+plato\queue\stream::pop($queues, int $timeout_ms = 1000)	public method
+plato\queue\stream::push(string $queue, $data, array $options = [])	public method
+plato\queue\stream::push_delay(string $queue, $data, int $delay, array $options = [])	public method
+plato\queue\stream::release(message $msg, int $delay = 0)	public method
+plato\queue\stream::retry_failed(string $queue, int $limit = 0)	public method
+plato\queue\stream::size(string $queue)	public method
+plato\queue\worker	class
+plato\queue\worker::run(array $options = [])	public static method
+plato\queue\worker::stop()	public static method
+plato\runtime	class
+plato\runtime::abandoned()	public static method
+plato\runtime::epoch()	public static method
+plato\runtime::flush()	public static method
+plato\runtime::forget($key)	public static method
+plato\runtime::forked()	public static method
+plato\runtime::get($key, $default = null)	public static method
+plato\runtime::has($key)	public static method
+plato\runtime::keys()	public static method
+plato\runtime::off_fork($handle)	public static method
+plato\runtime::on_fork(callable $listener)	public static method
+plato\runtime::pid($check = true)	public static method
+plato\runtime::share($key, callable $factory, ?callable $closer = null)	public static method
+plato\runtime::shutdown_function($func, $params = [], $end = false)	public static method
+plato\security\crypt	class
+plato\security\crypt::DEFAULT_MAX_PLAINTEXT_BYTES	public const
+plato\security\crypt::FLAG_DEFLATE	public const
+plato\security\crypt::HEADER_LENGTH	public const
+plato\security\crypt::KEY_BYTES	public const
+plato\security\crypt::KEY_HEX_LENGTH	public const
+plato\security\crypt::MAGIC	public const
+plato\security\crypt::MEDIA_TYPE	public const
+plato\security\crypt::NONCE_LENGTH	public const
+plato\security\crypt::TAG_LENGTH	public const
+plato\security\crypt::VERSION	public const
+plato\security\crypt::decode( string $value, string $key, string $context, int $max_plaintext_bytes = self::DEFAULT_MAX_PLAINTEXT_BYTES )	public static method
+plato\security\crypt::encode(string $value, string $key, string $context, bool $compress = true)	public static method
+plato\security\rules	class
+plato\security\rules::__construct(?callable $sibling = null)	public method
+plato\security\rules::date($val)	public method
+plato\security\rules::decimal($str)	public method
+plato\security\rules::email($val)	public method
+plato\security\rules::exactlength($str, $val)	public method
+plato\security\rules::integer($str)	public method
+plato\security\rules::ip($val)	public method
+plato\security\rules::is_empty($val)	public method
+plato\security\rules::matches($str, $field)	public method
+plato\security\rules::max($val, $max)	public method
+plato\security\rules::maxlength($str, $val)	public method
+plato\security\rules::min($val, $min)	public method
+plato\security\rules::minlength($str, $val)	public method
+plato\security\rules::numeric($str)	public method
+plato\security\rules::password_strong($password)	public method
+plato\security\rules::regex_match($str, $regex)	public method
+plato\security\rules::required($val)	public method
+plato\security\rules::url($val)	public method
+plato\security\security	class
+plato\security\security::capture()	public static method
+plato\security\security::config(?string $key = null)	public static method
+plato\security\security::configure(array $config)	public static method
+plato\security\security::country_filter()	public static method
+plato\security\security::csrf_request_token()	public static method
+plato\security\security::csrf_set_cookie()	public static method
+plato\security\security::csrf_show_error()	public static method
+plato\security\security::csrf_verify()	public static method
+plato\security\security::get_csrf_hash()	public static method
+plato\security\security::get_csrf_token_name()	public static method
+plato\security\security::ip_filter()	public static method
+plato\security\security::match_cidr(string $addr, string $cidr)	public static method
+plato\security\security::origin_allowed()	public static method
+plato\security\security::preflight_headers()	public static method
+plato\security\security::preflight_max_age()	public static method
+plato\security\security::preflight_method()	public static method
+plato\security\security::reset()	public static method
+plato\security\sign	class
+plato\security\sign::attach(array $data, string $secret, ?array $exclude = null)	public static method
+plato\security\sign::config(?string $key = null)	public static method
+plato\security\sign::configure(array $config)	public static method
+plato\security\sign::make(array $data, string $secret, ?array $exclude = null)	public static method
+plato\security\sign::payload(array $data, ?array $exclude = null)	public static method
+plato\security\sign::reset()	public static method
+plato\security\sign::verify(array $data, string $secret, ?string $signature = null, ?array $exclude = null)	public static method
+plato\security\throttle	class
+plato\security\throttle::attempt(string $key, int $limit, int $window = 60)	public static method
+plato\security\throttle::clear(string $key, int $window = 60)	public static method
+plato\security\throttle::config(?string $key = null)	public static method
+plato\security\throttle::configure(array $config)	public static method
+plato\security\throttle::handle(callable $next)	public method
+plato\security\throttle::hits(string $key, int $window = 60)	public static method
+plato\security\throttle::remaining(string $key, int $limit, int $window = 60)	public static method
+plato\security\throttle::reset()	public static method
+plato\security\throttle::retry_after(int $window = 60)	public static method
+plato\security\validate	class
+plato\security\validate::$_data	protected property
+plato\security\validate::$_errors	protected property
+plato\security\validate::$_field_data	protected property
+plato\security\validate::$_message_overrides	protected static property
+plato\security\validate::$_messages	protected property
+plato\security\validate::$_ran	protected property
+plato\security\validate::$_rules	protected property
+plato\security\validate::CONTAINER_RULES	public const
+plato\security\validate::IMPLICIT_RULES	public const
+plato\security\validate::RULES	public const
+plato\security\validate::__construct()	protected method
+plato\security\validate::_absent_ancestor($row)	protected method
+plato\security\validate::_apply($callable, $param, $value)	protected method
+plato\security\validate::_build_error_msg($line, $field = '', $param = '')	protected method
+plato\security\validate::_container($rules)	protected method
+plato\security\validate::_current_value($field, $index)	protected method
+plato\security\validate::_element_names($field)	protected method
+plato\security\validate::_elements($row, $rules, $value)	protected method
+plato\security\validate::_empty($val)	public method
+plato\security\validate::_execute($row, $rules, $value, $index = null)	protected method
+plato\security\validate::_fail($row, $name, $param)	protected method
+plato\security\validate::_get_error_message($rule, $field)	protected method
+plato\security\validate::_is_sanitizer($rule)	protected method
+plato\security\validate::_log_unresolved($name)	protected method
+plato\security\validate::_name_keys($field)	protected method
+plato\security\validate::_not_set()	protected static method
+plato\security\validate::_prepare_rules($rules)	protected method
+plato\security\validate::_properties($row, $rules, $value)	protected method
+plato\security\validate::_reduce_array($array, $keys, $i = 0)	protected method
+plato\security\validate::_resolve_rule($rule)	protected method
+plato\security\validate::_store_value($field, $index, $value)	protected method
+plato\security\validate::data()	public method
+plato\security\validate::date($val)	public method
+plato\security\validate::decimal($str)	public method
+plato\security\validate::default_messages(?string $rule = null)	public static method
+plato\security\validate::email($val)	public method
+plato\security\validate::error($field = '', $prefix = '', $suffix = '')	public method
+plato\security\validate::errors()	public method
+plato\security\validate::exactlength($str, $val)	public method
+plato\security\validate::extend($name, callable $rule, $implicit = false)	public static method
+plato\security\validate::fails()	public method
+plato\security\validate::from_request($rules = [], array $messages = [])	public static method
+plato\security\validate::has_extension($name)	public static method
+plato\security\validate::integer($str)	public method
+plato\security\validate::ip($val)	public method
+plato\security\validate::make(array $data, $rules = [], array $messages = [])	public static method
+plato\security\validate::matches($str, $field)	public method
+plato\security\validate::max($val, $max)	public method
+plato\security\validate::maxlength($str, $val)	public method
+plato\security\validate::min($val, $min)	public method
+plato\security\validate::minlength($str, $val)	public method
+plato\security\validate::numeric($str)	public method
+plato\security\validate::passes()	public method
+plato\security\validate::password_strong($password)	public method
+plato\security\validate::regex_match($str, $regex)	public method
+plato\security\validate::required($val)	public method
+plato\security\validate::reset_default_messages()	public static method
+plato\security\validate::reset_extensions()	public static method
+plato\security\validate::run()	public method
+plato\security\validate::set_default_messages(array $messages)	public static method
+plato\security\validate::set_message($lang, $val = '')	public method
+plato\security\validate::set_rules($field, $label = '', $rules = [], $errors = [])	public method
+plato\security\validate::url($val)	public method
+plato\security\validate::validated()	public method
+plato\server\connection	class
+plato\server\connection::AUTH	public const
+plato\server\connection::__construct(string $id, driver $driver, string $remote = '', ?float $opened_at = null)	public method
+plato\server\connection::age()	public method
+plato\server\connection::attributes()	public method
+plato\server\connection::close(int $code = 1000, string $reason = '')	public method
+plato\server\connection::driver()	public method
+plato\server\connection::forget(string $key)	public method
+plato\server\connection::get(string $key, $default = null)	public method
+plato\server\connection::has(string $key)	public method
+plato\server\connection::id()	public method
+plato\server\connection::is_open()	public method
+plato\server\connection::mark_closed()	public method
+plato\server\connection::opened_at()	public method
+plato\server\connection::remote()	public method
+plato\server\connection::send($payload)	public method
+plato\server\connection::set(string $key, $value)	public method
+plato\server\dispatcher	class
+plato\server\dispatcher::CODE_BAD_MESSAGE	public const
+plato\server\dispatcher::CODE_INTERNAL	public const
+plato\server\dispatcher::CODE_NOT_FOUND	public const
+plato\server\dispatcher::CODE_REFUSED	public const
+plato\server\dispatcher::DEFAULTS	public const
+plato\server\dispatcher::HOOKS	public const
+plato\server\dispatcher::close(connection $conn)	public static method
+plato\server\dispatcher::config(?string $key = null)	public static method
+plato\server\dispatcher::configure(array $config)	public static method
+plato\server\dispatcher::current()	public static method
+plato\server\dispatcher::decode(string $raw)	public static method
+plato\server\dispatcher::encode($data)	public static method
+plato\server\dispatcher::error(int $code, string $msg, ?string $seq = null)	public static method
+plato\server\dispatcher::handle(connection $conn, string $raw)	public static method
+plato\server\dispatcher::off(int $handle)	public static method
+plato\server\dispatcher::on(string $hook, callable $cb)	public static method
+plato\server\dispatcher::open(connection $conn)	public static method
+plato\server\dispatcher::reset()	public static method
+plato\server\dispatcher::seq()	public static method
+plato\server\dispatcher::set_codec(?callable $decoder, ?callable $encoder)	public static method
+plato\server\driver	interface
+plato\server\driver::close(string $id, int $code = 1000, string $reason = '')	public method
+plato\server\driver::configure(array $config)	public method
+plato\server\driver::connection(string $id)	public method
+plato\server\driver::connections()	public method
+plato\server\driver::send(string $id, string $payload)	public method
+plato\server\driver::start()	public method
+plato\server\driver::stop()	public method
+plato\server\server	class
+plato\server\server::ADAPTERS	public const
+plato\server\server::close(string $id, int $code = 1000, string $reason = '')	public static method
+plato\server\server::config(?string $key = null)	public static method
+plato\server\server::configure(array $config)	public static method
+plato\server\server::connection(string $id)	public static method
+plato\server\server::connections()	public static method
+plato\server\server::driver(?string $name = null)	public static method
+plato\server\server::register_driver(string $name, string $class)	public static method
+plato\server\server::reset()	public static method
+plato\server\server::send(string $id, $payload)	public static method
+plato\server\server::settings(?string $name = null)	public static method
+plato\server\server::start(?string $name = null)	public static method
+plato\server\server::stop(?string $name = null)	public static method
+plato\storage\disk	interface
+plato\storage\disk::configure(array $config)	public method
+plato\storage\disk::copy(string $from, string $to)	public method
+plato\storage\disk::delete(string $path)	public method
+plato\storage\disk::exists(string $path)	public method
+plato\storage\disk::files(string $prefix = '', bool $recursive = false)	public method
+plato\storage\disk::get(string $path)	public method
+plato\storage\disk::modified(string $path)	public method
+plato\storage\disk::move(string $from, string $to)	public method
+plato\storage\disk::put(string $path, $contents, array $options = [])	public method
+plato\storage\disk::size(string $path)	public method
+plato\storage\disk::temporary_url(string $path, int $seconds = 3600)	public method
+plato\storage\disk::url(string $path)	public method
+plato\storage\local	class : disk
+plato\storage\local::configure(array $config)	public method
+plato\storage\local::copy(string $from, string $to)	public method
+plato\storage\local::delete(string $path)	public method
+plato\storage\local::exists(string $path)	public method
+plato\storage\local::files(string $prefix = '', bool $recursive = false)	public method
+plato\storage\local::get(string $path)	public method
+plato\storage\local::modified(string $path)	public method
+plato\storage\local::move(string $from, string $to)	public method
+plato\storage\local::put(string $path, $contents, array $options = [])	public method
+plato\storage\local::size(string $path)	public method
+plato\storage\local::temporary_url(string $path, int $seconds = 3600)	public method
+plato\storage\local::url(string $path)	public method
+plato\storage\path	class
+plato\storage\path::clean(string $path)	public static method
+plato\storage\path::clean_prefix(string $prefix)	public static method
+plato\storage\storage	class
+plato\storage\storage::config(?string $key = null)	public static method
+plato\storage\storage::configure(array $config)	public static method
+plato\storage\storage::copy(string $from, string $to)	public static method
+plato\storage\storage::delete(string $path)	public static method
+plato\storage\storage::disk(?string $name = null)	public static method
+plato\storage\storage::exists(string $path)	public static method
+plato\storage\storage::extend(string $name, string $class)	public static method
+plato\storage\storage::files(string $prefix = '', bool $recursive = false)	public static method
+plato\storage\storage::flush()	public static method
+plato\storage\storage::get(string $path)	public static method
+plato\storage\storage::modified(string $path)	public static method
+plato\storage\storage::move(string $from, string $to)	public static method
+plato\storage\storage::put(string $path, $contents, array $options = [])	public static method
+plato\storage\storage::reset()	public static method
+plato\storage\storage::size(string $path)	public static method
+plato\storage\storage::temporary_url(string $path, int $seconds = 3600)	public static method
+plato\storage\storage::url(string $path)	public static method
+plato\str	class
+plato\str::bucket(string $value, int $buckets)	public static method
+plato\str::format(string $template, array $values = [])	public static method
+plato\str::format_size($size, int $decimals = 2)	public static method
+plato\str::highlight_code(string $str)	public static method
+plato\str::is_json(string $str)	public static method
+plato\str::is_serialized(string $str)	public static method
+plato\str::mask(string $value, int $keep_start = 0, int $keep_end = 0, string $mask = '*')	public static method
+plato\str::random(string $type = 'alnum', int $length = 16)	public static method
+plato\str::remove_invisible_characters(string $str, bool $url_encoded = true)	public static method
+plato\str::unique_id()	public static method
+plato\tpl	class
+plato\tpl::$cache_dir	public static property
+plato\tpl::$compile_dir	public static property
+plato\tpl::$config	public static property
+plato\tpl::$output	public static property
+plato\tpl::$template_dir	public static property
+plato\tpl::DEFAULT_CONFIG	public const
+plato\tpl::PLUGIN_TYPES	public const
+plato\tpl::assign($tpl_var, $value = null)	public static method
+plato\tpl::decorate($html)	public static method
+plato\tpl::display($tpl)	public static method
+plato\tpl::exists($tpl)	public static method
+plato\tpl::fetch($tpl)	public static method
+plato\tpl::instance()	public static method
+plato\tpl::output()	public static method
+plato\tpl::reset()	public static method
+plato\view\msgbox	class
+plato\view\msgbox::error($http_code = '404')	public static method
+plato\view\msgbox::show($title, $msg, $gourl = '', $limittime = 3000)	public static method
+plato\worker	class
+plato\worker::count()	public static method
+plato\worker::enter(int $index, int $count)	public static method
+plato\worker::in_group()	public static method
+plato\worker::index()	public static method
+plato\worker::leave()	public static method
+plato\worker::owns(int $key = 0)	public static method

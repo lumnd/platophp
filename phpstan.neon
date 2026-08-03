@@ -1,0 +1,16 @@
+# Level 5 over src/, with no baseline: every error phpstan reports here fails the build.
+#
+# There was one, holding the 144 errors that were already in the tree when it was written. It was
+# shrunk to nothing rather than kept as a place errors could hide -- a baseline that exists is a
+# baseline somebody adds to. If a genuinely unfixable error turns up (a wrong extension stub, say),
+# annotate the line with the reason instead of reopening the file.
+#
+# The level is deliberately not the maximum. Raising it is done module by module, with the errors
+# fixed rather than recorded.
+
+parameters:
+    level: 5
+    paths:
+        - src
+    bootstrapFiles:
+        - phpstan-bootstrap.php

@@ -1,0 +1,78 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * PlatoPHP console entry point
+ *
+ * Runs both from inside the framework repository and as vendor/bin/plato in a host project. Only
+ * two things cannot be done by a class and are therefore done here: finding composer's autoloader,
+ * and working out which directory is the project root. Everything after that -- options, paths,
+ * bootstrapping, commands, help -- is plato\console\console.
+ *
+ * @package  PlatoPHP
+ * @license  MIT
+ * @link     https://platophp.com
+ */
+
+if (PHP_SAPI !== 'cli')
+{
+    fwrite(STDERR, 'The plato console can only run from the command line.' . PHP_EOL);
+    exit(1);
+}
+
+// Composer's bin proxy names the host project's autoloader before it includes this file. Read it
+// first: with the package installed as a symlinked path repository, PHP resolves __DIR__ through
+// the symlink, so walking up from here lands in the framework checkout and takes its vendor/ and
+// its directory as the project -- the host's plato.config.php, and every command that file
+// registers, would then be invisible. realpath() because that global carries a '/..' segment,
+// which dirname() below would otherwise read as a directory of its own
+$autoload = '';
+
+if ( isset($GLOBALS['_composer_autoload_path']) )
+{
+    $composer_autoload = realpath((string) $GLOBALS['_composer_autoload_path']);
+
+    if ( $composer_autoload !== false && is_file($composer_autoload) )
+    {
+        $autoload = $composer_autoload;
+    }
+}
+
+// Otherwise walk up until a vendor/autoload.php turns up: <project>/vendor/autoload.php when this
+// is the package itself, <project>/vendor/lumnd/platophp/bin -> <project>/vendor/autoload.php when
+// it is installed as a dependency and run by its real path
+$dir = __DIR__;
+
+while ($autoload === '')
+{
+    if (is_file($dir . '/vendor/autoload.php'))
+    {
+        $autoload = $dir . '/vendor/autoload.php';
+        break;
+    }
+
+    if (basename($dir) === 'vendor' && is_file($dir . '/autoload.php'))
+    {
+        $autoload = $dir . '/autoload.php';
+        break;
+    }
+
+    $parent = dirname($dir);
+    if ($parent === $dir)
+    {
+        break;
+    }
+
+    $dir = $parent;
+}
+
+if ($autoload === '')
+{
+    fwrite(STDERR, 'Cannot find composer\'s vendor/autoload.php; run composer install first.' . PHP_EOL);
+    exit(1);
+}
+
+require_once $autoload;
+
+// The project root is the directory holding vendor/
+exit(plato\console\console::run($argv, dirname(dirname($autoload))));

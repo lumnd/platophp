@@ -1,0 +1,370 @@
+{
+    "name": "PlatoPHP",
+    "package": "lumnd/platophp",
+    "default_locale": "zh-CN",
+    "generated_at": "2026-08-03T14:12:57.000Z",
+    "locales": {
+        "zh-CN": {
+            "label": "简体中文",
+            "html_lang": "zh-CN",
+            "document_title": "PlatoPHP 文档",
+            "tagline": "PHP 8 服务框架",
+            "description": "PlatoPHP 是面向 PHP 8 的轻量级 HTTP、常驻 socket 与多进程 CLI 服务框架",
+            "ui": {
+                "menu": "打开文档导航",
+                "home": "PlatoPHP 文档首页",
+                "search": "搜索目录",
+                "search_placeholder": "搜索页面…",
+                "toc": "文档目录",
+                "language": "切换语言",
+                "previous": "上一篇",
+                "next": "下一篇",
+                "page_count": "共 {count} 篇"
+            },
+            "page_count": 20,
+            "pages": [
+                {
+                    "title": "PlatoPHP",
+                    "slug": "index",
+                    "section": "开始",
+                    "source": "source/zh-CN/index.md",
+                    "page": "site/zh-CN/index.html",
+                    "sha256": "ff48b7cd3271f4c31c8ebbf1c9d93bd0ddfbcb0d2946efe86e740c73880e2ca8"
+                },
+                {
+                    "title": "安装",
+                    "slug": "installation",
+                    "section": "开始",
+                    "source": "source/zh-CN/installation.md",
+                    "page": "site/zh-CN/installation.html",
+                    "sha256": "6ddb2daecd965c712e206001f1583734ef21dc590a173dd4a55531e2cf490889"
+                },
+                {
+                    "title": "架构与目录",
+                    "slug": "architecture",
+                    "section": "开始",
+                    "source": "source/zh-CN/architecture.md",
+                    "page": "site/zh-CN/architecture.html",
+                    "sha256": "24b685575fa8d3d8768c8a06fc6b2ba1172552583cac1f7fcc8337618ce1ff05"
+                },
+                {
+                    "title": "引导与配置",
+                    "slug": "bootstrap-configuration",
+                    "section": "开始",
+                    "source": "source/zh-CN/bootstrap-configuration.md",
+                    "page": "site/zh-CN/bootstrap-configuration.html",
+                    "sha256": "3414b3e02844b6f28d3e301ef1a001e7803332380f8ff528f910253f9e41129d"
+                },
+                {
+                    "title": "路由与中间件",
+                    "slug": "routing-middleware",
+                    "section": "HTTP",
+                    "source": "source/zh-CN/routing-middleware.md",
+                    "page": "site/zh-CN/routing-middleware.html",
+                    "sha256": "9e080c4cd73c01971c5479a201ec3327ad41fb2fe19567641d100158ebc4f453"
+                },
+                {
+                    "title": "请求与响应",
+                    "slug": "request-response",
+                    "section": "HTTP",
+                    "source": "source/zh-CN/request-response.md",
+                    "page": "site/zh-CN/request-response.html",
+                    "sha256": "6a5a0ea63b738a1226a7bb08d337b096e5fe525e10817b8bf91d3310befe5464"
+                },
+                {
+                    "title": "安全与校验",
+                    "slug": "security-validation",
+                    "section": "HTTP",
+                    "source": "source/zh-CN/security-validation.md",
+                    "page": "site/zh-CN/security-validation.html",
+                    "sha256": "d15cb77fb7b92e957bfc67b5c29bbcefd259911efc2b334ee230289e110dad7e"
+                },
+                {
+                    "title": "HTTP 客户端",
+                    "slug": "http-client",
+                    "section": "HTTP",
+                    "source": "source/zh-CN/http-client.md",
+                    "page": "site/zh-CN/http-client.html",
+                    "sha256": "bf3fb8fb7cda9503dcd7bdcfa6af74743420335653836c52e2c42ff8d7894b73"
+                },
+                {
+                    "title": "数据库",
+                    "slug": "database",
+                    "section": "数据",
+                    "source": "source/zh-CN/database.md",
+                    "page": "site/zh-CN/database.html",
+                    "sha256": "dc3b95c82ac62652fbce05fa35624ba9001f11dc1c74ded8fffaa217b8215052"
+                },
+                {
+                    "title": "迁移与数据填充",
+                    "slug": "migrations-seeding",
+                    "section": "数据",
+                    "source": "source/zh-CN/migrations-seeding.md",
+                    "page": "site/zh-CN/migrations-seeding.html",
+                    "sha256": "59a097e6dff943853fd6b28a2ad9cce6f7edfc7b702fe890caeb53fc17132a3d"
+                },
+                {
+                    "title": "缓存与锁",
+                    "slug": "cache-locks",
+                    "section": "数据",
+                    "source": "source/zh-CN/cache-locks.md",
+                    "page": "site/zh-CN/cache-locks.html",
+                    "sha256": "9c1784a92f024c0487168e4ef99255dacb1e39a6e753d81402b3aab18a771a72"
+                },
+                {
+                    "title": "队列",
+                    "slug": "queue",
+                    "section": "数据",
+                    "source": "source/zh-CN/queue.md",
+                    "page": "site/zh-CN/queue.html",
+                    "sha256": "6a592b5cfa6f5c5170fa57dcee5172016287a545e9dd0ada1b2476a49722c485"
+                },
+                {
+                    "title": "存储与模板",
+                    "slug": "storage-templates",
+                    "section": "数据",
+                    "source": "source/zh-CN/storage-templates.md",
+                    "page": "site/zh-CN/storage-templates.html",
+                    "sha256": "ed52f0cb2167484868d7d1512d1fbf6d228343ff1f293a557bbf3ba3c8e1ed4c"
+                },
+                {
+                    "title": "命令行与调度",
+                    "slug": "console-scheduling",
+                    "section": "服务",
+                    "source": "source/zh-CN/console-scheduling.md",
+                    "page": "site/zh-CN/console-scheduling.html",
+                    "sha256": "b839c0e4a1acba8aea4a2706516f2cfc7e79baac67efa9916e46144ba49c5de9"
+                },
+                {
+                    "title": "多进程运行",
+                    "slug": "processes",
+                    "section": "服务",
+                    "source": "source/zh-CN/processes.md",
+                    "page": "site/zh-CN/processes.html",
+                    "sha256": "6ab942b93eaaf8f7ed13ac010c3a35a9dac1648f1d437cb7647909e8f062bc71"
+                },
+                {
+                    "title": "常驻服务",
+                    "slug": "server",
+                    "section": "服务",
+                    "source": "source/zh-CN/server.md",
+                    "page": "site/zh-CN/server.html",
+                    "sha256": "1176249161c89035310d1fd38e4c9b60f5a3ac25ab5edce21417aef93ae44f79"
+                },
+                {
+                    "title": "日志与调试",
+                    "slug": "observability",
+                    "section": "运行维护",
+                    "source": "source/zh-CN/observability.md",
+                    "page": "site/zh-CN/observability.html",
+                    "sha256": "32167dfdf010ed64f1eb039da6b7bdd142fea954dd6dc70e66d4361db08752c8"
+                },
+                {
+                    "title": "事件",
+                    "slug": "events",
+                    "section": "运行维护",
+                    "source": "source/zh-CN/events.md",
+                    "page": "site/zh-CN/events.html",
+                    "sha256": "054599e6e65ff44d46532b7034f9f74a620ed43be60da96aaff2a7d2bd80c0f4"
+                },
+                {
+                    "title": "辅助工具",
+                    "slug": "helpers",
+                    "section": "参考",
+                    "source": "source/zh-CN/helpers.md",
+                    "page": "site/zh-CN/helpers.html",
+                    "sha256": "e776f2a28262086b54e79d717b39730e68d4e3a391be056b1206eecabe6dbaa0"
+                },
+                {
+                    "title": "测试与贡献",
+                    "slug": "testing-contributing",
+                    "section": "参考",
+                    "source": "source/zh-CN/testing-contributing.md",
+                    "page": "site/zh-CN/testing-contributing.html",
+                    "sha256": "a411c2d9565afb029fb6308c8f0aa0ec9fa8ef2be6055af1300081265b669959"
+                }
+            ]
+        },
+        "en": {
+            "label": "English",
+            "html_lang": "en",
+            "document_title": "PlatoPHP Documentation",
+            "tagline": "PHP 8 service framework",
+            "description": "PlatoPHP is a lightweight HTTP, resident socket, and multiprocess CLI service framework for PHP 8",
+            "ui": {
+                "menu": "Open documentation navigation",
+                "home": "PlatoPHP documentation home",
+                "search": "Search navigation",
+                "search_placeholder": "Search pages…",
+                "toc": "Documentation",
+                "language": "Switch language",
+                "previous": "Previous",
+                "next": "Next",
+                "page_count": "{count} pages"
+            },
+            "page_count": 20,
+            "pages": [
+                {
+                    "title": "PlatoPHP",
+                    "slug": "index",
+                    "section": "Start",
+                    "source": "source/en/index.md",
+                    "page": "site/en/index.html",
+                    "sha256": "696df7d628a90b190af949fc07bd80ffead81f247301f27e82966bb2adc7d2e1"
+                },
+                {
+                    "title": "Installation",
+                    "slug": "installation",
+                    "section": "Start",
+                    "source": "source/en/installation.md",
+                    "page": "site/en/installation.html",
+                    "sha256": "63ffdf148e42cab2fbef25af4e820dd778ce7e8056979e17d12b1979821b80f3"
+                },
+                {
+                    "title": "Architecture and Layout",
+                    "slug": "architecture",
+                    "section": "Start",
+                    "source": "source/en/architecture.md",
+                    "page": "site/en/architecture.html",
+                    "sha256": "5978e3d83686868bf0e8bbebf61bb3945ee56665b78d01f31066a3997601ff84"
+                },
+                {
+                    "title": "Bootstrap and Configuration",
+                    "slug": "bootstrap-configuration",
+                    "section": "Start",
+                    "source": "source/en/bootstrap-configuration.md",
+                    "page": "site/en/bootstrap-configuration.html",
+                    "sha256": "4fa3d2e921d2349924308e3d8ee7aa16589393ca5a69d491c5b04fbf60489448"
+                },
+                {
+                    "title": "Routing and Middleware",
+                    "slug": "routing-middleware",
+                    "section": "HTTP",
+                    "source": "source/en/routing-middleware.md",
+                    "page": "site/en/routing-middleware.html",
+                    "sha256": "c0eb5ddfa10ee8ad4bcd37b41807f5e95d3f54c168ecd0693f384628e9691887"
+                },
+                {
+                    "title": "Requests and Responses",
+                    "slug": "request-response",
+                    "section": "HTTP",
+                    "source": "source/en/request-response.md",
+                    "page": "site/en/request-response.html",
+                    "sha256": "c8719cb437037b246789dd8aa93a634ab84fab7f6ff216ed353995337fcd2a81"
+                },
+                {
+                    "title": "Security and Validation",
+                    "slug": "security-validation",
+                    "section": "HTTP",
+                    "source": "source/en/security-validation.md",
+                    "page": "site/en/security-validation.html",
+                    "sha256": "b9b40a42468615d40927059a9e8b7232175c8cd5c02d03e5f0594f7715faeedf"
+                },
+                {
+                    "title": "HTTP Client",
+                    "slug": "http-client",
+                    "section": "HTTP",
+                    "source": "source/en/http-client.md",
+                    "page": "site/en/http-client.html",
+                    "sha256": "d0843c47feb6e3c3da7dc7b72a8ddbbdd4471b1b8e41de4551bf3c0aec610c4e"
+                },
+                {
+                    "title": "Database",
+                    "slug": "database",
+                    "section": "Data",
+                    "source": "source/en/database.md",
+                    "page": "site/en/database.html",
+                    "sha256": "189aec7fa9966ec0688237c00bc22ffc3349a9891c5dd8bdf62dec92e4c95998"
+                },
+                {
+                    "title": "Migrations and Seeding",
+                    "slug": "migrations-seeding",
+                    "section": "Data",
+                    "source": "source/en/migrations-seeding.md",
+                    "page": "site/en/migrations-seeding.html",
+                    "sha256": "0fcd9157af14198464b1865e8f555666ee4c070a267cf61f07033708416b66fa"
+                },
+                {
+                    "title": "Cache and Locks",
+                    "slug": "cache-locks",
+                    "section": "Data",
+                    "source": "source/en/cache-locks.md",
+                    "page": "site/en/cache-locks.html",
+                    "sha256": "128accf9c95ffa7b5ae7fe73faef1f29e57d648f62a3fb79a18e641749e02f45"
+                },
+                {
+                    "title": "Queue",
+                    "slug": "queue",
+                    "section": "Data",
+                    "source": "source/en/queue.md",
+                    "page": "site/en/queue.html",
+                    "sha256": "ad8345b348780d70ff8eea80377d17e4172601ede4c1ecd6f03ed8da4f209741"
+                },
+                {
+                    "title": "Storage and Templates",
+                    "slug": "storage-templates",
+                    "section": "Data",
+                    "source": "source/en/storage-templates.md",
+                    "page": "site/en/storage-templates.html",
+                    "sha256": "18b48b402384b91d47bcb8ea060e3dc04650f66e7e9559e70119f81a1e3a318a"
+                },
+                {
+                    "title": "Console and Scheduling",
+                    "slug": "console-scheduling",
+                    "section": "Services",
+                    "source": "source/en/console-scheduling.md",
+                    "page": "site/en/console-scheduling.html",
+                    "sha256": "ea8b5d9ae44423282fed075feec9584e949f455c247c2a9411745b3d45d0bd9b"
+                },
+                {
+                    "title": "Multiprocess Runtime",
+                    "slug": "processes",
+                    "section": "Services",
+                    "source": "source/en/processes.md",
+                    "page": "site/en/processes.html",
+                    "sha256": "ca42d779d16bcdc3bc59bfbe949500ea0ee190b6b169f8c50f15715adf1d1731"
+                },
+                {
+                    "title": "Resident servers",
+                    "slug": "server",
+                    "section": "Services",
+                    "source": "source/en/server.md",
+                    "page": "site/en/server.html",
+                    "sha256": "da04d6101c9aa87093259153617b5fe5b4e73913c50cbe190517be8e0a3c6efb"
+                },
+                {
+                    "title": "Logging and Debugging",
+                    "slug": "observability",
+                    "section": "Operations",
+                    "source": "source/en/observability.md",
+                    "page": "site/en/observability.html",
+                    "sha256": "7dfa1c7b73aac1b84be5536a4ab30d2618bfdc7ea41c11ca0b4ba83421c51a70"
+                },
+                {
+                    "title": "Events",
+                    "slug": "events",
+                    "section": "Operations",
+                    "source": "source/en/events.md",
+                    "page": "site/en/events.html",
+                    "sha256": "8600a9fde19c3cce017615d7d5a2457cf7377141b19ba7bac2dd7c7fc25962bf"
+                },
+                {
+                    "title": "Helpers",
+                    "slug": "helpers",
+                    "section": "Reference",
+                    "source": "source/en/helpers.md",
+                    "page": "site/en/helpers.html",
+                    "sha256": "33f538def12da0d79f49b38a42f4ca3109d1019217937b06c9156f20b6321d99"
+                },
+                {
+                    "title": "Testing and Contributing",
+                    "slug": "testing-contributing",
+                    "section": "Reference",
+                    "source": "source/en/testing-contributing.md",
+                    "page": "site/en/testing-contributing.html",
+                    "sha256": "d4a6c8d2c3cbf45cfe84d0e320c760c71b192f0077eb4995ff6241815a11bccb"
+                }
+            ]
+        }
+    }
+}

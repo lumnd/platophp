@@ -1,0 +1,26 @@
+# PlatoPHP
+
+> PlatoPHP is a lightweight HTTP, resident socket, and multiprocess CLI service framework for PHP 8
+
+## Documentation
+
+- [PlatoPHP](source/en/index.md)
+- [Installation](source/en/installation.md)
+- [Architecture and Layout](source/en/architecture.md)
+- [Bootstrap and Configuration](source/en/bootstrap-configuration.md)
+- [Routing and Middleware](source/en/routing-middleware.md)
+- [Requests and Responses](source/en/request-response.md)
+- [Security and Validation](source/en/security-validation.md)
+- [HTTP Client](source/en/http-client.md)
+- [Database](source/en/database.md)
+- [Migrations and Seeding](source/en/migrations-seeding.md)
+- [Cache and Locks](source/en/cache-locks.md)
+- [Queue](source/en/queue.md)
+- [Storage and Templates](source/en/storage-templates.md)
+- [Console and Scheduling](source/en/console-scheduling.md)
+- [Multiprocess Runtime](source/en/processes.md)
+- [Resident servers](source/en/server.md)
+- [Logging and Debugging](source/en/observability.md)
+- [Events](source/en/events.md)
+- [Helpers](source/en/helpers.md)
+- [Testing and Contributing](source/en/testing-contributing.md)

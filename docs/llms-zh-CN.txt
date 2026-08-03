@@ -1,0 +1,26 @@
+# PlatoPHP
+
+> PlatoPHP 是面向 PHP 8 的轻量级 HTTP、常驻 socket 与多进程 CLI 服务框架
+
+## 文档目录
+
+- [PlatoPHP](source/zh-CN/index.md)
+- [安装](source/zh-CN/installation.md)
+- [架构与目录](source/zh-CN/architecture.md)
+- [引导与配置](source/zh-CN/bootstrap-configuration.md)
+- [路由与中间件](source/zh-CN/routing-middleware.md)
+- [请求与响应](source/zh-CN/request-response.md)
+- [安全与校验](source/zh-CN/security-validation.md)
+- [HTTP 客户端](source/zh-CN/http-client.md)
+- [数据库](source/zh-CN/database.md)
+- [迁移与数据填充](source/zh-CN/migrations-seeding.md)
+- [缓存与锁](source/zh-CN/cache-locks.md)
+- [队列](source/zh-CN/queue.md)
+- [存储与模板](source/zh-CN/storage-templates.md)
+- [命令行与调度](source/zh-CN/console-scheduling.md)
+- [多进程运行](source/zh-CN/processes.md)
+- [常驻服务](source/zh-CN/server.md)
+- [日志与调试](source/zh-CN/observability.md)
+- [事件](source/zh-CN/events.md)
+- [辅助工具](source/zh-CN/helpers.md)
+- [测试与贡献](source/zh-CN/testing-contributing.md)

@@ -1,0 +1,6 @@
+# PlatoPHP
+
+## Documentation languages
+
+- [简体中文](llms-zh-CN.txt)
+- [English](llms-en.txt)

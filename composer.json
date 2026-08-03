@@ -1,0 +1,86 @@
+{
+    "name"  : "lumnd/platophp",
+    "description" : "A lightweight HTTP, WebSocket/TCP, and multiprocess CLI service framework for PHP 8",
+    "type" : "library",
+    "keywords": [
+        "framework",
+        "http",
+        "websocket",
+        "tcp",
+        "cli",
+        "multiprocess"
+    ],
+    "homepage": "https://platophp.com",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name" : "lumnd-platophp",
+            "email" : "github@lumnd.com"
+        }
+    ],
+    "require": {
+        "php" : "^8.0",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "ext-zlib": "*"
+    },
+    "suggest": {
+        "smarty/smarty": "^5.5, the engine behind plato\\tpl. Nothing else in the framework touches it -- an application serving JSON or running on the CLI never builds the instance, so this is only needed by one that renders templates",
+        "ext-pdo_mysql": "MySQL and MariaDB connections (plato\\database\\driver\\mysql). Without it the database layer has no SQL engine to talk to",
+        "ext-redis": "Redis cache store, the redis and stream queue drivers, and plato\\lock -- which has no other backend",
+        "ext-memcached": "Memcached cache store. The older ext-memcache is not supported",
+        "ext-mongodb": "MongoDB connections (plato\\database\\driver\\mongodb)",
+        "ext-rdkafka": "Kafka queue driver (plato\\queue\\kafka)",
+        "ext-curl": "plato\\http\\client, and the ClickHouse connection, which speaks HTTP",
+        "ext-pcntl": "plato\\pool worker supervisor and the signal handling of queue:work; a resident CLI process wants both this and ext-posix",
+        "ext-posix": "Process identity for plato\\pool and plato\\runtime's fork detection",
+        "ext-simplexml": "application/xml request bodies (plato\\http\\req). Its absence is reported when an XML body is first parsed; malformed XML is dropped",
+        "ext-readline": "Line editing in cli::input(); without it the prompt still works, it is just dumber",
+        "ext-igbinary": "The `igbinary` value of the redis `serializer` setting; the driver falls back to JSON when it is missing",
+        "lumnd/plato-workerman": "Resident server adapter, websocket and tcp. This package ships no event loop: src/server holds the driver contract and the message to ct/ac dispatcher, the loop comes from an adapter",
+        "psr/log": "^3.0, for plato\\psr\\logger -- hands plato\\log to a library that asks for a PSR-3 logger",
+        "psr/simple-cache": "^3.0, for plato\\psr\\cache -- hands plato\\cache to a library that asks for a PSR-16 cache"
+    },
+    "require-dev": {
+        "league/commonmark": "^2.7",
+        "phpstan/phpstan": "^2.2",
+        "pestphp/pest": "^3.7 || ^4.7",
+        "squizlabs/php_codesniffer": "^3.11",
+        "psr/log": "^3.0",
+        "psr/simple-cache": "^3.0",
+        "smarty/smarty": "^5.5"
+    },
+    "bin": [
+        "bin/plato"
+    ],
+    "autoload": {
+        "psr-4": {
+            "plato\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests",
+            "middleware\\": "tests/Fixtures/app/middleware"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "platform": {
+            "php": "8.2"
+        }
+    },
+    "scripts": {
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "style": "phpcs",
+        "style:fix": "phpcbf",
+        "check:architecture": "php tests/tools/check_architecture.php",
+        "test": "pest --colors=always",
+        "test:unit": "pest --testsuite=Unit --colors=always",
+        "test:feature": "pest --testsuite=Feature --colors=always",
+        "test:coverage": "pest --coverage --min=40 --colors=always"
+    }
+}

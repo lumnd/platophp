@@ -1,0 +1,310 @@
+name: tests
+
+# Pest, phpstan and phpcs. The package supports PHP 8.0+, but Pest 3 needs 8.2, so the versions
+# below that get a syntax sweep instead of a test run -- tests/Unit/phpCompatibilityTest.php is
+# what actually guards the 8.0 language level, and it runs on every leg.
+#
+# The fixture .env (tests/Fixtures/app/.env.testing) points at the hosts `redis`, `mysql` and
+# `memcached`, and plato::registry() lets a .env value win over the process environment, so the
+# service containers are reached by adding those names to /etc/hosts rather than by overriding
+# environment variables here.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    name: syntax (php ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.0', '8.1']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      # Every file has to parse on the oldest supported runtime; Pest cannot be installed here.
+      - name: Lint
+        run: find src bin config -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
+
+  tests:
+    name: tests (php ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4', '8.5']
+
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: platophptest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      memcached:
+        image: memcached:1.6
+        ports:
+          - 11211:11211
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          # pcntl / posix: the fork safety and worker pool cases spawn children
+          # redis / memcached: cache stores and the queue driver
+          extensions: mbstring, curl, json, openssl, pdo_mysql, mysqli, pcntl, posix, sockets, redis, memcached
+          coverage: none
+          ini-values: error_reporting=E_ALL
+
+      # The fixture .env names the service containers; on a runner they all live on localhost.
+      - name: Point the fixture host names at the services
+        run: echo '127.0.0.1 redis mysql memcached' | sudo tee -a /etc/hosts
+
+      - name: Validate composer.json
+        run: composer validate --strict --no-check-all
+
+      # No composer.lock is committed -- this is a library, and the lock of a library is not the
+      # lock its host will resolve.
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      - name: Wait for MySQL
+        run: |
+          for i in $(seq 1 30); do
+            if mysqladmin ping -h 127.0.0.1 --silent; then exit 0; fi
+            sleep 1
+          done
+          echo 'MySQL did not become reachable' >&2
+          exit 1
+
+      - name: Unit tests
+        run: composer test:unit
+
+      - name: Feature tests
+        run: composer test:feature
+
+      # Nothing under tests/ may write into the repository tree; a dirty tree here is a bug in a
+      # test, not in the workflow.
+      - name: Working tree is clean
+        run: git diff --exit-code && git status --porcelain
+
+  static:
+    name: architecture + phpstan + phpcs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, curl, json, openssl, pdo_mysql, mysqli, pcntl, posix, sockets, redis, memcached
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      # The rules a reviewer would otherwise have to remember: layout, resolvable references, the
+      # three initialisation axes, one owner per config section, resources through plato\runtime,
+      # classified reset()s, and the public API snapshot. It reads the source rather than loading
+      # it, so it needs no service and no extension.
+      - name: Architecture
+        run: composer check:architecture
+
+      # phpcs must report zero errors; the only warning left is the 120 column soft limit.
+      - name: Coding standard
+        run: composer style
+
+      # phpstan level 5 with no baseline: any error here fails the build.
+      - name: Static analysis
+        run: composer analyse
+
+  kafka:
+    name: kafka broker integration (php 8.3)
+    runs-on: ubuntu-latest
+
+    services:
+      kafka:
+        image: apache/kafka:3.7.2
+        env:
+          CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+          KAFKA_NODE_ID: 1
+          KAFKA_PROCESS_ROLES: broker,controller
+          KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+          KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+          KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+          KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+          KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+          KAFKA_NUM_PARTITIONS: 3
+        ports:
+          - 9092:9092
+        options: >-
+          --health-cmd "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 12
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, rdkafka
+          coverage: none
+
+      - name: Point the fixture host name at the broker
+        run: echo '127.0.0.1 kafka' | sudo tee -a /etc/hosts
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      - name: Kafka feature tests
+        run: vendor/bin/pest tests/Feature/queueKafkaTest.php
+
+  # The lowest versions the constraints allow. A library that only ever resolves the newest of
+  # everything discovers its real floor in somebody else's project, where an older dependency is
+  # already pinned by something unrelated.
+  lowest:
+    name: lowest dependencies (php 8.2)
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      memcached:
+        image: memcached:1.6
+        ports:
+          - 11211:11211
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, curl, json, openssl, pdo_mysql, mysqli, pcntl, posix, sockets, redis, memcached
+          coverage: none
+
+      - name: Point the fixture host names at the services
+        run: echo '127.0.0.1 redis memcached' | sudo tee -a /etc/hosts
+
+      - name: Install the lowest allowed dependencies
+        run: composer update --prefer-dist --prefer-lowest --no-progress --no-interaction
+
+      # Unit only: the feature suite needs MySQL, and what this leg is testing is the dependency
+      # floor rather than the integrations.
+      - name: Unit tests
+        run: composer test:unit
+
+  coverage:
+    name: coverage (php 8.3)
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: platophptest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      memcached:
+        image: memcached:1.6
+        ports:
+          - 11211:11211
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, curl, json, openssl, pdo_mysql, mysqli, pcntl, posix, sockets, redis, memcached
+          coverage: xdebug
+
+      - name: Point the fixture host names at the services
+        run: echo '127.0.0.1 redis mysql memcached' | sudo tee -a /etc/hosts
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --no-interaction
+
+      - name: Wait for MySQL
+        run: |
+          for i in $(seq 1 30); do
+            if mysqladmin ping -h 127.0.0.1 --silent; then exit 0; fi
+            sleep 1
+          done
+          echo 'MySQL did not become reachable' >&2
+          exit 1
+
+      # The floor (--min in composer.json) is deliberately well below where the suite is today: a
+      # gate exists to stop coverage collapsing, and one set at the current number turns every
+      # unrelated pull request red. It was picked without a local measurement -- there is no
+      # coverage driver in the development container -- so raise it to something meaningful once
+      # this leg has reported the real number a few times.
+      - name: Coverage
+        run: composer test:coverage

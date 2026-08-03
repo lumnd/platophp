@@ -1,0 +1,45 @@
+name: Feature request
+description: Something the framework should be able to do and cannot
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before writing: this repository is **the framework package only**. Application code, an
+        admin panel and business logic are out of scope by design — see
+        [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md#what-belongs-in-the-framework).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you are trying to do, and where the framework stops you. Not the solution yet.
+      placeholder: |
+        I need a per-user rate limit that survives a deploy, and throttle counts per window
+        in the cache — a cache flush resets everybody's allowance.
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today instead
+      description: The workaround. If there is none, say that — it changes how urgent this is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: shape
+    attributes:
+      label: What it might look like
+      description: An API sketch, a config block. Rough is fine.
+      render: php
+
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Scope
+      options:
+        - label: This is framework behaviour, not something that belongs in an application
+          required: true
+        - label: It does not need a third party SDK as a hard dependency
