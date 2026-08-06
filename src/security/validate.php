@@ -1241,7 +1241,7 @@ class validate
      * @param  mixed $val
      * @return bool
      */
-    public function _empty($val)
+    public function is_empty($val)
     {
         return $this->_rules->is_empty($val);
     }

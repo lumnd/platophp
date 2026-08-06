@@ -1,74 +1,15 @@
 <?xml version="1.0"?>
-<ruleset name="PlatoPHP">
+<ruleset name="platophp">
     <description>
-        PSR-12, minus the naming and brace conventions this package deliberately does not follow.
-
-        PSR-4 autoloading is followed to the letter: namespace, directory and class name correspond
-        one to one, which is what makes the psr-4 section of composer.json work.
-
-        PSR-1 and PSR-12 naming and brace rules are NOT followed, on purpose. The excluded sniffs
-        below are that decision, written down. Everything else in PSR-12 is enforced, and a new
-        violation of it is a bug in the patch, not a matter of taste.
+        The conventions themselves live in lumnd/plato-coding-standard, which the framework and
+        every application built on it share. This file holds only what is this repository's own:
+        which directories to check, and the two files the 120 column limit does not fit.
     </description>
 
     <file>src</file>
     <file>bin</file>
-    <arg name="extensions" value="php"/>
-    <arg name="colors"/>
-    <arg value="sp"/>
 
-    <!--
-        Zero errors is the merge condition; the only warning left is the 120 column soft limit, and
-        PSR-12 requires that one not to be an error. Without this, phpcs exits non-zero on a warning
-        too, which would make "0 errors" and "the build is green" two different things.
-    -->
-    <config name="ignore_warnings_on_exit" value="1"/>
-
-    <rule ref="PSR12">
-        <!--
-            Class names are snake_case lowercase (plato\http\client_response), not StudlyCaps.
-            PSR-1 requires StudlyCaps; renaming public classes would break callers for no functional
-            gain, and the convention is documented in CONTRIBUTING.md.
-        -->
-        <exclude name="Squiz.Classes.ValidClassName"/>
-
-        <!-- Method names are snake_case (app_path, set_nx), not camelCase. Same reasoning. -->
-        <exclude name="PSR1.Methods.CamelCapsMethodName"/>
-
-        <!--
-            Private and protected members carry a leading underscore (self::$_app_path, _resolve()).
-            PSR-12 says the underscore prefix has no meaning; here it does, and it is load bearing
-            for readability in a codebase this static.
-        -->
-        <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
-        <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
-
-        <!--
-            Braces go on their own line everywhere, control structures and multi line signatures
-            included (Allman). PSR-12 wants `if ($expr) {` and `) {`; this package does not.
-        -->
-        <exclude name="Squiz.ControlStructures.ControlSignature"/>
-        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnNewLine"/>
-
-        <!--
-            A space just inside the parentheses of a control structure: `if ( $expr )`.
-            PSR-12 forbids it. Keep it out of the checker rather than out of the code.
-        -->
-        <exclude name="PSR12.ControlStructures.ControlStructureSpacing"/>
-        <exclude name="Squiz.ControlStructures.ForEachLoopDeclaration"/>
-        <exclude name="Squiz.ControlStructures.ForLoopDeclaration"/>
-    </rule>
-
-    <!--
-        PSR-12 makes 120 a soft limit that a checker MUST warn but MUST NOT error on, and forbids a
-        hard limit outright. Warning is therefore the compliant setting, not a concession.
-    -->
-    <rule ref="Generic.Files.LineLength">
-        <properties>
-            <property name="lineLimit" value="120"/>
-            <property name="absoluteLineLimit" value="0"/>
-        </properties>
-    </rule>
+    <rule ref="PlatoPHP"/>
 
     <!--
         These two build their output out of HTML, CSS and JavaScript held in PHP strings. Splitting

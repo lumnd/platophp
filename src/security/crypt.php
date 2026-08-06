@@ -131,7 +131,8 @@ class crypt
         string $key,
         string $context,
         int $max_plaintext_bytes = self::DEFAULT_MAX_PLAINTEXT_BYTES
-    ): ?string {
+    ): ?string
+    {
         self::_openssl_available();
 
         $raw_key = self::_key($key);

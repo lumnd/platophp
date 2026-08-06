@@ -135,6 +135,7 @@ class cache implements CacheInterface
      * @return iterable<string, mixed>
      * @throws invalid_argument When one of the keys is not a legal PSR-16 key
      */
+    // phpcs:ignore PlatoPHP.Style.ProjectConventions.FunctionName -- CacheInterface names this.
     public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         $values = [];
@@ -160,6 +161,7 @@ class cache implements CacheInterface
      * @return bool
      * @throws invalid_argument When one of the keys is not a legal PSR-16 key
      */
+    // phpcs:ignore PlatoPHP.Style.ProjectConventions.FunctionName -- CacheInterface names this.
     public function setMultiple(iterable $values, null|int|DateInterval $ttl = null): bool
     {
         $ok = true;
@@ -180,6 +182,7 @@ class cache implements CacheInterface
      * @return bool
      * @throws invalid_argument When one of the keys is not a legal PSR-16 key
      */
+    // phpcs:ignore PlatoPHP.Style.ProjectConventions.FunctionName -- CacheInterface names this.
     public function deleteMultiple(iterable $keys): bool
     {
         $ok = true;

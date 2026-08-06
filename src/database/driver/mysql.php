@@ -312,7 +312,8 @@ class mysql extends connection
         }
 
         $index_rows = $this->select_raw("SHOW INDEX FROM `{$table}`", [], true);
-        usort($index_rows, function ($a, $b) {
+        usort($index_rows, function ($a, $b)
+        {
             $name = strcmp((string) $a['Key_name'], (string) $b['Key_name']);
 
             return $name === 0 ? ((int) $a['Seq_in_index'] <=> (int) $b['Seq_in_index']) : $name;

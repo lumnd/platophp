@@ -54,13 +54,13 @@ class str
      *
      * @var int|null
      */
-    private static $counter = null;
+    private static $_counter = null;
 
     /** @var int|null Timestamp used by the current counter window */
-    private static $counter_second = null;
+    private static $_counter_second = null;
 
     /** @var int Number of counter slots used in the current second */
-    private static $counter_issued = 0;
+    private static $_counter_issued = 0;
 
     /**
      * Whether the string parses as JSON.
@@ -72,7 +72,7 @@ class str
     public static function is_json(string $str): bool
     {
         // 8.3+ validates without building the decoded structure, which matters for request bodies
-        if (function_exists('json_validate'))
+        if ( function_exists('json_validate') )
         {
             return json_validate($str);
         }
@@ -116,13 +116,13 @@ class str
      */
     public static function random(string $type = 'alnum', int $length = 16): string
     {
-        if (isset(self::POOLS[$type]))
+        if ( isset(self::POOLS[$type]) )
         {
             $pool = self::POOLS[$type];
             $last = strlen($pool) - 1;
             $str  = '';
 
-            for ($i = 0; $i < $length; $i++)
+            for ( $i = 0; $i < $length; $i++ )
             {
                 $str .= $pool[random_int(0, $last)];
             }
@@ -130,7 +130,7 @@ class str
             return $str;
         }
 
-        switch ($type)
+        switch ( $type )
         {
             case 'basic':
                 return (string) random_int(0, PHP_INT_MAX);
@@ -190,39 +190,39 @@ class str
     {
         $second = time();
 
-        if (self::$counter === null)
+        if ( self::$_counter === null )
         {
-            self::$counter        = random_int(0, 9999);
-            self::$counter_second = $second;
+            self::$_counter        = random_int(0, 9999);
+            self::$_counter_second = $second;
         }
-        elseif ($second > self::$counter_second)
+        elseif ( $second > self::$_counter_second )
         {
-            self::$counter_second = $second;
-            self::$counter_issued = 0;
+            self::$_counter_second = $second;
+            self::$_counter_issued = 0;
         }
 
-        while (self::$counter_issued >= 10000)
+        while ( self::$_counter_issued >= 10000 )
         {
             usleep(1000);
             $second = time();
 
-            if ($second > self::$counter_second)
+            if ( $second > self::$_counter_second )
             {
-                self::$counter_second = $second;
-                self::$counter_issued = 0;
+                self::$_counter_second = $second;
+                self::$_counter_issued = 0;
             }
         }
 
-        self::$counter = (self::$counter + 1) % 10000;
-        self::$counter_issued++;
+        self::$_counter = (self::$_counter + 1) % 10000;
+        self::$_counter_issued++;
 
         // Read live rather than cached: a worker that forks gets a new pid, and a cached one would
         // hand both halves the same lane
         $slot = (int) getmypid() % 1000;
 
-        return date('ymdHis', self::$counter_second)
+        return date('ymdHis', self::$_counter_second)
             . str_pad((string) $slot, 3, '0', STR_PAD_LEFT)
-            . str_pad((string) self::$counter, 4, '0', STR_PAD_LEFT);
+            . str_pad((string) self::$_counter, 4, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -251,13 +251,13 @@ class str
     {
         $map = [];
 
-        foreach ($values as $key => $value)
+        foreach ( $values as $key => $value )
         {
             $stringable = $value === null
                 || is_scalar($value)
                 || (is_object($value) && method_exists($value, '__toString'));
 
-            if (! $stringable)
+            if ( ! $stringable )
             {
                 continue;
             }
@@ -294,14 +294,14 @@ class str
      */
     public static function mask(string $value, int $keep_start = 0, int $keep_end = 0, string $mask = '*'): string
     {
-        if ($mask === '')
+        if ( $mask === '' )
         {
             throw new InvalidArgumentException('str::mask needs a mask, otherwise it truncates');
         }
 
         $length = mb_strlen($value);
 
-        if ($length === 0)
+        if ( $length === 0 )
         {
             return '';
         }
@@ -309,7 +309,7 @@ class str
         $keep_start = max(0, $keep_start);
         $keep_end   = max(0, $keep_end);
 
-        if ($keep_start + $keep_end >= $length)
+        if ( $keep_start + $keep_end >= $length )
         {
             $keep_start = 0;
             $keep_end   = 0;
@@ -372,7 +372,7 @@ class str
      */
     public static function bucket(string $value, int $buckets): int
     {
-        if ($buckets < 1)
+        if ( $buckets < 1 )
         {
             throw new InvalidArgumentException('str::bucket needs at least one bucket, got ' . $buckets);
         }
@@ -434,14 +434,14 @@ class str
      */
     public static function remove_invisible_characters(string $str, bool $url_encoded = true): string
     {
-        if ($str === '')
+        if ( $str === '' )
         {
             return $str;
         }
 
         $non_displayables = [];
 
-        if ($url_encoded)
+        if ( $url_encoded )
         {
             $non_displayables[] = '/%0[0-8bcef]/i'; // url encoded 00-08, 11, 12, 14, 15
             $non_displayables[] = '/%1[0-9a-f]/i'; // url encoded 16-31
@@ -455,14 +455,14 @@ class str
             $replaced = preg_replace($non_displayables, '', $str, -1, $count);
 
             // A pcre failure leaves the last good value in place rather than returning null
-            if ($replaced === null)
+            if ( $replaced === null )
             {
                 break;
             }
 
             $str = $replaced;
         }
-        while ($count && $str !== '');
+        while ( $count && $str !== '' );
 
         return $str;
     }

@@ -82,7 +82,8 @@ class client_response
         array $info = [],
         ?string $error = null,
         int $attempts = 1
-    ) {
+    )
+    {
         $this->_status   = $status;
         $this->_body     = $body;
         $this->_headers  = $headers;

@@ -84,7 +84,7 @@ LUA;
      *
      * @var array<string, mixed>
      */
-    private $config = [];
+    private $_config = [];
 
     /**
      * Key prefix, from the configuration
@@ -105,7 +105,7 @@ LUA;
     {
         $this->close();
 
-        $this->config  = $config;
+        $this->_config  = $config;
         $this->_prefix = (string) ($config['prefix'] ?? '');
     }
 
@@ -457,7 +457,7 @@ LUA;
      */
     private function _client_config(): array
     {
-        $server = (array) ($this->config['server'] ?? []);
+        $server = (array) ($this->_config['server'] ?? []);
 
         // Keys are spelled out by _key(); an extension side prefix would double up on them and
         // would not reach the KEYS of the migrate script

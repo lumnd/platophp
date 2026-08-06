@@ -42,7 +42,7 @@ class rewrite
     public static $rules = array();
 
     /** Whether the rule file has been read */
-    protected static $is_load = false;
+    protected static $_is_load = false;
 
     /**
      * Load data/rewrite.ini.
@@ -54,7 +54,7 @@ class rewrite
      */
     protected static function _load_rule()
     {
-        self::$is_load = true;
+        self::$_is_load = true;
 
         $rulefile = plato::data_path('rewrite.ini');
 
@@ -173,7 +173,7 @@ class rewrite
      */
     protected static function _apply($subject)
     {
-        if ( !self::$is_load )
+        if ( !self::$_is_load )
         {
             self::_load_rule();
         }
@@ -202,6 +202,6 @@ class rewrite
     public static function reset()
     {
         self::$rules   = array();
-        self::$is_load = false;
+        self::$_is_load = false;
     }
 }

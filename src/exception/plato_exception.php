@@ -31,7 +31,7 @@ class plato_exception extends \Exception
      *
      * @var array<int, mixed>
      */
-    protected $params = [];
+    protected $_params = [];
 
     /**
      * @param array<int, mixed>|string $params Template arguments, a bare string is accepted too
@@ -40,9 +40,9 @@ class plato_exception extends \Exception
      */
     public function __construct($params = [], $code = 0, ?Throwable $previous = null)
     {
-        $this->params = is_array($params) ? array_values($params) : [$params];
+        $this->_params = is_array($params) ? array_values($params) : [$params];
 
-        parent::__construct(plato::fmt_code($code, $this->params), (int) $code, $previous);
+        parent::__construct(plato::fmt_code($code, $this->_params), (int) $code, $previous);
     }
 
     /**
@@ -52,6 +52,6 @@ class plato_exception extends \Exception
      */
     public function params()
     {
-        return $this->params;
+        return $this->_params;
     }
 }

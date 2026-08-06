@@ -44,14 +44,17 @@ Never weaken a test or assertion to hide an environment failure.
 
 ## Coding standard
 
-`phpcs.xml` is the source of truth. PlatoPHP follows PSR-12 except for these explicit conventions:
+The standard lives in [`lumnd/plato-coding-standard`](https://github.com/lumnd/plato-coding-standard),
+which this repository installs as a dev dependency and `phpcs.xml` refs by name; `phpcs.xml` itself
+holds only what is local, namely which directories to check. PlatoPHP follows PSR-12 except for
+these explicit conventions, each of which is enforced rather than merely permitted:
 
 | Area | PlatoPHP convention |
 | --- | --- |
 | Class names | Lowercase snake_case, for example `client_response` |
 | Method names | Lowercase snake_case, for example `get_img_url` |
-| Private members | A leading underscore is allowed, for example `_resolve()` and `self::$_config` |
-| Braces | Allman style for classes, methods, control structures, and multiline signatures |
+| Private and protected members | A leading underscore is required, for example `_resolve()` and `self::$_config`; a public member must not carry one |
+| Braces | Allman style for classes, methods, closures, control structures, and multiline signatures |
 | Control structures | One space inside parentheses, for example `if ( $ready )` |
 
 Everything else in PSR-12 applies. Files use UTF-8 without a BOM and LF line endings. The 120-column
@@ -59,8 +62,9 @@ limit is a warning, not an error. Do not reformat the deliberate conventions abo
 cleanup.
 
 The PSR-3 and PSR-16 adapters under `src/psr/` follow their interface signatures. Methods such as
-`getMultiple()`, `setMultiple()`, and `deleteMultiple()` therefore remain camelCase and are the
-explicit exception to the project method naming convention. PlatoPHP does not implement a PSR-11
+`getMultiple()`, `setMultiple()`, and `deleteMultiple()` therefore remain camelCase, carry a
+`phpcs:ignore` naming the interface as the reason, and are the explicit exception to the project
+method naming convention. PlatoPHP does not implement a PSR-11
 container and does not provide autowiring.
 
 ### Language and comments

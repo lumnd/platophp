@@ -81,7 +81,7 @@ class cast
 
         if ( is_array($val) )
         {
-            foreach ($val as $k => $v)
+            foreach ( $val as $k => $v )
             {
                 $val[$k] = self::to($v, $type, $throw);
             }

@@ -34,28 +34,28 @@ class config
      *
      * @var array<string, config>
      */
-    private static $instances = [];
+    private static $_instances = [];
 
     /**
      * Module name, i.e. the config file name without its extension.
      *
      * @var string
      */
-    private $module;
+    private $_module;
 
     /**
      * Loaded values, null until load() ran.
      *
      * @var array<string, mixed>|null
      */
-    private $configs = null;
+    private $_configs = null;
 
     /**
      * Alias placeholders, '@name@' => replacement.
      *
      * @var array<string, string>
      */
-    private $alias = [];
+    private $_alias = [];
 
     /**
      * Instance of a module.
@@ -65,12 +65,12 @@ class config
      */
     public static function instance($module = 'config')
     {
-        if ( !isset(self::$instances[$module]) )
+        if ( !isset(self::$_instances[$module]) )
         {
-            self::$instances[$module] = new self($module);
+            self::$_instances[$module] = new self($module);
         }
 
-        return self::$instances[$module];
+        return self::$_instances[$module];
     }
 
     /**
@@ -82,7 +82,7 @@ class config
      */
     public static function flush()
     {
-        self::$instances = [];
+        self::$_instances = [];
     }
 
     /**
@@ -90,7 +90,7 @@ class config
      */
     private function __construct($module = 'config')
     {
-        $this->module = $module;
+        $this->_module = $module;
     }
 
     /**
@@ -101,12 +101,12 @@ class config
      */
     public function load()
     {
-        if ( $this->configs === null )
+        if ( $this->_configs === null )
         {
-            $this->configs = $this->_load_files();
+            $this->_configs = $this->_load_files();
         }
 
-        return $this->configs;
+        return $this->_configs;
     }
 
     /**
@@ -117,7 +117,7 @@ class config
      */
     public function reload()
     {
-        $this->configs = null;
+        $this->_configs = null;
 
         return $this->load();
     }
@@ -184,7 +184,7 @@ class config
     {
         $configs = $this->load();
         arr::set($configs, $key, $value);
-        $this->configs = $configs;
+        $this->_configs = $configs;
 
         return $this;
     }
@@ -200,7 +200,7 @@ class config
     {
         $configs = $this->load();
         $deleted = arr::del($configs, $key);
-        $this->configs = $configs;
+        $this->_configs = $configs;
 
         return $deleted;
     }
@@ -214,7 +214,7 @@ class config
      */
     public function set_alias($key, $value)
     {
-        $this->alias["@{$key}@"] = (string) $value;
+        $this->_alias["@{$key}@"] = (string) $value;
 
         return $this;
     }
@@ -239,7 +239,7 @@ class config
 
         foreach ( $paths as $path )
         {
-            $file    = $path . $this->module . '.php';
+            $file    = $path . $this->_module . '.php';
             $tried[] = $file;
 
             if ( !is_file($file) )
@@ -267,7 +267,7 @@ class config
      */
     private function _apply_alias($value)
     {
-        if ( $this->alias === [] )
+        if ( $this->_alias === [] )
         {
             return $value;
         }
@@ -282,6 +282,6 @@ class config
             return $value;
         }
 
-        return str_replace(array_keys($this->alias), array_values($this->alias), $value);
+        return str_replace(array_keys($this->_alias), array_values($this->_alias), $value);
     }
 }

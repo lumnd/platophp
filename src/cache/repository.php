@@ -55,7 +55,8 @@ class repository
         string $prefix = '',
         int $cache_time = 7200,
         bool $memoize = true
-    ) {
+    )
+    {
         $this->_store      = $store;
         $this->_prefix     = $prefix;
         $this->_cache_time = $cache_time;

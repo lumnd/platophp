@@ -58,16 +58,16 @@ class error_handler
      *
      * @var bool
      */
-    public static $_debug_safe_ip = false;
+    private static $_debug_safe_ip = false;
 
     /** @var string */
-    public static $_debug_error_msg = '';
+    private static $_debug_error_msg = '';
 
     /** @var string|float Empty until test_debug_mt() stores the first microtime() reading */
-    public static $_debug_mt_time = '';
+    private static $_debug_mt_time = '';
 
     /** @var string */
-    public static $_debug_mt_info = '';
+    private static $_debug_mt_info = '';
 
     /**
      * Set by debug_hidden() to suppress the panel for a single request.
@@ -84,7 +84,7 @@ class error_handler
      *
      * @var array
      */
-    public static $_debug_errortype = [
+    private static $_debug_errortype = [
         E_WARNING         => "<font color='#CDA93A'>Warning</font>",
         E_NOTICE          => "<font color='#CDA93A'>Notice</font>",
         E_USER_ERROR      => "<font color='#D63107'>User error</font>",
@@ -561,13 +561,16 @@ class error_handler
         {
             foreach ( $narr as $k )
             {
-                if ( !isset($trace[$k]) ) { $trace[$k] = '';
+                if ( !isset($trace[$k]) )
+                { $trace[$k] = '';
                 }
             }
             $err .= "<font color='#747267'>[$i] in function {$trace['class']}{$trace['type']}{$trace['function']} ";
-            if ($trace['file']) { $err .= " in {$trace['file']} ";
+            if ( $trace['file'] )
+            { $err .= " in {$trace['file']} ";
             }
-            if ($trace['line']) { $err .= " on line {$trace['line']} ";
+            if ( $trace['line'] )
+            { $err .= " on line {$trace['line']} ";
             }
             $err .= "</font><br />\n";
         }
@@ -613,14 +616,14 @@ class error_handler
     public static function fmt_code($errno, $errstr)
     {
         $msgtpl = config::instance('exception')->get($errno);
-        if ( empty($msgtpl))
+        if ( empty($msgtpl) )
         {
             return $errstr;
         }
 
         // An error message is format arguments, never an object graph, so no classes are allowed
         $msg  = str::is_serialized($errstr) ? unserialize($errstr, ['allowed_classes' => false]) : $errstr;
-        if ( !is_array($msg))
+        if ( !is_array($msg) )
         {
             $msg = [$msg];
         }

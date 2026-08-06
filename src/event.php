@@ -47,21 +47,21 @@ class event
      *
      * @var int
      */
-    private static $fh = 0;
+    private static $_fh = 0;
 
     /**
      * Bound listeners, event => handle => ['m' => callable, 't' => remaining calls or null].
      *
      * @var array<int|string, array<int, array{m: callable, t: int|null}>>
      */
-    private static $monitors = [];
+    private static $_monitors = [];
 
     /**
      * Whether start() already installed the built in handlers.
      *
      * @var bool
      */
-    private static $started = false;
+    private static $_started = false;
 
     /**
      * Bind a listener to an event.
@@ -79,8 +79,8 @@ class event
             throw new event_exception([self::_callable_name($method)], 5003);
         }
 
-        $fh = ++self::$fh;
-        self::$monitors[$event][$fh] = ['m' => $method, 't' => $times === null ? null : (int) $times];
+        $fh = ++self::$_fh;
+        self::$_monitors[$event][$fh] = ['m' => $method, 't' => $times === null ? null : (int) $times];
 
         return $fh;
     }
@@ -120,23 +120,23 @@ class event
      */
     public static function off($event, $fh = null)
     {
-        if ( !isset(self::$monitors[$event]) )
+        if ( !isset(self::$_monitors[$event]) )
         {
             return false;
         }
 
         if ( $fh === null )
         {
-            unset(self::$monitors[$event]);
+            unset(self::$_monitors[$event]);
             return true;
         }
 
-        if ( !isset(self::$monitors[$event][$fh]) )
+        if ( !isset(self::$_monitors[$event][$fh]) )
         {
             return false;
         }
 
-        unset(self::$monitors[$event][$fh]);
+        unset(self::$_monitors[$event][$fh]);
 
         return true;
     }
@@ -150,7 +150,7 @@ class event
      */
     public static function trigger($event, array $params = [])
     {
-        if ( empty(self::$monitors[$event]) )
+        if ( empty(self::$_monitors[$event]) )
         {
             return false;
         }
@@ -160,28 +160,28 @@ class event
 
         // Iterate over a snapshot: a listener is free to bind or unbind while the event is being
         // dispatched, the live list is only consulted to skip what got unbound meanwhile
-        $monitors = self::$monitors[$event];
+        $monitors = self::$_monitors[$event];
 
         foreach ( $monitors as $fh => $monitor )
         {
-            if ( !isset(self::$monitors[$event][$fh]) )
+            if ( !isset(self::$_monitors[$event][$fh]) )
             {
                 continue;
             }
 
             // Consume the quota before the call, so a listener that throws, or that triggers the
             // same event again, cannot run more often than it was bound for
-            if ( $monitor['t'] !== null && --self::$monitors[$event][$fh]['t'] <= 0 )
+            if ( $monitor['t'] !== null && --self::$_monitors[$event][$fh]['t'] <= 0 )
             {
-                unset(self::$monitors[$event][$fh]);
+                unset(self::$_monitors[$event][$fh]);
             }
 
             call_user_func_array($monitor['m'], $params);
         }
 
-        if ( empty(self::$monitors[$event]) )
+        if ( empty(self::$_monitors[$event]) )
         {
-            unset(self::$monitors[$event]);
+            unset(self::$_monitors[$event]);
         }
 
         return true;
@@ -194,11 +194,11 @@ class event
      */
     public static function start()
     {
-        if ( self::$started )
+        if ( self::$_started )
         {
             return;
         }
-        self::$started = true;
+        self::$_started = true;
 
         self::on(self::ON_EXCEPTION, [self::class, 'on_exception']);
         self::on(self::ON_FILTER, [self::class, 'on_filter']);

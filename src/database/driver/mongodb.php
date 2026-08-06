@@ -62,7 +62,8 @@ class mongodb extends connection
      */
     protected function _handle(bool $write)
     {
-        return runtime::share($this->_share_key('write'), function () {
+        return runtime::share($this->_share_key('write'), function ()
+        {
             if ( !class_exists('\MongoDB\Driver\Manager') )
             {
                 throw new RuntimeException(
@@ -298,7 +299,8 @@ class mongodb extends connection
     {
         $label = (string) array_key_first($command);
 
-        return $this->_attempt($label, [], true, function ($manager) use ($command) {
+        return $this->_attempt($label, [], true, function ($manager) use ($command)
+        {
             $class  = '\MongoDB\Driver\Command';
             $cursor = $manager->executeCommand($this->_database(), new $class($command));
             $cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
@@ -591,7 +593,8 @@ class mongodb extends connection
     {
         $label = $this->_label('find', $q, $filter);
 
-        $cursor = $this->_attempt($label, [], $q->use_master, function ($manager) use ($q, $filter, $options) {
+        $cursor = $this->_attempt($label, [], $q->use_master, function ($manager) use ($q, $filter, $options)
+        {
             $class = '\MongoDB\Driver\Query';
             $found = $manager->executeQuery(
                 $this->_namespace($q),
@@ -614,7 +617,8 @@ class mongodb extends connection
      */
     protected function _write(query $q, $bulk, string $what)
     {
-        return $this->_attempt($this->_label($what, $q, []), [], true, function ($manager) use ($q, $bulk) {
+        return $this->_attempt($this->_label($what, $q, []), [], true, function ($manager) use ($q, $bulk)
+        {
             return $manager->executeBulkWrite($this->_namespace($q), $bulk);
         });
     }

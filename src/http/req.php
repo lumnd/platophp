@@ -418,11 +418,11 @@ class req
 
             // getallheaders() is an apache function; under fcgi and nginx the headers have to be
             // put back together from the HTTP_ prefixed $_SERVER keys
-            if ( ! function_exists('getallheaders'))
+            if ( ! function_exists('getallheaders') )
             {
                 $server = arr::filter_prefixed(static::server(), 'HTTP_', true);
 
-                foreach ($server as $key => $value)
+                foreach ( $server as $key => $value )
                 {
                     $key = join('-', array_map('ucfirst', explode('_', strtolower($key))));
 
@@ -461,14 +461,14 @@ class req
      */
     public static function language()
     {
-        if ($lang = self::cookie("language"))
+        if ( $lang = self::cookie("language") )
         {
             return $lang;
         }
 
         $accept = (string) self::server('HTTP_ACCEPT_LANGUAGE', '');
 
-        if ($accept === '')
+        if ( $accept === '' )
         {
             return '';
         }
@@ -533,11 +533,11 @@ class req
      */
     public static function protocol()
     {
-        if (static::server('HTTPS') == 'on' or
+        if ( static::server('HTTPS') == 'on' or
             static::server('HTTPS') == 1 or
             static::server('SERVER_PORT') == 443 or
             static::server('HTTP_X_FORWARDED_PROTO') == 'https' or
-            static::server('HTTP_X_FORWARDED_PORT') == 443)
+            static::server('HTTP_X_FORWARDED_PORT') == 443 )
         {
             return 'https';
         }
@@ -595,7 +595,7 @@ class req
      */
     public static function path()
     {
-        if (!empty(self::server("REQUEST_URI")))
+        if ( !empty(self::server("REQUEST_URI")) )
         {
             $script_name = self::server("REQUEST_URI");
             $nowurl = $script_name;
@@ -676,14 +676,14 @@ class req
      */
     public static function is_json()
     {
-        if (self::item('is_json', 0, 'int'))
+        if ( self::item('is_json', 0, 'int') )
         {
             return true;
         }
 
         // Through headers(), not req::server('HTTP_CONTENT_TYPE'): php-fpm puts the request's own
         // content type in CONTENT_TYPE without the HTTP_ prefix, so that key is normally absent
-        if (self::content_type() === 'application/json')
+        if ( self::content_type() === 'application/json' )
         {
             return true;
         }
@@ -691,9 +691,9 @@ class req
         // Accept is a comma separated list and every entry may carry its own parameters, so it is
         // split on the commas first -- cutting at the first ';' threw away every entry after the
         // first one that had a q value
-        foreach (explode(',', (string) self::server('HTTP_ACCEPT')) as $accept)
+        foreach ( explode(',', (string) self::server('HTTP_ACCEPT')) as $accept )
         {
-            if (self::_bare_mime($accept) === 'application/json')
+            if ( self::_bare_mime($accept) === 'application/json' )
             {
                 return true;
             }
@@ -829,7 +829,7 @@ class req
      */
     public static function assign_values(array &$data, $method = 'GET')
     {
-        foreach ($data as $k => $v)
+        foreach ( $data as $k => $v )
         {
             self::$forms[$k] = $v;
 
@@ -898,11 +898,11 @@ class req
         {
             // Named command line arguments stand in for the query string, so a controller action
             // reads `--id=10` through req::get('id') exactly as it would over http
-            if ( count(cli::$args) > 0)
+            if ( count(cli::$args) > 0 )
             {
-                foreach (cli::$args as $k => $v)
+                foreach ( cli::$args as $k => $v )
                 {
-                    if (!is_numeric($k))
+                    if ( !is_numeric($k) )
                     {
                         $_GET[$k] = $v;
                     }
@@ -953,14 +953,14 @@ class req
         if ( defined('BASE64_UPLOAD_FLAG') && BASE64_UPLOAD_FLAG )
         {
             $flag_len = strlen(BASE64_UPLOAD_FLAG);
-            foreach (self::$posts as $field => $value)
+            foreach ( self::$posts as $field => $value )
             {
                 if ( substr($field, 0, $flag_len) === BASE64_UPLOAD_FLAG )
                 {
                     $is_base64 = is_array($value);
                     if ( $is_base64 )
                     {
-                        foreach ($value as $k => $v)
+                        foreach ( $value as $k => $v )
                         {
                             if ( !is_numeric($k) || !is_string($v) )
                             {

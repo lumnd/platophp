@@ -204,7 +204,7 @@ class plato
      */
     public static function config($key = null, $default = null)
     {
-        if ($key === null)
+        if ( $key === null )
         {
             return self::$config + self::$_defaults;
         }
@@ -335,7 +335,7 @@ class plato
      */
     public static function timestamp()
     {
-        if (self::$_timestamp === 0)
+        if ( self::$_timestamp === 0 )
         {
             self::$_timestamp = time();
         }
@@ -350,7 +350,7 @@ class plato
      */
     public static function start_time()
     {
-        if (self::$_start_time === 0.0)
+        if ( self::$_start_time === 0.0 )
         {
             self::$_start_time = microtime(true);
         }
@@ -365,7 +365,7 @@ class plato
      */
     public static function start_mem()
     {
-        if (self::$_start_mem === 0)
+        if ( self::$_start_mem === 0 )
         {
             self::$_start_mem = memory_get_usage();
         }
@@ -381,7 +381,7 @@ class plato
      */
     public static function app_path($sub = '')
     {
-        if (self::$_app_path === '')
+        if ( self::$_app_path === '' )
         {
             return '';
         }
@@ -397,12 +397,12 @@ class plato
      */
     public static function data_path($sub = '')
     {
-        if (self::$_data_path === '')
+        if ( self::$_data_path === '' )
         {
             self::$_data_path = self::app_path('data');
         }
 
-        if (self::$_data_path === '')
+        if ( self::$_data_path === '' )
         {
             return '';
         }
@@ -603,7 +603,7 @@ class plato
         {
             $route = self::_resolve_route($req_data, $is_cli);
         }
-        catch (route_exception $e)
+        catch ( route_exception $e )
         {
             return self::_route_error($is_cli, $e);
         }
@@ -651,7 +651,7 @@ class plato
                 $preflight !== null ? $preflight : $route['method']
             );
         }
-        catch (route_exception $e)
+        catch ( route_exception $e )
         {
             return self::_route_error($is_cli, $e);
         }
@@ -958,7 +958,7 @@ class plato
         {
             $msgtpl = config::instance('exception')->get($code);
         }
-        catch (\Throwable $e)
+        catch ( \Throwable $e )
         {
             $msgtpl = '';
         }
@@ -972,7 +972,7 @@ class plato
         {
             return vsprintf($msgtpl, $params);
         }
-        catch (\Throwable $e)
+        catch ( \Throwable $e )
         {
             // Not enough arguments for the template, show it raw rather than fail inside a
             // failure path

@@ -132,7 +132,7 @@ class console
             // run outside the cli SAPI, which is the check this entry point wants anyway
             cli::boot();
         }
-        catch (Throwable $e)
+        catch ( Throwable $e )
         {
             fwrite(STDERR, 'plato: ' . $e->getMessage() . PHP_EOL);
 
@@ -196,7 +196,7 @@ class console
         {
             self::_bootstrap();
         }
-        catch (Throwable $e)
+        catch ( Throwable $e )
         {
             self::fail('Bootstrap failed: ' . $e->getMessage());
 
@@ -207,7 +207,7 @@ class console
         {
             return $class::handle($name);
         }
-        catch (Throwable $e)
+        catch ( Throwable $e )
         {
             self::fail($name . ' failed: ' . $e->getMessage());
 

@@ -603,7 +603,8 @@ class resp
             self::type($mime, '');
         }
 
-        return self::_prepare(static function () use ($path): void {
+        return self::_prepare(static function () use ($path): void
+        {
             // readfile() rather than file_get_contents(): a file bigger than memory_limit should
             // still be answerable.
             readfile($path);

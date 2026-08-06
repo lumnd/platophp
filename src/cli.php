@@ -50,7 +50,7 @@ class cli
     /** @var array */
     public static $args = [];
 
-    protected static $foreground_colors = [
+    protected static $_foreground_colors = [
         'black'         => '0;30',
         'light_black'   => '1;30',
         'red'           => '0;31',
@@ -69,7 +69,7 @@ class cli
         'light_white'   => '1;37',
     ];
 
-    protected static $background_colors = [
+    protected static $_background_colors = [
         'black'         => '40',
         'red'           => '41',
         'green'         => '42',
@@ -80,8 +80,8 @@ class cli
         'white'         => '47',
     ];
 
-    protected static $STDOUT;
-    protected static $STDERR;
+    protected static $_stdout;
+    protected static $_stderr;
 
     /**
      * Whether boot() has already run
@@ -113,13 +113,13 @@ class cli
 
         self::$_booted = true;
 
-        for ($i = 1; $i < $_SERVER['argc']; $i++)
+        for ( $i = 1; $i < $_SERVER['argc']; $i++ )
         {
             $arg = explode('=', $_SERVER['argv'][$i]);
 
             static::$args[$i] = $arg[0];
 
-            if (count($arg) > 1 || strncmp($arg[0], '-', 1) === 0)
+            if ( count($arg) > 1 || strncmp($arg[0], '-', 1) === 0 )
             {
                 static::$args[ltrim($arg[0], '-')] = isset($arg[1]) ? $arg[1] : true;
             }
@@ -128,8 +128,8 @@ class cli
         // Readline gives input() a bash-like line editor when the extension is present
         static::$readline_support = extension_loaded('readline');
 
-        static::$STDERR = STDERR;
-        static::$STDOUT = STDOUT;
+        static::$_stderr = STDERR;
+        static::$_stdout = STDOUT;
     }
 
     /**
@@ -154,7 +154,7 @@ class cli
      */
     public static function option($name, $default = null)
     {
-        if ( ! isset(static::$args[$name]))
+        if ( ! isset(static::$args[$name]) )
         {
             return $default;
         }
@@ -170,9 +170,9 @@ class cli
      */
     public static function set_option($name, $value = null)
     {
-        if ($value === null)
+        if ( $value === null )
         {
-            if (isset(static::$args[$name]))
+            if ( isset(static::$args[$name]) )
             {
                 unset(static::$args[$name]);
             }
@@ -191,7 +191,7 @@ class cli
      */
     public static function input($prefix = '')
     {
-        if (static::$readline_support)
+        if ( static::$readline_support )
         {
             return readline($prefix);
         }
@@ -230,19 +230,19 @@ class cli
         $required = end($args) === true;
 
         // The required flag is consumed here, so the count below only sees question / options
-        if ($required === true)
+        if ( $required === true )
         {
             --$arg_count;
         }
 
-        switch ($arg_count)
+        switch ( $arg_count )
         {
             case 2:
-                if (is_array($args[1]))
+                if ( is_array($args[1]) )
                 {
                     list($output, $options) = $args;
                 }
-                elseif (is_string($args[1]))
+                elseif ( is_string($args[1]) )
                 {
                     list($output, $default) = $args;
                 }
@@ -250,11 +250,11 @@ class cli
                 break;
 
             case 1:
-                if (is_array($args[0]))
+                if ( is_array($args[0]) )
                 {
                     $options = $args[0];
                 }
-                elseif (is_string($args[0]))
+                elseif ( is_string($args[0]) )
                 {
                     $output = $args[0];
                 }
@@ -262,25 +262,25 @@ class cli
                 break;
         }
 
-        if ($output !== '')
+        if ( $output !== '' )
         {
             $extra_output = '';
 
-            if ($default !== null)
+            if ( $default !== null )
             {
                 $extra_output = ' [ Default: "' . $default . '" ]';
             }
-            elseif ($options !== [])
+            elseif ( $options !== [] )
             {
                 $extra_output = ' [ ' . implode(', ', $options) . ' ]';
             }
 
-            fwrite(static::$STDOUT, $output . $extra_output . ': ');
+            fwrite(static::$_stdout, $output . $extra_output . ': ');
         }
 
         $input = trim(static::input()) ?: $default;
 
-        if (empty($input) && $required === true)
+        if ( empty($input) && $required === true )
         {
             static::write('This is required.');
             static::new_line();
@@ -288,7 +288,7 @@ class cli
             $input = forward_static_call_array([__CLASS__, 'prompt'], $args);
         }
 
-        if ( ! empty($options) && ! in_array($input, $options))
+        if ( ! empty($options) && ! in_array($input, $options) )
         {
             static::write('This is not a valid option. Please try again.');
             static::new_line();
@@ -310,17 +310,17 @@ class cli
      */
     public static function write($text = '', $foreground = null, $background = null)
     {
-        if (is_array($text))
+        if ( is_array($text) )
         {
             $text = implode(PHP_EOL, $text);
         }
 
-        if ($foreground || $background)
+        if ( $foreground || $background )
         {
             $text = static::color($text, $foreground, $background);
         }
 
-        fwrite(static::$STDOUT, $text . PHP_EOL);
+        fwrite(static::$_stdout, $text . PHP_EOL);
     }
 
     /**
@@ -391,13 +391,13 @@ class cli
      */
     public static function wait($seconds = 0, $countdown = false)
     {
-        if ($countdown === true)
+        if ( $countdown === true )
         {
             $time = $seconds;
 
-            while ($time > 0)
+            while ( $time > 0 )
             {
-                fwrite(static::$STDOUT, $time . '... ');
+                fwrite(static::$_stdout, $time . '... ');
                 sleep(1);
                 $time--;
             }
@@ -405,7 +405,7 @@ class cli
         }
         else
         {
-            if ($seconds > 0)
+            if ( $seconds > 0 )
             {
                 sleep($seconds);
             }
@@ -431,7 +431,7 @@ class cli
      */
     public static function new_line($num = 1)
     {
-        for ($i = 0; $i < $num; $i++)
+        for ( $i = 0; $i < $num; $i++ )
         {
             static::write();
         }
@@ -449,7 +449,7 @@ class cli
             // cmd.exe has no clear sequence, but its buffer is short enough to scroll away
             ? static::new_line(40)
 
-            : fwrite(static::$STDOUT, chr(27) . "[H" . chr(27) . "[2J");
+            : fwrite(static::$_stdout, chr(27) . "[H" . chr(27) . "[2J");
     }
 
     /**
@@ -474,24 +474,24 @@ class cli
             return $text;
         }
 
-        if ( ! array_key_exists($foreground, static::$foreground_colors))
+        if ( ! array_key_exists($foreground, static::$_foreground_colors) )
         {
             throw new Exception('Invalid CLI foreground color: ' . $foreground);
         }
 
-        if ( $background !== null && ! array_key_exists($background, static::$background_colors))
+        if ( $background !== null && ! array_key_exists($background, static::$_background_colors) )
         {
             throw new Exception('Invalid CLI background color: ' . $background);
         }
 
-        $string = "\033[" . static::$foreground_colors[$foreground] . "m";
+        $string = "\033[" . static::$_foreground_colors[$foreground] . "m";
 
-        if ($background !== null)
+        if ( $background !== null )
         {
-            $string .= "\033[" . static::$background_colors[$background] . "m";
+            $string .= "\033[" . static::$_background_colors[$background] . "m";
         }
 
-        if ($format === 'underline')
+        if ( $format === 'underline' )
         {
             $string .= "\033[4m";
         }
@@ -513,7 +513,7 @@ class cli
      */
     public static function spawn($call, $output = '/dev/null')
     {
-        if (static::is_windows())
+        if ( static::is_windows() )
         {
             pclose(popen('start /b ' . $call, 'r'));
         }
@@ -533,15 +533,15 @@ class cli
      */
     public static function stderr($fh = null)
     {
-        $orig = static::$STDERR;
+        $orig = static::$_stderr;
 
-        if (! is_null($fh))
+        if ( ! is_null($fh) )
         {
-            if (is_string($fh))
+            if ( is_string($fh) )
             {
                 $fh = fopen($fh, "w");
             }
-            static::$STDERR = $fh;
+            static::$_stderr = $fh;
         }
 
         return $orig;
@@ -560,15 +560,15 @@ class cli
      */
     public static function stdout($fh = null)
     {
-        $orig = static::$STDOUT;
+        $orig = static::$_stdout;
 
-        if (! is_null($fh))
+        if ( ! is_null($fh) )
         {
-            if (is_string($fh))
+            if ( is_string($fh) )
             {
                 $fh = fopen($fh, "w");
             }
-            static::$STDOUT = $fh;
+            static::$_stdout = $fh;
         }
 
         return $orig;

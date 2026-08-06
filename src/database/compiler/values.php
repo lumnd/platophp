@@ -80,8 +80,9 @@ trait values
         $i = 0;
         return (string) preg_replace_callback(
             '/\?/',
-            function () use (&$i, $bindings) {
-                return array_key_exists($i, $bindings) ? $this->escape_literal($bindings[$i++]) : '?';
+            function () use (&$i, $bindings)
+            {
+                            return array_key_exists($i, $bindings) ? $this->escape_literal($bindings[$i++]) : '?';
             },
             $sql
         );

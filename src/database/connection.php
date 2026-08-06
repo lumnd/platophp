@@ -301,7 +301,8 @@ abstract class connection
     {
         list($sql, $bindings) = $this->grammar()->compile_select($q);
 
-        return $this->_attempt($sql, $bindings, $q->use_master, function ($handle, $sql, $bindings) {
+        return $this->_attempt($sql, $bindings, $q->use_master, function ($handle, $sql, $bindings)
+        {
             return $this->_cursor($handle, $sql, $bindings);
         });
     }
@@ -319,7 +320,8 @@ abstract class connection
 
         list($sql, $bindings) = $this->grammar()->compile_insert($q, $rows);
 
-        return $this->_attempt($sql, $bindings, true, function ($handle, $sql, $bindings) {
+        return $this->_attempt($sql, $bindings, true, function ($handle, $sql, $bindings)
+        {
             return $this->_insert($handle, $sql, $bindings);
         });
     }
@@ -393,7 +395,8 @@ abstract class connection
     {
         $sql = $this->table_prefix($sql);
 
-        return $this->_attempt($sql, $bindings, $write, function ($handle, $sql, $bindings) {
+        return $this->_attempt($sql, $bindings, $write, function ($handle, $sql, $bindings)
+        {
             return $this->_fetch($handle, $sql, $bindings);
         });
     }
@@ -408,7 +411,8 @@ abstract class connection
     {
         $sql = $this->table_prefix($sql);
 
-        return (int) $this->_attempt($sql, $bindings, true, function ($handle, $sql, $bindings) {
+        return (int) $this->_attempt($sql, $bindings, true, function ($handle, $sql, $bindings)
+        {
             return $this->_affect($handle, $sql, $bindings);
         });
     }

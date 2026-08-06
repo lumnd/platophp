@@ -32,7 +32,7 @@ class arr
      *
      * @var \stdClass|null
      */
-    private static $missing;
+    private static $_missing;
 
     /**
      * Read a dot-notated key, returning $default when it does not exist.
@@ -47,27 +47,27 @@ class arr
     public static function get($array, $key = null, $default = null)
     {
         // ArrayAccess is an object, so is_object() already covers it
-        if ( ! is_array($array) && ! is_object($array))
+        if ( ! is_array($array) && ! is_object($array) )
         {
             throw new \InvalidArgumentException('First parameter must be an array or object or ArrayAccess object.');
         }
 
-        if (is_null($key))
+        if ( is_null($key) )
         {
             return $array;
         }
 
-        if (is_array($key))
+        if ( is_array($key) )
         {
             $return = [];
-            foreach ($key as $k)
+            foreach ( $key as $k )
             {
                 $return[$k] = static::get($array, $k, $default);
             }
             return $return;
         }
 
-        if (is_object($key))
+        if ( is_object($key) )
         {
             $key = (string) $key;
         }
@@ -75,28 +75,28 @@ class arr
         // A plain object is read through its public properties. ArrayAccess is left alone: it
         // answers offsets rather than properties, so casting it would lose them -- and it must
         // not reach array_key_exists() either, which only takes a real array since PHP 8.
-        if (is_object($array) && ! $array instanceof \ArrayAccess)
+        if ( is_object($array) && ! $array instanceof \ArrayAccess )
         {
             $array = (array) $array;
         }
 
         // Single-segment key: read it straight off, no walk needed
-        if (is_array($array) && array_key_exists($key, $array))
+        if ( is_array($array) && array_key_exists($key, $array) )
         {
             return $array[$key];
         }
 
         // Multi-segment key: descend one segment at a time
-        foreach (explode('.', $key) as $key_part)
+        foreach ( explode('.', $key) as $key_part )
         {
-            if (is_object($array) && ! $array instanceof \ArrayAccess)
+            if ( is_object($array) && ! $array instanceof \ArrayAccess )
             {
                 $array = (array) $array;
             }
 
-            if (($array instanceof \ArrayAccess && isset($array[$key_part])) === false)
+            if ( ($array instanceof \ArrayAccess && isset($array[$key_part])) === false )
             {
-                if ( ! is_array($array) || ! array_key_exists($key_part, $array))
+                if ( ! is_array($array) || ! array_key_exists($key_part, $array) )
                 {
                     return $default;
                 }
@@ -119,15 +119,15 @@ class arr
      */
     public static function set(&$array, $key, $value = null): void
     {
-        if (is_null($key))
+        if ( is_null($key) )
         {
             $array = $value;
             return;
         }
 
-        if (is_array($key))
+        if ( is_array($key) )
         {
-            foreach ($key as $k => $v)
+            foreach ( $key as $k => $v )
             {
                 static::set($array, $k, $v);
             }
@@ -136,11 +136,11 @@ class arr
         {
             $keys = explode('.', $key);
 
-            while (count($keys) > 1)
+            while ( count($keys) > 1 )
             {
                 $key = array_shift($keys);
 
-                if ( ! isset($array[$key]) || ! is_array($array[$key]))
+                if ( ! isset($array[$key]) || ! is_array($array[$key]) )
                 {
                     $array[$key] = [];
                 }
@@ -164,15 +164,15 @@ class arr
      */
     public static function del(&$array, $key)
     {
-        if (is_null($key))
+        if ( is_null($key) )
         {
             return false;
         }
 
-        if (is_array($key))
+        if ( is_array($key) )
         {
             $return = [];
-            foreach ($key as $k)
+            foreach ( $key as $k )
             {
                 $return[$k] = static::del($array, $k);
             }
@@ -181,14 +181,14 @@ class arr
 
         $key_parts = explode('.', $key);
 
-        if ( ! is_array($array) || ! array_key_exists($key_parts[0], $array))
+        if ( ! is_array($array) || ! array_key_exists($key_parts[0], $array) )
         {
             return false;
         }
 
         $this_key = array_shift($key_parts);
 
-        if ( ! empty($key_parts))
+        if ( ! empty($key_parts) )
         {
             $key = implode('.', $key_parts);
             return static::del($array[$this_key], $key);
@@ -215,24 +215,24 @@ class arr
      */
     public static function key_exists($array, $key): bool
     {
-        if ( ! is_array($array) && ! $array instanceof \ArrayAccess)
+        if ( ! is_array($array) && ! $array instanceof \ArrayAccess )
         {
             throw new \InvalidArgumentException('First parameter must be an array or ArrayAccess object.');
         }
 
-        if (is_object($key))
+        if ( is_object($key) )
         {
             $key = (string) $key;
         }
 
-        if ( ! is_string($key))
+        if ( ! is_string($key) )
         {
             return false;
         }
 
-        self::$missing ??= new \stdClass();
+        self::$_missing ??= new \stdClass();
 
-        return static::get($array, $key, self::$missing) !== self::$missing;
+        return static::get($array, $key, self::$_missing) !== self::$_missing;
     }
 
     /**
@@ -245,15 +245,15 @@ class arr
     public static function is_assoc(array $arr): bool
     {
         // array_is_list() arrived in 8.1 and the package still supports 8.0
-        if (function_exists('array_is_list'))
+        if ( function_exists('array_is_list') )
         {
             return ! array_is_list($arr);
         }
 
         $counter = 0;
-        foreach (array_keys($arr) as $key)
+        foreach ( array_keys($arr) as $key )
         {
-            if ( ! is_int($key) || $key !== $counter++)
+            if ( ! is_int($key) || $key !== $counter++ )
             {
                 return true;
             }
@@ -277,9 +277,9 @@ class arr
         $return = [];
         $length = strlen($prefix);
 
-        foreach ($array as $key => $val)
+        foreach ( $array as $key => $val )
         {
-            if ( ! str_starts_with((string) $key, $prefix))
+            if ( ! str_starts_with((string) $key, $prefix) )
             {
                 continue;
             }
@@ -306,7 +306,7 @@ class arr
     {
         $value = (array) $value;
 
-        foreach ($array as $k => $v)
+        foreach ( $array as $k => $v )
         {
             if ( in_array($v, $value) )
             {
@@ -368,15 +368,15 @@ class arr
      */
     public static function group_by(array $rows, $key): array
     {
-        self::$missing ??= new \stdClass();
+        self::$_missing ??= new \stdClass();
 
         $groups = [];
 
-        foreach ($rows as $row)
+        foreach ( $rows as $row )
         {
-            $group = is_callable($key) ? $key($row) : self::get($row, $key, self::$missing);
+            $group = is_callable($key) ? $key($row) : self::get($row, $key, self::$_missing);
 
-            if ($group === self::$missing || $group === null)
+            if ( $group === self::$_missing || $group === null )
             {
                 continue;
             }
@@ -404,24 +404,24 @@ class arr
      */
     public static function pluck(array $rows, ?string $value = null, ?string $index = null): array
     {
-        self::$missing ??= new \stdClass();
+        self::$_missing ??= new \stdClass();
 
         $return = [];
 
-        foreach ($rows as $row)
+        foreach ( $rows as $row )
         {
-            $item = $value === null ? $row : self::get($row, $value, self::$missing);
+            $item = $value === null ? $row : self::get($row, $value, self::$_missing);
 
             // A row that does not carry the field is not part of the column, the way
             // array_column() skips it rather than reporting a null
-            if ($item === self::$missing)
+            if ( $item === self::$_missing )
             {
                 continue;
             }
 
-            $key = $index === null ? self::$missing : self::get($row, $index, self::$missing);
+            $key = $index === null ? self::$_missing : self::get($row, $index, self::$_missing);
 
-            if ($key === self::$missing || $key === null)
+            if ( $key === self::$_missing || $key === null )
             {
                 $return[] = $item;
                 continue;
@@ -453,14 +453,14 @@ class arr
     {
         $keys = [];
 
-        foreach ((array) $key as $k => $v)
+        foreach ( (array) $key as $k => $v )
         {
             // ['age', 'name'] names fields and takes $direction; ['age' => 'desc'] carries its own
             $field = is_int($k) ? $v : $k;
             $order = is_int($k) ? $direction : $v;
             $order = strtolower((string) $order);
 
-            if ($order !== 'asc' && $order !== 'desc')
+            if ( $order !== 'asc' && $order !== 'desc' )
             {
                 throw new \InvalidArgumentException(
                     'Sort direction for "' . $field . '" must be asc or desc, got "' . $order . '".'
@@ -470,12 +470,13 @@ class arr
             $keys[] = [$field, $order === 'desc' ? -1 : 1];
         }
 
-        usort($rows, static function ($a, $b) use ($keys) {
-            foreach ($keys as [$field, $sign])
+        usort($rows, static function ($a, $b) use ($keys)
+        {
+            foreach ( $keys as [$field, $sign] )
             {
                 $cmp = self::get($a, $field) <=> self::get($b, $field);
 
-                if ($cmp !== 0)
+                if ( $cmp !== 0 )
                 {
                     return $cmp * $sign;
                 }
@@ -512,11 +513,12 @@ class arr
         string $parent_key = 'pid',
         string $children_key = 'children',
         $root = 0
-    ): array {
+    ): array
+    {
         $by_parent = [];
         $ids       = [];
 
-        foreach ($rows as $row)
+        foreach ( $rows as $row )
         {
             $id = self::get($row, $id_key);
 
@@ -535,7 +537,7 @@ class arr
 
         $tree = [];
 
-        foreach ($by_parent as $parent => $bucket)
+        foreach ( $by_parent as $parent => $bucket )
         {
             // Loose comparison on purpose: a database hands back '0' where the caller wrote 0
             if ( $parent != $root && isset($ids[$parent]) )
@@ -543,7 +545,7 @@ class arr
                 continue;
             }
 
-            foreach ($bucket as $row)
+            foreach ( $bucket as $row )
             {
                 $tree[] = self::_tree_node($row, $by_parent, $id_key, $children_key, []);
             }
@@ -573,12 +575,13 @@ class arr
         string $id_key,
         string $children_key,
         array $path
-    ): array {
+    ): array
+    {
         $id                 = self::get($row, $id_key);
         $row[$children_key] = [];
         $path[$id]          = true;
 
-        foreach ($by_parent[$id] ?? [] as $child)
+        foreach ( $by_parent[$id] ?? [] as $child )
         {
             $child_id = self::get($child, $id_key);
 
@@ -604,15 +607,15 @@ class arr
      */
     private static function _merge_into(array $array, array $arrays, bool $renumber): array
     {
-        foreach ($arrays as $arr)
+        foreach ( $arrays as $arr )
         {
-            foreach ($arr as $k => $v)
+            foreach ( $arr as $k => $v )
             {
-                if ($renumber && is_int($k))
+                if ( $renumber && is_int($k) )
                 {
                     array_key_exists($k, $array) ? $array[] = $v : $array[$k] = $v;
                 }
-                elseif (is_array($v) && array_key_exists($k, $array) && is_array($array[$k]))
+                elseif ( is_array($v) && array_key_exists($k, $array) && is_array($array[$k]) )
                 {
                     $array[$k] = self::_merge_into($array[$k], [$v], $renumber);
                 }

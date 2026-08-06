@@ -99,12 +99,12 @@ class tpl
      */
     public static function instance()
     {
-        if (self::$_instance !== null)
+        if ( self::$_instance !== null )
         {
             return self::$_instance;
         }
 
-        if (!class_exists(Smarty::class))
+        if ( !class_exists(Smarty::class) )
         {
             throw new \RuntimeException(
                 'plato\tpl needs the smarty/smarty package, which this framework only suggests: '
@@ -156,20 +156,20 @@ class tpl
      */
     private static function _register_plugins(Smarty $smarty)
     {
-        foreach ((array) self::$config['plugins'] as $name)
+        foreach ( (array) self::$config['plugins'] as $name )
         {
             $dir = plato::app_path($name);
-            if (!is_dir($dir))
+            if ( !is_dir($dir) )
             {
                 continue;
             }
 
-            foreach (self::PLUGIN_TYPES as $type)
+            foreach ( self::PLUGIN_TYPES as $type )
             {
-                foreach ((array) glob($dir . DIRECTORY_SEPARATOR . $type . '.?*.php') as $filename)
+                foreach ( (array) glob($dir . DIRECTORY_SEPARATOR . $type . '.?*.php') as $filename )
                 {
                     $plugin = substr(basename($filename), strlen($type) + 1, -4);
-                    if ($plugin === '' || $smarty->getRegisteredPlugin($type, $plugin) !== null)
+                    if ( $plugin === '' || $smarty->getRegisteredPlugin($type, $plugin) !== null )
                     {
                         continue;
                     }
@@ -177,7 +177,7 @@ class tpl
                     require_once $filename;
 
                     $callback = 'smarty_' . $type . '_' . $plugin;
-                    if (function_exists($callback))
+                    if ( function_exists($callback) )
                     {
                         $smarty->registerPlugin($type, $plugin, $callback);
                     }
@@ -185,11 +185,11 @@ class tpl
             }
         }
 
-        foreach (self::BUILTIN_PLUGINS as $builtin)
+        foreach ( self::BUILTIN_PLUGINS as $builtin )
         {
             list($type, $plugin, $method) = $builtin;
 
-            if ($smarty->getRegisteredPlugin($type, $plugin) !== null)
+            if ( $smarty->getRegisteredPlugin($type, $plugin) !== null )
             {
                 continue;
             }
@@ -214,7 +214,7 @@ class tpl
     private static function _plugin_rewrite($params, $content, $template, &$repeat)
     {
         // Opening tag: the body has not been captured yet
-        if ($content === null)
+        if ( $content === null )
         {
             return '';
         }
@@ -243,7 +243,7 @@ class tpl
 
         $type  = empty($params['type']) ? 'form' : $params['type'];
 
-        if ($type !== 'form')
+        if ( $type !== 'form' )
         {
             return $token;
         }
@@ -270,10 +270,10 @@ class tpl
         // Includes the variables assigned on the engine, not only the ones local to this template
         $tpl_vars = $template->getTemplateVars();
 
-        if (!empty($params['key']))
+        if ( !empty($params['key']) )
         {
             $value = array();
-            foreach ((array) $params['key'] as $key)
+            foreach ( (array) $params['key'] as $key )
             {
                 $value[$key] = $tpl_vars[$key] ?? null;
             }
@@ -290,7 +290,7 @@ class tpl
         );
 
         $bind_name = empty($params['bind_name']) ? 'PLATO_PAGE_DATA' : (string) $params['bind_name'];
-        if (!preg_match('/^[A-Za-z_$][A-Za-z0-9_$]*$/', $bind_name))
+        if ( !preg_match('/^[A-Za-z_$][A-Za-z0-9_$]*$/', $bind_name) )
         {
             $bind_name = 'PLATO_PAGE_DATA';
         }
@@ -312,12 +312,12 @@ class tpl
      */
     private static function _plugin_request_em($params, $template)
     {
-        if (empty($params['key']))
+        if ( empty($params['key']) )
         {
             return '';
         }
 
-        if (!empty($params['array']))
+        if ( !empty($params['array']) )
         {
             $arr = (array) $params['array'];
             return $arr[$params['key']] ?? '';
@@ -340,7 +340,7 @@ class tpl
      */
     private static function _plugin_string_array($params, $template)
     {
-        if (empty($params['name']))
+        if ( empty($params['name']) )
         {
             return '';
         }
@@ -464,7 +464,7 @@ class tpl
     {
         self::$output = self::$output ?? '';
 
-        if (req::is_json())
+        if ( req::is_json() )
         {
             echo self::$output;
             return;
@@ -498,7 +498,7 @@ class tpl
     {
         $html = self::_replace_benchmarks($html);
 
-        if (profiler::instance()->enable_profiler !== true)
+        if ( profiler::instance()->enable_profiler !== true )
         {
             return $html;
         }
@@ -522,7 +522,7 @@ class tpl
      */
     private static function _replace_benchmarks($output)
     {
-        if (strpos($output, '{elapsed_time}') !== false || strpos($output, '{memory_usage}') !== false)
+        if ( strpos($output, '{elapsed_time}') !== false || strpos($output, '{memory_usage}') !== false )
         {
             $output = str_replace(
                 array('{elapsed_time}', '{memory_usage}'),
@@ -534,7 +534,7 @@ class tpl
             );
         }
 
-        if (strpos($output, '{exec_time}') !== false || strpos($output, '{mem_usage}') !== false)
+        if ( strpos($output, '{exec_time}') !== false || strpos($output, '{mem_usage}') !== false )
         {
             $total = plato::app_total();
             $output = str_replace(

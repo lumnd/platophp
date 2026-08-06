@@ -66,17 +66,17 @@ class benchmark
      */
     public static function elapsed_time($point1 = '', $point2 = '', $decimals = 4)
     {
-        if ($point1 === '')
+        if ( $point1 === '' )
         {
             return '{elapsed_time}';
         }
 
-        if ( ! isset(self::$marker[$point1]['time']))
+        if ( ! isset(self::$marker[$point1]['time']) )
         {
             return '';
         }
 
-        if ( ! isset(self::$marker[$point2]['time']))
+        if ( ! isset(self::$marker[$point2]['time']) )
         {
             self::$marker[$point2]['time'] = microtime(true);
         }
@@ -93,18 +93,18 @@ class benchmark
      */
     public static function elapsed_memory($point1 = '', $point2 = '', $decimals = 2)
     {
-        if ($point1 === '')
+        if ( $point1 === '' )
         {
             // The name tpl::_replace_benchmarks() looks for.
             return '{memory_usage}';
         }
 
-        if ( ! isset(self::$marker[$point1]['mem']))
+        if ( ! isset(self::$marker[$point1]['mem']) )
         {
             return '';
         }
 
-        if ( ! isset(self::$marker[$point2]['mem']))
+        if ( ! isset(self::$marker[$point2]['mem']) )
         {
             self::$marker[$point2]['mem'] = memory_get_usage();
         }

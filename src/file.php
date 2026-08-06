@@ -40,11 +40,11 @@ class file
         $pathinfo = pathinfo($path . '/tmp.txt');
         if ( !empty($pathinfo ['dirname']) )
         {
-            if (file_exists($pathinfo ['dirname']) === false)
+            if ( file_exists($pathinfo ['dirname']) === false )
             {
-                if (@mkdir($pathinfo ['dirname'], 0777, true) === false)
+                if ( @mkdir($pathinfo ['dirname'], 0777, true) === false )
                 {
-                    if (file_exists($pathinfo ['dirname']))
+                    if ( file_exists($pathinfo ['dirname']) )
                     {
                         return $path;
                     }
@@ -67,17 +67,17 @@ class file
     public static function put_file($file, $content, $flag = 0)
     {
         $pathinfo = pathinfo($file);
-        if (! empty($pathinfo ['dirname']))
+        if ( ! empty($pathinfo ['dirname']) )
         {
-            if (file_exists($pathinfo ['dirname']) === false)
+            if ( file_exists($pathinfo ['dirname']) === false )
             {
-                if (@mkdir($pathinfo ['dirname'], 0777, true) === false)
+                if ( @mkdir($pathinfo ['dirname'], 0777, true) === false )
                 {
                     return false;
                 }
             }
         }
-        if ($flag === FILE_APPEND)
+        if ( $flag === FILE_APPEND )
         {
             return @file_put_contents($file, $content, FILE_APPEND);
         }
@@ -100,11 +100,12 @@ class file
         $filelink = rtrim($_ENV['FILE_LINK'] ?? '', '/');
         if ( is_array($img_url) )
         {
-            $img_url = array_map(function ($v) {
+            $img_url = array_map(function ($v)
+            {
                 return static::get_img_url($v);
             }, $img_url);
         }
-        elseif ($img_url && false != strcasecmp(substr($img_url, 0, 4), 'http') )
+        elseif ( $img_url && false != strcasecmp(substr($img_url, 0, 4), 'http') )
         {
             $img_url  = $filelink . '/' . $img_url;
             $img_url .= $suffix && strpos($img_url, '.') === false ? '.' . $suffix : '';

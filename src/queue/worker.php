@@ -212,7 +212,7 @@ class worker
 
             return '';
         }
-        catch (Throwable $e)
+        catch ( Throwable $e )
         {
             return self::_retry($message, $e, $settings, $driver);
         }

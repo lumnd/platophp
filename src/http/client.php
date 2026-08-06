@@ -336,7 +336,8 @@ class client
                 // Blocks until something happens rather than spinning the CPU
                 curl_multi_select($multi, 1.0);
             }
-        } while ( $running && $status === CURLM_OK );
+        }
+        while ( $running && $status === CURLM_OK );
 
         $answers = [];
 

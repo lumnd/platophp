@@ -195,7 +195,8 @@ class date
         ?string $to = null,
         ?string $format = null,
         ?string $from = null
-    ): string {
+    ): string
+    {
         return self::make($datetime, $from)
             ->setTimezone(self::zone($to))
             ->format($format ?? (string) self::config('format'));
@@ -218,7 +219,8 @@ class date
         string $modify,
         ?string $format = null,
         ?string $timezone = null
-    ): string {
+    ): string
+    {
         $moment = self::make($datetime, $timezone);
 
         // A bad modifier reports itself two ways depending on the runtime: false up to 8.2, and a

@@ -241,7 +241,7 @@ class envelope
                 (int) self::config('max_plaintext_bytes')
             );
         }
-        catch (\Throwable $e)
+        catch ( \Throwable $e )
         {
             log::error('envelope decode failed for client ' . $client . ': ' . $e->getMessage());
             return null;
@@ -374,7 +374,7 @@ class envelope
 
             cache::set($key, 1, $window * 2);
         }
-        catch (\Throwable $e)
+        catch ( \Throwable $e )
         {
             log::error('envelope nonce store is unavailable, refusing the request: ' . $e->getMessage());
             return false;

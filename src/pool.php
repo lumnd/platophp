@@ -181,7 +181,7 @@ class pool
         self::$_pids        = [];
         self::$_slots       = [];
 
-        for ($i = 0; $i < $workers; $i++)
+        for ( $i = 0; $i < $workers; $i++ )
         {
             self::$_slots[$i] = ['pid' => 0, 'started' => 0.0, 'crashes' => 0, 'retry_at' => 0.0];
         }

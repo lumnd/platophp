@@ -91,7 +91,7 @@ LUA;
      *
      * @var array<string, mixed>
      */
-    private $config = [];
+    private $_config = [];
 
     /**
      * Key prefix, from the configuration
@@ -140,7 +140,7 @@ LUA;
     {
         $this->close();
 
-        $this->config  = $config;
+        $this->_config  = $config;
         $this->_prefix = (string) ($config['prefix'] ?? '');
         $this->_group  = (string) ($config['group'] ?? 'default');
 
@@ -485,7 +485,7 @@ LUA;
      */
     private function _add(string $key, string $payload)
     {
-        $maxlen = (int) ($this->config['maxlen'] ?? 0);
+        $maxlen = (int) ($this->_config['maxlen'] ?? 0);
         $client = $this->_redis();
 
         // Approximate trimming: exact trimming makes XADD walk the stream, and the point of a cap
@@ -554,7 +554,7 @@ LUA;
      */
     private function _claim(string $queue)
     {
-        $idle = (int) ($this->config['claim_idle_ms'] ?? 60000);
+        $idle = (int) ($this->_config['claim_idle_ms'] ?? 60000);
 
         if ( $idle <= 0 )
         {
@@ -770,7 +770,7 @@ LUA;
      */
     private function _client_config(): array
     {
-        $server = (array) ($this->config['server'] ?? []);
+        $server = (array) ($this->_config['server'] ?? []);
 
         $server['prefix']     = '';
         $server['serializer'] = $server['serializer'] ?? 'none';

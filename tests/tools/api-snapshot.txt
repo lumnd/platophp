@@ -128,11 +128,11 @@ plato\cast	class
 plato\cast::TYPES	public const
 plato\cast::to($val, string $type = '', bool $throw = false)	public static method
 plato\cli	class
-plato\cli::$STDERR	protected static property
-plato\cli::$STDOUT	protected static property
+plato\cli::$_background_colors	protected static property
+plato\cli::$_foreground_colors	protected static property
+plato\cli::$_stderr	protected static property
+plato\cli::$_stdout	protected static property
 plato\cli::$args	public static property
-plato\cli::$background_colors	protected static property
-plato\cli::$foreground_colors	protected static property
 plato\cli::$nocolor	public static property
 plato\cli::$readline_support	public static property
 plato\cli::$wait_msg	public static property
@@ -689,11 +689,6 @@ plato\debug\benchmark::elapsed_memory($point1 = '', $point2 = '', $decimals = 2)
 plato\debug\benchmark::elapsed_time($point1 = '', $point2 = '', $decimals = 4)	public static method
 plato\debug\benchmark::mark($name, $value = '')	public static method
 plato\debug\error_handler	class
-plato\debug\error_handler::$_debug_error_msg	public static property
-plato\debug\error_handler::$_debug_errortype	public static property
-plato\debug\error_handler::$_debug_mt_info	public static property
-plato\debug\error_handler::$_debug_mt_time	public static property
-plato\debug\error_handler::$_debug_safe_ip	public static property
 plato\debug\error_handler::CLI_FAILURE	public const
 plato\debug\error_handler::capture()	public static method
 plato\debug\error_handler::debug_hidden($hidden = true)	public static method
@@ -770,7 +765,7 @@ plato\exception\config_exception	class : plato_exception
 plato\exception\controller_exception	class : plato_exception
 plato\exception\event_exception	class : plato_exception
 plato\exception\plato_exception	class : \Exception
-plato\exception\plato_exception::$params	protected property
+plato\exception\plato_exception::$_params	protected property
 plato\exception\plato_exception::__construct($params = [], $code = 0, ?Throwable $previous = null)	public method
 plato\exception\plato_exception::params()	public method
 plato\exception\queue_exception	class : plato_exception
@@ -943,7 +938,7 @@ plato\http\resp::stream(callable $writer, ?string $mime = null, ?int $status = n
 plato\http\resp::text(string $text, ?int $status = null)	public static method
 plato\http\resp::type(string $mime, string $charset = 'utf-8')	public static method
 plato\http\rewrite	class
-plato\http\rewrite::$is_load	protected static property
+plato\http\rewrite::$_is_load	protected static property
 plato\http\rewrite::$rules	public static property
 plato\http\rewrite::_apply($subject)	protected static method
 plato\http\rewrite::_compile($source)	protected static method
@@ -1321,7 +1316,6 @@ plato\security\validate::_container($rules)	protected method
 plato\security\validate::_current_value($field, $index)	protected method
 plato\security\validate::_element_names($field)	protected method
 plato\security\validate::_elements($row, $rules, $value)	protected method
-plato\security\validate::_empty($val)	public method
 plato\security\validate::_execute($row, $rules, $value, $index = null)	protected method
 plato\security\validate::_fail($row, $name, $param)	protected method
 plato\security\validate::_get_error_message($rule, $field)	protected method
@@ -1348,6 +1342,7 @@ plato\security\validate::from_request($rules = [], array $messages = [])	public 
 plato\security\validate::has_extension($name)	public static method
 plato\security\validate::integer($str)	public method
 plato\security\validate::ip($val)	public method
+plato\security\validate::is_empty($val)	public method
 plato\security\validate::make(array $data, $rules = [], array $messages = [])	public static method
 plato\security\validate::matches($str, $field)	public method
 plato\security\validate::max($val, $max)	public method

@@ -119,17 +119,17 @@ class log
      *
      * @var array<int|string, array<int, array{msg: string, context: array<string, mixed>}>>
      */
-    private static $logs = [];
+    private static $_logs = [];
 
     /** @var int Entries buffered at one level before write() flushes without being asked */
-    private static $max_log = 128;
+    private static $_max_log = 128;
 
     /**
      * Context carried by every entry, see context()
      *
      * @var array<string, mixed>
      */
-    private static $shared = [];
+    private static $_shared = [];
 
     /**
      * Prefix of the runtime keys the append handles are registered under
@@ -199,7 +199,7 @@ class log
      */
     public static function context(array $data)
     {
-        self::$shared = array_merge(self::$shared, $data);
+        self::$_shared = array_merge(self::$_shared, $data);
     }
 
     /**
@@ -215,13 +215,13 @@ class log
     {
         if ( $keys === null )
         {
-            self::$shared = [];
+            self::$_shared = [];
             return;
         }
 
         foreach ( $keys as $key )
         {
-            unset(self::$shared[$key]);
+            unset(self::$_shared[$key]);
         }
     }
 
@@ -232,7 +232,7 @@ class log
      */
     public static function shared_context()
     {
-        return self::$shared;
+        return self::$_shared;
     }
 
     /**
@@ -484,7 +484,7 @@ class log
         // has already been through this and the guard makes it free
         self::boot();
 
-        if ( ! static::_need_logging($level))
+        if ( ! static::_need_logging($level) )
         {
             return false;
         }
@@ -500,11 +500,11 @@ class log
         }
 
         // Shared context first, so a key passed to this call wins over the one on every entry
-        [$msg, $context] = self::_interpolate((string) $msg, array_merge(self::$shared, self::_context($context)));
+        [$msg, $context] = self::_interpolate((string) $msg, array_merge(self::$_shared, self::_context($context)));
 
-        self::$logs[ $level ][] = ['msg' => $msg, 'context' => $context];
+        self::$_logs[ $level ][] = ['msg' => $msg, 'context' => $context];
 
-        if ( PHP_SAPI == 'cli' || count(self::$logs[ $level ]) >= self::$max_log )
+        if ( PHP_SAPI == 'cli' || count(self::$_logs[ $level ]) >= self::$_max_log )
         {
             self::save();
         }
@@ -599,7 +599,7 @@ class log
         // Resolve formatting settings once per flush rather than once per line.
         $settings = self::_settings();
 
-        foreach ( self::$logs as $level => $entries )
+        foreach ( self::$_logs as $level => $entries )
         {
             // A level outside self::$levels is caller defined: it still gets a file of its own,
             // but cli:: has no method to render it with
@@ -635,7 +635,7 @@ class log
             self::_append($target, $log_msgs);
         }
 
-        self::$logs = [];
+        self::$_logs = [];
     }
 
     /**
@@ -821,7 +821,7 @@ class log
         $class      = new \ReflectionClass($obj);
         $properties = $class->getProperties();
 
-        foreach ($properties as $property)
+        foreach ( $properties as $property )
         {
             $arr[$property->getName()] = $property->isPrivate() ? ':private'
                 : ($property->isProtected() ? ':protected' : ':public');
@@ -890,11 +890,11 @@ class log
         }
 
         // A bare level stands for itself and everything more severe
-        if ( ! is_array($loglabels))
+        if ( ! is_array($loglabels) )
         {
             $a = [];
 
-            foreach (array_keys(self::$levels) as $l)
+            foreach ( array_keys(self::$levels) as $l )
             {
                 if ( $l >= $loglabels )
                 {
@@ -910,7 +910,7 @@ class log
         // against the threshold as NOTICE
         if ( is_string($level) )
         {
-            if ( ! $level = array_search($level, self::$levels))
+            if ( ! $level = array_search($level, self::$levels) )
             {
                 $level = self::NOTICE;
             }

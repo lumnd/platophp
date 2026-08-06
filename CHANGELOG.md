@@ -3,7 +3,41 @@
 All notable changes to PlatoPHP are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/).
 
-## 0.1.0 - Unreleased
+## 0.1.1 - 2026-08-06
+
+### Coding standard
+
+- The standard moved out of this repository into
+  [`lumnd/plato-coding-standard`](https://github.com/lumnd/plato-coding-standard), installed as a
+  dev dependency and referenced by name from `phpcs.xml`, which now holds only which directories to
+  check. It had been pasted into each repository that shares the convention, and the copies drifted.
+- The package excludes the same PSR-12 sniffs the pasted copy did and adds the sniff enforcing the
+  inverse rule, so a member written the PSR-12 way is now an error rather than a second legal
+  spelling. It also checks the Allman brace on closures, which the old configuration did not.
+- Bringing the tree under it changed 471 places. 428 were formatting fixes applied by `phpcbf`: one
+  space inside control-structure parentheses, and closure braces onto their own line.
+
+### Removed and renamed
+
+None of these had a caller anywhere in the framework, its tests, or the documentation. The public
+API snapshot records each one.
+
+- `plato\debug\error_handler`'s five `$_debug_*` statics -- `$_debug_safe_ip`, `$_debug_error_msg`,
+  `$_debug_mt_time`, `$_debug_mt_info` and `$_debug_errortype` -- were public but read and written
+  only by that class, and are now private, which is what the underscore already claimed.
+- `plato\security\validate::_empty()` became `is_empty()`, matching the `plato\security\rules`
+  method it forwards to. It was never reachable as a rule name: `RULES` is an allowlist and did not
+  contain it.
+- Private and protected properties took the leading underscore the convention requires.
+  `plato\cli::$STDOUT` and `$STDERR` became `$_stdout` and `$_stderr`; `plato\cli::$foreground_colors`
+  and `$background_colors`, `plato\http\rewrite::$is_load` and
+  `plato\exception\plato_exception::$params` gained it, along with the private state of
+  `plato\config`, `plato\log`, `plato\arr`, `plato\str`, `plato\event` and the three queue drivers.
+- The PSR-16 adapter's `getMultiple()`, `setMultiple()` and `deleteMultiple()` keep their camelCase,
+  now with a `phpcs:ignore` naming `CacheInterface` as the reason rather than relying on the sniff
+  not to look.
+
+## 0.1.0 - 2026-08-03
 
 Initial public release of the PHP 8 framework package.
 

@@ -99,9 +99,9 @@ class profiler
      */
     final public function __construct($config = [])
     {
-        foreach ($this->_available_sections as $section)
+        foreach ( $this->_available_sections as $section )
         {
-            if ( ! isset($config[$section]))
+            if ( ! isset($config[$section]) )
             {
                 $var = '_compile_' . $section;
                 $this->{$var} = true;
@@ -125,7 +125,7 @@ class profiler
      */
     public static function instance()
     {
-        if (!self::$_instance instanceof self)
+        if ( !self::$_instance instanceof self )
         {
             self::$config    = (array) config::instance('config')->get('profiler');
             self::$_instance = new self(self::$config);
@@ -165,15 +165,15 @@ class profiler
      */
     public function set_sections($config)
     {
-        if (isset($config['query_toggle_count']))
+        if ( isset($config['query_toggle_count']) )
         {
             $this->_query_toggle_count = (int) $config['query_toggle_count'];
             unset($config['query_toggle_count']);
         }
 
-        foreach ($config as $method => $enable)
+        foreach ( $config as $method => $enable )
         {
-            if (in_array($method, $this->_available_sections))
+            if ( in_array($method, $this->_available_sections) )
             {
                 $var = '_compile_' . $method;
                 $this->{$var} = ($enable !== false);
@@ -187,10 +187,10 @@ class profiler
     protected function _compile_benchmarks()
     {
         $profile = [];
-        foreach (benchmark::$marker as $key => $val)
+        foreach ( benchmark::$marker as $key => $val )
         {
-            if (preg_match('/(.+?)_end$/i', $key, $match)
-                && isset(benchmark::$marker[$match[1] . '_start']))
+            if ( preg_match('/(.+?)_end$/i', $key, $match)
+                && isset(benchmark::$marker[$match[1] . '_start']) )
             {
                 $profile[$match[1]] = benchmark::elapsed_time($match[1] . '_start', $key);
             }
@@ -201,7 +201,7 @@ class profiler
             . '<div class="pp-head">BENCHMARKS</div>' . "\n"
             . "<table>\n";
 
-        foreach ($profile as $key => $val)
+        foreach ( $profile as $key => $val )
         {
             $key = ucwords(str_replace(['_', '-'], ' ', $key));
             $output .= '<tr><td>' . $key . '</td><td class="pp-accent">' . $val . "</td></tr>\n";
@@ -237,7 +237,7 @@ class profiler
 
         $show_hide_js = '(<span class="plato_profiler_toggle">Hide</span>)';
 
-        if ($hide_queries !== '')
+        if ( $hide_queries !== '' )
         {
             $show_hide_js = '(<span class="plato_profiler_toggle">Show</span>)';
         }
@@ -248,7 +248,7 @@ class profiler
             . 'QUERIES: ' . count($queries) . ' (' . $total_time . ') ' . $show_hide_js . "</div>\n"
             . '<table class="pp-sql" style="' . $hide_queries . '" id="plato_profiler_queries_db_1' . "\">\n";
 
-        foreach ($queries as $query)
+        foreach ( $queries as $query )
         {
             $db_name = $query['connection'];
             $time = number_format((float) $query['time'], 4);
@@ -312,7 +312,7 @@ class profiler
         // assemble the same pattern a hundred times
         static $pattern = null;
 
-        if ($pattern === null)
+        if ( $pattern === null )
         {
             $keywords = [
                 // Longest first -- PCRE alternation takes the first branch that matches
@@ -324,7 +324,7 @@ class profiler
 
             $parts = [];
 
-            foreach ($keywords as $word)
+            foreach ( $keywords as $word )
             {
                 $parts[] = str_replace(' ', '(?:&nbsp;|\s)+', preg_quote($word, '/'));
             }
@@ -336,7 +336,7 @@ class profiler
         // emits are colour declarations and hold no `>`, which is what makes this split sound
         $chunks = preg_split('/(<[^>]*>)/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        if ($chunks === false)
+        if ( $chunks === false )
         {
             return $html;
         }
@@ -344,22 +344,22 @@ class profiler
         $string_color = strtolower(trim((string) ini_get('highlight.string')));
         $skip_stack   = [];
 
-        foreach ($chunks as $i => $chunk)
+        foreach ( $chunks as $i => $chunk )
         {
-            if ($chunk === '')
+            if ( $chunk === '' )
             {
                 continue;
             }
 
-            if ($chunk[0] === '<')
+            if ( $chunk[0] === '<' )
             {
-                if (preg_match('/^<span\b[^>]*\bstyle="color:\s*([^";]+)[^"]*"/i', $chunk, $match))
+                if ( preg_match('/^<span\b[^>]*\bstyle="color:\s*([^";]+)[^"]*"/i', $chunk, $match) )
                 {
                     $parent_skipped = $skip_stack !== [] && $skip_stack[count($skip_stack) - 1];
                     $skip_stack[] = $parent_skipped
                         || strtolower(trim($match[1])) === $string_color;
                 }
-                elseif (preg_match('/^<\/span\s*>$/i', $chunk) && $skip_stack !== [])
+                elseif ( preg_match('/^<\/span\s*>$/i', $chunk) && $skip_stack !== [] )
                 {
                     array_pop($skip_stack);
                 }
@@ -367,7 +367,7 @@ class profiler
                 continue;
             }
 
-            if ($skip_stack !== [] && $skip_stack[count($skip_stack) - 1])
+            if ( $skip_stack !== [] && $skip_stack[count($skip_stack) - 1] )
             {
                 continue;
             }
@@ -407,7 +407,7 @@ class profiler
         {
             return db::connection((string) $query['connection'])->grammar()->interpolate($sql, $bindings);
         }
-        catch (Throwable)
+        catch ( Throwable )
         {
             return $sql . ' -- ' . json_encode($bindings, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
@@ -422,7 +422,7 @@ class profiler
             . '<div id="plato_profiler_get" class="pp-box pp-get">' . "\n"
             . '<div class="pp-head">GET DATA</div>' . "\n";
 
-        if (count(req::$gets) === 0)
+        if ( count(req::$gets) === 0 )
         {
             $output .= '<div class="pp-note">No GET data exists</div>';
         }
@@ -430,9 +430,9 @@ class profiler
         {
             $output .= "\n<table>\n";
 
-            foreach (req::$gets as $key => $val)
+            foreach ( req::$gets as $key => $val )
             {
-                if ( ! is_int($key))
+                if ( ! is_int($key) )
                 {
                     $key = "'" . htmlspecialchars($key, ENT_QUOTES, 'utf-8') . "'";
                 }
@@ -461,7 +461,7 @@ class profiler
             . '<div id="plato_profiler_post" class="pp-box pp-post">' . "\n"
             . '<div class="pp-head">POST DATA</div>' . "\n";
 
-        if (count(req::$posts) === 0 && count(upload::all()) === 0)
+        if ( count(req::$posts) === 0 && count(upload::all()) === 0 )
         {
             $output .= '<div class="pp-note">No POST data exists</div>';
         }
@@ -469,9 +469,9 @@ class profiler
         {
             $output .= "\n<table>\n";
 
-            foreach (req::$posts as $key => $val)
+            foreach ( req::$posts as $key => $val )
             {
-                if ( ! is_int($key))
+                if ( ! is_int($key) )
                 {
                     $key = "'" . htmlspecialchars($key, ENT_QUOTES, 'utf-8') . "'";
                 }
@@ -483,9 +483,9 @@ class profiler
                 $output .= '<tr><td>&#36;_POST[' . $key . ']</td><td class="pp-accent">' . $val . "</td></tr>\n";
             }
 
-            foreach (upload::all() as $key => $val)
+            foreach ( upload::all() as $key => $val )
             {
-                if ( ! is_int($key))
+                if ( ! is_int($key) )
                 {
                     $key = "'" . htmlspecialchars($key, ENT_QUOTES, 'utf-8') . "'";
                 }
@@ -530,7 +530,7 @@ class profiler
      */
     protected function _compile_controller_info()
     {
-        if (plato::$ct === '' || plato::$ac === '')
+        if ( plato::$ct === '' || plato::$ac === '' )
         {
             $msg = "No controller were run";
         }
@@ -571,7 +571,7 @@ class profiler
             . '(<span class="plato_profiler_toggle">Show' . "</span>)</div>\n"
             . '<table style="display:none;" id="plato_profiler_httpheaders_table">' . "\n";
 
-        foreach (['HTTP_ACCEPT', 'HTTP_USER_AGENT', 'HTTP_CONNECTION', 'SERVER_PORT', 'SERVER_NAME', 'REMOTE_ADDR', 'SERVER_SOFTWARE', 'HTTP_ACCEPT_LANGUAGE', 'SCRIPT_NAME', 'REQUEST_METHOD', 'HTTP_HOST', 'REMOTE_HOST', 'CONTENT_TYPE', 'SERVER_PROTOCOL', 'QUERY_STRING', 'HTTP_ACCEPT_ENCODING', 'HTTP_X_FORWARDED_FOR', 'HTTP_DNT'] as $header)
+        foreach ( ['HTTP_ACCEPT', 'HTTP_USER_AGENT', 'HTTP_CONNECTION', 'SERVER_PORT', 'SERVER_NAME', 'REMOTE_ADDR', 'SERVER_SOFTWARE', 'HTTP_ACCEPT_LANGUAGE', 'SCRIPT_NAME', 'REQUEST_METHOD', 'HTTP_HOST', 'REMOTE_HOST', 'CONTENT_TYPE', 'SERVER_PROTOCOL', 'QUERY_STRING', 'HTTP_ACCEPT_ENCODING', 'HTTP_X_FORWARDED_FOR', 'HTTP_DNT'] as $header )
         {
             $val = isset($_SERVER[$header]) ? htmlspecialchars($_SERVER[$header], ENT_QUOTES, 'utf-8') : '';
             $output .= '<tr><td>' . $header . '</td><td>' . $val . "</td></tr>\n";
@@ -610,9 +610,9 @@ class profiler
             . '<div class="pp-head">COOKIE DATA (<span class="plato_profiler_toggle">Show</span>)</div>'
             . '<table style="display:none;" id="plato_profiler_cookie_data">';
 
-        foreach (req::$cookies as $key => $val)
+        foreach ( req::$cookies as $key => $val )
         {
-            if (is_array($val) || is_object($val))
+            if ( is_array($val) || is_object($val) )
             {
                 $val = print_r($val, true);
             }
@@ -629,7 +629,7 @@ class profiler
      */
     protected function _compile_session_data()
     {
-        if ( ! isset($_SESSION))
+        if ( ! isset($_SESSION) )
         {
             return '';
         }
@@ -638,9 +638,9 @@ class profiler
             . '<div class="pp-head">SESSION DATA (<span class="plato_profiler_toggle">Show</span>)</div>'
             . '<table style="display:none;" id="plato_profiler_session_data">';
 
-        foreach ($_SESSION as $key => $val)
+        foreach ( $_SESSION as $key => $val )
         {
-            if (is_array($val) || is_object($val))
+            if ( is_array($val) || is_object($val) )
             {
                 $val = print_r($val, true);
             }
@@ -778,17 +778,17 @@ class profiler
             . '<div class="pp-body">';
         $fields_displayed = 0;
 
-        foreach ($this->_available_sections as $section)
+        foreach ( $this->_available_sections as $section )
         {
             $var = '_compile_' . $section;
-            if ($this->{$var} !== false)
+            if ( $this->{$var} !== false )
             {
                 $output .= $this->{$var}();
                 $fields_displayed++;
             }
         }
 
-        if ($fields_displayed === 0)
+        if ( $fields_displayed === 0 )
         {
             $output .= '<div class="pp-box"><div class="pp-note">'
                 . 'No Profile data - all Profiler sections have been disabled.</div></div>';

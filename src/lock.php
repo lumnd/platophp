@@ -232,7 +232,8 @@ class lock
         int $timeout = 0,
         ?int $expire = null,
         ?int $wait_interval_us = null
-    ): bool {
+    ): bool
+    {
         if ( $name === '' )
         {
             return false;
@@ -414,7 +415,8 @@ class lock
         int $timeout,
         ?int $expire,
         ?int $wait_interval_us
-    ): ?string {
+    ): ?string
+    {
         self::_ensure_fork_listener();
 
         $expire           = max($expire ?? (int) self::config('expire'), 1);

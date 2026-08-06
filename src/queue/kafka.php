@@ -71,7 +71,7 @@ class kafka implements driver
      *
      * @var array<string, mixed>
      */
-    private $config = [];
+    private $_config = [];
 
     /**
      * Topics the consumer is currently subscribed to, so a pop() over the same list does not
@@ -95,7 +95,7 @@ class kafka implements driver
      */
     public function configure(array $config): void
     {
-        $this->config = $config;
+        $this->_config = $config;
 
         // The connection may now point at a different cluster or group
         runtime::forget($this->_runtime_key(self::PRODUCER));
@@ -277,7 +277,7 @@ class kafka implements driver
      */
     public function dead_letter_topic(string $queue): string
     {
-        $pattern = (string) ($this->config['dead_letter_topic'] ?? '%s.dlq');
+        $pattern = (string) ($this->_config['dead_letter_topic'] ?? '%s.dlq');
 
         return strpos($pattern, '%s') === false ? $pattern : sprintf($pattern, $queue);
     }
@@ -378,12 +378,12 @@ class kafka implements driver
         // from filling up in a long lived producer
         $producer->poll(0);
 
-        if ( !$force && (string) ($this->config['flush_mode'] ?? 'async') !== 'sync' )
+        if ( !$force && (string) ($this->_config['flush_mode'] ?? 'async') !== 'sync' )
         {
             return true;
         }
 
-        $result = $producer->flush((int) ($this->config['flush_timeout_ms'] ?? 10000));
+        $result = $producer->flush((int) ($this->_config['flush_timeout_ms'] ?? 10000));
 
         // flush() invokes the extension callback, which static analysis cannot observe mutating this property.
         // @phpstan-ignore-next-line
@@ -407,7 +407,7 @@ class kafka implements driver
             return $producer;
         }, function (Producer $producer): void
         {
-            $producer->flush((int) ($this->config['flush_timeout_ms'] ?? 10000));
+            $producer->flush((int) ($this->_config['flush_timeout_ms'] ?? 10000));
         });
     }
 
@@ -424,7 +424,7 @@ class kafka implements driver
         return runtime::share($this->_runtime_key(self::CONSUMER), function (): KafkaConsumer
         {
             $conf = $this->_conf('consumer');
-            $conf->set('group.id', (string) ($this->config['group_id'] ?? 'platophp'));
+            $conf->set('group.id', (string) ($this->_config['group_id'] ?? 'platophp'));
             // Again here and not only in config/queue.php: an application that replaced the
             // connection block wholesale must not end up committing offsets on a timer
             $conf->set('enable.auto.commit', 'false');
@@ -446,7 +446,7 @@ class kafka implements driver
     private function _conf(string $role): Conf
     {
         $conf    = new Conf();
-        $brokers = trim((string) ($this->config['brokers'] ?? ''));
+        $brokers = trim((string) ($this->_config['brokers'] ?? ''));
 
         if ( $brokers === '' )
         {
@@ -455,8 +455,8 @@ class kafka implements driver
 
         $conf->set('metadata.broker.list', $brokers);
 
-        $settings = (array) ($this->config['conf'] ?? []);
-        $settings = array_replace($settings, (array) ($this->config[$role . '_conf'] ?? []));
+        $settings = (array) ($this->_config['conf'] ?? []);
+        $settings = array_replace($settings, (array) ($this->_config[$role . '_conf'] ?? []));
 
         foreach ( $settings as $key => $value )
         {
@@ -493,7 +493,7 @@ class kafka implements driver
     {
         $conf = new TopicConf();
 
-        foreach ( (array) ($this->config['topic_conf'] ?? []) as $key => $value )
+        foreach ( (array) ($this->_config['topic_conf'] ?? []) as $key => $value )
         {
             if ( $value === '' || $value === null )
             {
