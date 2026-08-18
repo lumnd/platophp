@@ -618,12 +618,15 @@ LUA;
      * Whether this connection may send XAUTOCLAIM, decided once and remembered.
      *
      * "Does the server have the command" is the wrong question, and sending one to find out is how
-     * a consumer stalls. XAUTOCLAIM exists from redis 6.2, but its reply grew a third element in
-     * 7.0 -- the ids it dropped -- and phpredis 6 reads a fixed three. Against 6.2 the extension
-     * therefore waits for the rest of a reply the server has already finished sending: every pop()
-     * blocks until default_socket_timeout, a minute by default and never where it is disabled,
-     * before the read error hands control back. Redis 5 is safe only by accident, answering ERR
-     * unknown command before any of that can happen.
+     * a consumer breaks. XAUTOCLAIM exists from redis 6.2, but its reply grew a third element in
+     * 7.0 -- the ids it dropped -- and phpredis 6 expects those three. A 6.2 server answers with a
+     * two element array, and what the extension makes of that is a property of the build rather
+     * than of the server: 6.0.2 rejects it at the multibulk header and raises a read error at once,
+     * while a parser that reads three elements without checking the header waits for one the server
+     * has already finished sending, and blocks until default_socket_timeout -- a minute by default,
+     * and forever where it is disabled. Either way the reply is unusable and the extension drops
+     * the socket, so the command has to stay unsent rather than be tried once and caught. Redis 5
+     * is safe only by accident, answering ERR unknown command before any of that can happen.
      *
      * So the gate is the server version rather than the command, and the answer is remembered for
      * the life of the connection -- configure() clears it, because the next server may differ.
