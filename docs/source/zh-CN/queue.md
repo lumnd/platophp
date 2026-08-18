@@ -25,4 +25,6 @@ php vendor/bin/plato queue:retry --queue=emails
 
 Redis list 提供简单竞争消费；Redis stream 使用 consumer group 和 pending recovery；Kafka 使用 consumer group、partition offset 与独立 dead-letter topic。三种后端的投递保证不同，业务 handler 都必须按至少一次投递设计成幂等。
 
+接管死亡消费者遗留的 pending 条目，Redis 7.0 及以上走 `XAUTOCLAIM`，更低版本走 `XPENDING` + `XCLAIM`。两条路径行为一致，后者每次轮询多一次往返。
+
 `queue:work --workers=N` 使用 `plato\pool` 启动固定数量的前台 worker。进程拉起、退出与日志轮转仍交给 systemd、supervisord 或容器运行时。

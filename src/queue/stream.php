@@ -13,6 +13,7 @@ namespace plato\queue;
 use plato\cache\redis as client;
 use plato\exception\queue_exception;
 use RedisException;
+use Throwable;
 
 /**
  * Queue on redis streams.
@@ -122,7 +123,7 @@ LUA;
     private $_consumer = '';
 
     /**
-     * Whether the server answers XAUTOCLAIM; null until it has been asked once
+     * Whether this connection may send XAUTOCLAIM; null until the server has been asked its version
      *
      * @var bool|null
      */
@@ -541,13 +542,8 @@ LUA;
     /**
      * Take over one entry another consumer stopped working on.
      *
-     * XAUTOCLAIM in one round trip where it exists, XPENDING plus XCLAIM where it does not. Both
+     * XAUTOCLAIM in one round trip where it can be used, XPENDING plus XCLAIM everywhere else. Both
      * ask the same question -- what has been pending longer than claim_idle_ms.
-     *
-     * Which one is available cannot be decided from the client: phpredis has had xAutoClaim() since
-     * 5.3 and will happily send the command to a redis 5 that has never heard of it, and the answer
-     * comes back as a plain false. So the first call asks the server and the result is remembered
-     * for the life of the process.
      *
      * @param  string $queue
      * @return message|null
@@ -564,13 +560,7 @@ LUA;
         $client = $this->_redis();
         $key    = $this->_key($queue);
 
-        // Two things have to be true, and neither implies the other: the extension has to have the
-        // method (phpredis 5.3) and the server has to know the command (redis 6.2). This is the
-        // first; the try below is the second. get_class_methods() rather than method_exists(), so a
-        // static analyser looking at one particular phpredis build does not fold the check away
-        $client_can = in_array('xautoclaim', array_map('strtolower', get_class_methods('\Redis')), true);
-
-        if ( $this->_autoclaim !== false && $client_can )
+        if ( $this->_can_autoclaim() )
         {
             $reply = null;
 
@@ -580,15 +570,12 @@ LUA;
             }
             catch ( RedisException $e )
             {
-                // An old server answers ERR unknown command rather than returning false
                 $reply = false;
             }
 
             if ( $reply !== false )
             {
-                $this->_autoclaim = true;
-
-                // [cursor, entries] on 6.2, [cursor, entries, deleted] on 7
+                // [cursor, entries, deleted]
                 $entries = is_array($reply) ? (array) ($reply[1] ?? []) : [];
 
                 foreach ( $entries as $id => $fields )
@@ -625,6 +612,80 @@ LUA;
         }
 
         return null;
+    }
+
+    /**
+     * Whether this connection may send XAUTOCLAIM, decided once and remembered.
+     *
+     * "Does the server have the command" is the wrong question, and sending one to find out is how
+     * a consumer stalls. XAUTOCLAIM exists from redis 6.2, but its reply grew a third element in
+     * 7.0 -- the ids it dropped -- and phpredis 6 reads a fixed three. Against 6.2 the extension
+     * therefore waits for the rest of a reply the server has already finished sending: every pop()
+     * blocks until default_socket_timeout, a minute by default and never where it is disabled,
+     * before the read error hands control back. Redis 5 is safe only by accident, answering ERR
+     * unknown command before any of that can happen.
+     *
+     * So the gate is the server version rather than the command, and the answer is remembered for
+     * the life of the connection -- configure() clears it, because the next server may differ.
+     *
+     * @return bool
+     */
+    private function _can_autoclaim(): bool
+    {
+        if ( $this->_autoclaim !== null )
+        {
+            return $this->_autoclaim;
+        }
+
+        // get_class_methods() rather than method_exists(), so a static analyser looking at one
+        // particular phpredis build does not fold the check away
+        $client_can = in_array('xautoclaim', array_map('strtolower', get_class_methods('\Redis')), true);
+        $version    = $client_can ? $this->_server_version() : '';
+
+        $this->_autoclaim = $version !== '' && version_compare($version, '7.0', '>=');
+
+        return $this->_autoclaim;
+    }
+
+    /**
+     * The oldest redis version this connection talks to, '' when it cannot be established.
+     *
+     * A cluster answers INFO once per master, and infos() suffixes each key with the node it came
+     * from; the oldest node is the one that decides what may be sent, since any of them may serve
+     * the next command.
+     *
+     * @return string
+     */
+    private function _server_version(): string
+    {
+        try
+        {
+            $infos = $this->_client()->infos();
+        }
+        catch ( Throwable $e )
+        {
+            return '';
+        }
+
+        $oldest = '';
+
+        foreach ( $infos as $key => $value )
+        {
+            // 'redis_version' from a single server, 'redis_version(host:port)' from a cluster node
+            if ( strpos((string) $key, 'redis_version') !== 0 )
+            {
+                continue;
+            }
+
+            $version = (string) $value;
+
+            if ( $version !== '' && ($oldest === '' || version_compare($version, $oldest, '<')) )
+            {
+                $oldest = $version;
+            }
+        }
+
+        return $oldest;
     }
 
     /**

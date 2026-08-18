@@ -2,7 +2,7 @@
     "name": "PlatoPHP",
     "package": "lumnd/platophp",
     "default_locale": "zh-CN",
-    "generated_at": "2026-08-18T06:56:33.000Z",
+    "generated_at": "2026-08-18T08:33:39.000Z",
     "locales": {
         "zh-CN": {
             "label": "简体中文",
@@ -117,7 +117,7 @@
                     "section": "数据",
                     "source": "source/zh-CN/queue.md",
                     "page": "site/zh-CN/queue.html",
-                    "sha256": "6a592b5cfa6f5c5170fa57dcee5172016287a545e9dd0ada1b2476a49722c485"
+                    "sha256": "bee44fbaec6a31e271e4e4323d8865d478b7a28a80afe7f911b200d22fbb09bd"
                 },
                 {
                     "title": "存储与模板",
@@ -298,7 +298,7 @@
                     "section": "Data",
                     "source": "source/en/queue.md",
                     "page": "site/en/queue.html",
-                    "sha256": "ad8345b348780d70ff8eea80377d17e4172601ede4c1ecd6f03ed8da4f209741"
+                    "sha256": "8c9f51c57854779d4d3b2a8af0c73b740a3158c1c57ad426a236d0c1bf010646"
                 },
                 {
                     "title": "Storage and Templates",

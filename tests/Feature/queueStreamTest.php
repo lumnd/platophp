@@ -2,10 +2,14 @@
 /**
  * plato\queue\stream against a real server.
  *
- * This needs a reachable Redis, version 5 or later for streams and 6.2 for XAUTOCLAIM -- the driver
- * falls back to XPENDING plus XCLAIM below that, and both paths are exercised here through the same
- * public calls. A failure is an environment problem, not a broken assertion: do not weaken the test
- * to make it pass without the service.
+ * This needs a reachable Redis, version 5 or later for streams and 7.0 for the XAUTOCLAIM path --
+ * the driver takes over pending entries with XPENDING plus XCLAIM below that, and both paths are
+ * exercised here through the same public calls. A failure is an environment problem, not a broken
+ * assertion: do not weaken the test to make it pass without the service.
+ *
+ * Against redis 6.2 these cases are also the guard on the version gate in the driver: 6.2 answers
+ * XAUTOCLAIM in a shape phpredis cannot read, and a pop() that reached the command would sit on the
+ * socket for a minute rather than fail. Every case here would still pass -- a minute later each.
  *
  * The at-least-once behaviour is what separates this driver from the list one, so most of the cases
  * are about the pending list: a message stays there until it is acknowledged, and comes back when

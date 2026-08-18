@@ -5,9 +5,8 @@ name: tests
 # what actually guards the 8.0 language level, and it runs on every leg.
 #
 # The fixture .env (tests/Fixtures/app/.env.testing) points at the hosts `redis`, `mysql` and
-# `memcached`, and plato::registry() lets a .env value win over the process environment, so the
-# service containers are reached by adding those names to /etc/hosts rather than by overriding
-# environment variables here.
+# `memcached`; every leg reaches the service containers by adding those names to /etc/hosts, so the
+# same fixture describes the runner and a developer's compose network alike.
 
 on:
   push:
@@ -44,16 +43,22 @@ jobs:
         run: find src bin config -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
 
   tests:
-    name: tests (php ${{ matrix.php }})
+    name: tests (php ${{ matrix.php }}, redis ${{ matrix.redis }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         php: ['8.2', '8.3', '8.4', '8.5']
+        redis: ['7']
+        # 6.2 has XAUTOCLAIM but answers it in the pre-7.0 shape, which phpredis 6 cannot read; the
+        # stream driver has to notice and take the XPENDING path. One leg is enough to hold that
+        include:
+          - php: '8.3'
+            redis: '6.2'
 
     services:
       redis:
-        image: redis:7
+        image: redis:${{ matrix.redis }}
         ports:
           - 6379:6379
         options: >-

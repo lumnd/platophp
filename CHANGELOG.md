@@ -57,6 +57,17 @@ boundary was defeated from outside the registry.
   variable set to the empty string counts as set. A deployment that relied on the file winning has to
   stop exporting the variable it wants the file to decide.
 
+### Queue
+
+- `plato\queue\stream` decides whether it may send `XAUTOCLAIM` from the server version rather than
+  by sending one and reading the answer. The command exists from redis 6.2, but its reply grew a
+  third element in 7.0 and phpredis 6 reads a fixed three: against 6.2 the extension waits for the
+  rest of a reply the server has already finished sending, so every `pop()` stalled until
+  `default_socket_timeout` -- a minute each, and forever wherever that is disabled -- before the read
+  error let the driver fall back. Redis 5 was safe only by accident, rejecting the command outright,
+  and CI ran redis 7, which left 6.2 the one version nothing covered. The tests now run against 6.2
+  as well.
+
 ## 0.1.1 - 2026-08-06
 
 ### Coding standard
