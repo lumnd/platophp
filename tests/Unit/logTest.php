@@ -113,6 +113,25 @@ it('leaves no separator on a line with no leftover context', function () {
     expect($written)->toEndWith("platophptest bare line\n");
 });
 
+it('drops the whole shared context, the request id with it', function () {
+    $before = log::shared_context();
+
+    try
+    {
+        log::context(['uid' => 7]);
+
+        log::reset();
+
+        // Not "everything but rid": a caller clearing the context owes a fresh one, which is what
+        // plato::reset_request() does through restamp()
+        expect(log::shared_context())->toBe([]);
+    }
+    finally
+    {
+        log::context($before);
+    }
+});
+
 it('seeds a request id that every entry carries', function () {
     $rid = log::shared_context()['rid'] ?? '';
 

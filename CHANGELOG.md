@@ -3,6 +3,60 @@
 All notable changes to PlatoPHP are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Process and request safety
+
+Found by reviewing the two boundaries against each other. The fork boundary held up; these are the
+places where the request boundary of a resident worker stopped short, and one where the process
+boundary was defeated from outside the registry.
+
+- `plato::reset_request()` now rolls back a transaction the last request left open, through the new
+  `db::discard_transactions()` / `connection::discard_transactions()`, and warns with the connection
+  name and the depth it was left at. A php-fpm process ends with the request and the server rolls
+  back what nobody committed; a resident worker keeps its socket, so an action that called `begin()`
+  and then threw left the *next* message inside its transaction -- committing writes nobody asked for
+  when that one committed, or holding the row locks until the worker exited. The warning is written
+  before the log context is cleared, so it carries the request id of whoever left it open. A rollback
+  that fails disconnects the connection instead of propagating.
+- `plato::reset_request()` clears the shared log context through the new `log::reset()`, then
+  `restamp()` issues a fresh `rid`. The keys `log::context()` collects -- a user id, a tenant -- were
+  request state that nothing cleared, so one client's lines went on carrying the identity of the
+  client before it. Context that belongs to the process rather than the request goes back on through
+  the registry `reset_handle`.
+- `plato\pool` releases the registry before **every** fork rather than only before the first. A
+  `notify` callback that logs, which is the obvious thing to pass it, put a handle back in the
+  master's registry after the first fork, and every worker forked to refill a slot then held its
+  parent's descriptor open for the rest of its life.
+- `plato\queue\worker` guards its signal handlers with the runtime epoch instead of a bool. A fork
+  copies the flag along with the handlers, and the handlers a child inherits are its parent's -- under
+  `pool` they set `pool::$_stop`, not the flag the consume loop reads. A child that took the early
+  return ignored SIGTERM and was SIGKILLed mid-message when the grace period ran out.
+- Persistent connections are the one thing the process boundary cannot manage: `PDO::ATTR_PERSISTENT`
+  and phpredis' `pconnect()` keep the socket in the extension's own pool, where `plato\runtime` cannot
+  release it, so a forked worker is handed its parent's socket. Both drivers now warn once per
+  connection when the setting is on inside a worker group, and the two config keys, `pool`'s fork
+  contract and the architecture documentation say so.
+- `runtime::flush()` and `console\schedule::_take_lock()` document the other edge of the registry:
+  `flush()` runs the closers, and the closer of a file lock releases the lock. `TODO.md` carries the
+  open question of whether that deserves a second entry kind.
+- `check_architecture.php` fixes two stale claims of its own: `src/log.php` was exempt from the
+  resource rule for "closing the handle in the same call", which it stopped doing when the append
+  handles moved into the registry -- the exemption is gone and the rule now covers it -- and
+  `CONFIG_RESET` named a `log::reset()` that did not exist, where the name now means the request
+  scoped reset above.
+
+### Configuration
+
+- `.env` is a source of defaults again rather than an override: `plato::registry()` no longer
+  replaces a variable the process was started with. It wrote every key of the file into `$_ENV`
+  unconditionally, so `DB_PASSWORD` committed to a repository beat the one a container, a CI job or a
+  systemd unit injected -- the opposite of the direction deployments inject from, and the reason
+  passing a credential to the process appeared to do nothing at all. `getenv()` is consulted
+  alongside `$_ENV`, because `variables_order` decides whether the environment reaches `$_ENV`, and a
+  variable set to the empty string counts as set. A deployment that relied on the file winning has to
+  stop exporting the variable it wants the file to decide.
+
 ## 0.1.1 - 2026-08-06
 
 ### Coding standard

@@ -79,6 +79,7 @@ const REQUEST_RESET = [
     'plato\tpl'                  => 'reset',
     'plato\debug\profiler'       => 'reset',
     'plato\debug\error_handler'  => 'reset',
+    'plato\log'                  => 'reset',
 ];
 
 /**
@@ -100,7 +101,6 @@ const CONFIG_RESET = [
     'plato\http\req'         => 'request settings; reset_input() is the request scoped half',
     'plato\http\resp'        => 'cookie settings; the same class also clears request state',
     'plato\lock'             => 'lock settings',
-    'plato\log'              => 'log settings',
     'plato\queue\queue'      => 'queue connections',
     'plato\security\security' => 'security settings',
     'plato\storage\storage'  => 'storage disks',
@@ -142,7 +142,6 @@ const RESOURCE_CALLS = ['fopen', 'fsockopen', 'stream_socket_client', 'proc_open
  * @var array<string, string>
  */
 const RESOURCE_EXEMPT = [
-    'src/log.php'          => 'opens the log file, writes and closes it inside one call; nothing is held between them',
     'src/http/client.php'  => 'a curl handle lives for one request and is closed in the same method, so a fork cannot inherit one',
     'src/cli.php'          => 'STDOUT / STDERR are the process\' own descriptors, not something this package opened',
     'src/console/make.php' => 'writes generated files with file_put_contents and keeps no handle',

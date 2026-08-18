@@ -23,8 +23,10 @@ return [
         'connect_timeout' => 1000,
         'compression'     => true,
     ],
-    // One server, short connections: persistent ones are collected at random on PHP 7+. A
-    // `cluster` key is read as well, see plato\cache\redis::_connect()
+    // One server, short connections: persistent ones are collected at random on PHP 7+, and a
+    // `keep-alive` connection lives in phpredis' own pool rather than in plato\runtime -- a forked
+    // worker is handed its parent's socket, so leave it off under plato\pool. A `cluster` key is
+    // read as well, see plato\cache\redis::_connect()
     'redis' => [
         'server' => [
             'host'       => $_ENV['REDIS_HOST'] ?? '127.0.0.1',

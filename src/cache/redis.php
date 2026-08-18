@@ -11,7 +11,9 @@
 namespace plato\cache;
 
 use plato\config;
+use plato\log;
 use plato\runtime;
+use plato\worker;
 
 /**
  * Thin wrapper around the phpredis extension.
@@ -215,6 +217,20 @@ class redis implements store
                 // Short connections by default: persistent ones are collected at random on PHP 7+
                 if ( !empty($config['keep-alive']) )
                 {
+                    // A persistent connection lives in phpredis' own pool, keyed by host and port,
+                    // where plato\runtime cannot reach it: releasing this handle leaves the socket
+                    // open, and the next pconnect() -- in a forked worker included -- is handed the
+                    // same one back. Two processes then take turns on one connection and read each
+                    // other's replies
+                    if ( worker::in_group() )
+                    {
+                        log::warning(
+                            'cache redis keep-alive is on in worker ' . worker::index()
+                            . ' of ' . worker::count() . ': a persistent connection is not released'
+                            . ' by a fork and is shared with the other workers'
+                        );
+                    }
+
                     $this->_handler->pconnect($config['host'], (int) $config['port'], $config['timeout'] ?? 5);
                 }
                 else

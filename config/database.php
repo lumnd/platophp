@@ -47,7 +47,9 @@ $connections = [
         'max_select_limit' => null,
 
         // Persistent connections stay open between requests and keep whatever session state, open
-        // transaction or table lock the last request left behind. Leave this off
+        // transaction or table lock the last request left behind. They also live in PDO's own pool
+        // rather than in plato\runtime, so a forked worker is handed its parent's socket and the two
+        // interleave on one session. Leave this off, and never turn it on under plato\pool
         'persistent' => false,
     ],
 ];

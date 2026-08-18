@@ -457,6 +457,22 @@ class plato
     /**
      * Load the .env file into $_ENV, missing or unreadable files are ignored.
      *
+     * **The real environment wins.** A key already in $_ENV, or one the process was started with,
+     * is left alone and the file's value for it is dropped -- so `.env` is the default and whatever
+     * runs the process is the override, which is the direction a container, a CI job and a systemd
+     * unit all inject from. The other way round would let a file committed to the repository decide
+     * the password of the machine it was deployed to.
+     *
+     * getenv() as well as $_ENV, because the two are not the same list: `variables_order` decides
+     * whether the environment is imported into $_ENV at all, and it commonly is not under CLI. A
+     * variable that is only in the process environment is **copied into $_ENV** rather than merely
+     * skipped -- configuration files read $_ENV and nothing else, so skipping it would leave the
+     * key unset and hand the config file's own fallback the decision. A variable explicitly set to
+     * the empty string counts as set, since that is a decision too.
+     *
+     * Only the keys the file names are looked up: the .env file is the list of what this
+     * application reads, and the environment decides the value of the ones on it.
+     *
      * @return void
      */
     private static function _load_env()
@@ -474,10 +490,19 @@ class plato
 
         foreach ( $envs as $k => $v )
         {
-            if ( strpos($k, "# ") === false ) // skip commented out lines
+            if ( strpos($k, "# ") !== false ) // skip commented out lines
             {
-                $_ENV[$k] = $v;
+                continue;
             }
+
+            if ( array_key_exists($k, $_ENV) )
+            {
+                continue;
+            }
+
+            $real = getenv($k);
+
+            $_ENV[$k] = $real === false ? $v : $real;
         }
     }
 
@@ -564,6 +589,21 @@ class plato
      */
     public static function reset_request(): void
     {
+        // First, and while the finished request's log context is still in place: the warning is
+        // about whoever left the transaction open, so it has to carry that request's id and not the
+        // one restamp() is about to issue
+        foreach ( db::discard_transactions() as $connection => $depth )
+        {
+            log::warning(sprintf(
+                'reset_request rolled back a transaction left open on the %s connection at depth %d',
+                $connection,
+                $depth
+            ));
+        }
+
+        // Before restamp(), which puts a fresh request id on the context this clears
+        log::reset();
+
         self::restamp();
 
         req::reset_input();

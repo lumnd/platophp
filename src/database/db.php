@@ -181,6 +181,18 @@ class db
     }
 
     /**
+     * Roll back a transaction the last request left open, see connection::discard_transactions().
+     *
+     * plato::reset_request() calls this before a resident worker takes the next message.
+     *
+     * @return array<string, int> Depth each connection was left at, keyed by connection name
+     */
+    public static function discard_transactions(): array
+    {
+        return connection::discard_transactions();
+    }
+
+    /**
      * Called by connection for every statement it runs.
      *
      * @param  array<int, mixed> $bindings

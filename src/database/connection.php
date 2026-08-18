@@ -211,6 +211,55 @@ abstract class connection
     }
 
     /**
+     * Roll back a transaction the last request left open, on every connection of this process.
+     *
+     * The database half of the request boundary, reached through db::discard_transactions(). A
+     * php-fpm process ends with the request and the server rolls back whatever nobody committed; a
+     * resident worker keeps its socket, so an action that called begin() and then threw leaves the
+     * *next* message inside its transaction -- committing writes nobody asked for when that one
+     * commits, or holding the row locks until the worker exits.
+     *
+     * One outermost rollback whatever the depth, which discards the savepoints with it. It goes
+     * through the driver primitive rather than through rollback(), so nothing is recorded in the
+     * query log this boundary is about to drop; the caller says what happened instead. A rollback
+     * that fails disconnects the connection, because a socket that cannot be talked to is not one
+     * to hand the next message.
+     *
+     * @return array<string, int> Depth each connection was left at, keyed by connection name.
+     *                            Empty is the normal case: nothing was left open
+     */
+    public static function discard_transactions(): array
+    {
+        $open = [];
+
+        foreach ( self::$_instances as $name => $instance )
+        {
+            // A fork is not a leak: the child never opened the transaction whose depth it
+            // inherited, and this is what says so before the depth is read
+            $instance->_guard_fork();
+
+            if ( $instance->_transactions === 0 )
+            {
+                continue;
+            }
+
+            $open[$name]             = $instance->_transactions;
+            $instance->_transactions = 0;
+
+            try
+            {
+                $instance->_rollback($instance->_handle(true));
+            }
+            catch ( Throwable )
+            {
+                $instance->disconnect();
+            }
+        }
+
+        return $open;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     protected static function _read_config(): array

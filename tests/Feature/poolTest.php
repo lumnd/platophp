@@ -112,6 +112,48 @@ PHP);
         ->and($output)->toContain('code=0 starts=5');
 });
 
+it('releases what the master opened before every fork, not only before the first', function () {
+    [$status, $output] = run_pool_script(<<<'PHP'
+$file = $dir . '/refill.txt';
+@unlink($file);
+
+// One slot, so the generations are strictly sequential
+$code = pool::supervise(function () use ($file) {
+    file_put_contents($file, sprintf(
+        "worker keys=%d abandoned=%d\n",
+        count(runtime::keys()),
+        runtime::abandoned()
+    ), FILE_APPEND | LOCK_EX);
+
+    if ( count(pool_lines($file)) >= 3 )
+    {
+        posix_kill(posix_getppid(), SIGTERM);
+    }
+}, 1, [
+    'backoff' => 0.02,
+    'poll'    => 0.02,
+    // Stands in for the notify callback every real deployment has: one that logs, which is enough
+    // to put a handle back in the master's registry after the first fork
+    'notify'  => function () use ($dir) {
+        runtime::share(
+            'test.notify',
+            fn () => fopen($dir . '/notify.log', 'ab'),
+            fn ($handle) => fclose($handle)
+        );
+    },
+]);
+
+echo (string) file_get_contents($file);
+echo 'code=', $code, ' starts=', count(pool_lines($file)), "\n";
+PHP);
+
+    expect($status)->toBe(0)
+        ->and($output)->toContain('code=0 starts=3')
+        // Generations two and three were forked after the master had opened a handle of its own,
+        // and inherited it in neither case -- not even as something to abandon
+        ->and(substr_count($output, 'worker keys=0 abandoned=0'))->toBe(3);
+});
+
 it('forwards a signal to every worker and waits for each of them to drain', function () {
     [$status, $output] = run_pool_script(<<<'PHP'
 $ready   = $dir . '/drain_ready.txt';

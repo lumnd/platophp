@@ -26,6 +26,9 @@ class fake_driver extends connection
     /** @var array<int, Throwable> Thrown in turn instead of running the statement */
     public array $failures = [];
 
+    /** @var bool Whether _rollback() throws instead of answering, as a dead socket would */
+    public bool $rollback_fails = false;
+
     /** @var array<int, array<string, mixed>> Rows _fetch() answers with */
     public array $rows = [];
 
@@ -86,6 +89,11 @@ class fake_driver extends connection
     protected function _rollback($handle): bool
     {
         $this->transactions[] = 'rollback';
+
+        if ($this->rollback_fails)
+        {
+            throw new RuntimeException('gone away');
+        }
 
         return true;
     }
@@ -360,6 +368,66 @@ it('hands out one instance per name and refuses a name that is not configured', 
     {
         connection::purge('unit_fake');
         $db->set('connections', $connections);
+    }
+});
+
+it('rolls back a transaction a request left open, and says how deep it was', function () {
+    $config      = config::instance('database');
+    $connections = $config->get('connections');
+
+    $config->set('connections.unit_left_open', ['driver' => 'fake', 'prefix' => 'plt']);
+    connection::register_driver('fake', fake_driver::class);
+
+    try
+    {
+        $db = connection::instance('unit_left_open');
+        $db->begin();
+        $db->begin();
+
+        // One outermost rollback whatever the depth: it takes the savepoint with it
+        expect(connection::discard_transactions())->toBe(['unit_left_open' => 2])
+            ->and($db->in_transaction())->toBeFalse()
+            ->and($db->transactions)->toBe(['begin', 'savepoint plato_sp_1', 'rollback'])
+            // Nothing open now, so the next request boundary has nothing to report
+            ->and(connection::discard_transactions())->toBe([]);
+    }
+    finally
+    {
+        connection::purge('unit_left_open');
+        $config->set('connections', $connections);
+    }
+});
+
+it('disconnects a connection whose rollback fails instead of letting it through', function () {
+    $config      = config::instance('database');
+    $connections = $config->get('connections');
+
+    $config->set('connections.unit_dead_socket', ['driver' => 'fake', 'prefix' => 'plt']);
+    connection::register_driver('fake', fake_driver::class);
+
+    try
+    {
+        $db = connection::instance('unit_dead_socket');
+        $db->begin();
+        $db->rollback_fails = true;
+
+        // The worker is between two messages: a throw here would end its loop over a transaction
+        // the last message left behind
+        expect(connection::discard_transactions())->toBe(['unit_dead_socket' => 1])
+            ->and($db->in_transaction())->toBeFalse();
+
+        $db->rollback_fails = false;
+        $dials              = $db->dials;
+
+        $db->select_raw('select 1');
+
+        // Disconnected, so the next statement dials rather than reusing a socket that failed
+        expect($db->dials)->toBe($dials + 1);
+    }
+    finally
+    {
+        connection::purge('unit_dead_socket');
+        $config->set('connections', $connections);
     }
 });
 

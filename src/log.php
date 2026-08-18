@@ -226,6 +226,25 @@ class log
     }
 
     /**
+     * Drops the whole shared context, the request id with it.
+     *
+     * The request scoped half of this class. Keys put there with context() belong to the request
+     * that put them there -- a user id, a tenant, an order number -- and a resident worker that
+     * carried them over would label one client's lines with the identity of the client before it.
+     * plato::reset_request() calls this, then plato::restamp() seeds a fresh `rid`; a caller doing
+     * it by hand owes that second half, since an entry with no request id ties to nothing.
+     *
+     * Context that belongs to the process rather than to the request -- a worker index, a release
+     * tag -- is put back by the registry `reset_handle`, which runs at the end of reset_request().
+     *
+     * @return  void
+     */
+    public static function reset()
+    {
+        self::$_shared = [];
+    }
+
+    /**
      * The context every entry currently carries.
      *
      * @return array<string, mixed>

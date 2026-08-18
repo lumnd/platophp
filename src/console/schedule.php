@@ -600,6 +600,11 @@ class schedule implements command
      * LOCK_EX among them is granted at once, which is the opposite of an overlap guard. Registering
      * it means a child does not believe it holds a lock its parent took.
      *
+     * The registry cuts the other way as well: runtime::flush() runs the closer, and the closer of a
+     * lock releases it. An in-process task that calls pool::supervise() -- which flushes before
+     * every fork -- would give up its own overlap guard while still running. Spawn such a task
+     * instead, which is the path that releases the lock by exiting.
+     *
      * @param string $name Task name
      *
      * @return bool  False when another process is holding it

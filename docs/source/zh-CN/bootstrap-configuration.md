@@ -45,6 +45,8 @@ plato::run();
 
 配置按“框架 `config/` → 应用 `config/`”递归合并。应用只需放同名 PHP 文件并返回数组。敏感值和环境差异放在 `.env`，配置文件通过 `$_ENV` 读取。
 
+`.env` 提供的是默认值而非覆盖值：进程启动时已经带上的变量——容器、CI 任务或 systemd unit 注入的——保持原值，文件里的同名条目被丢弃。`$_ENV` 和 `getenv()` 都会检查，因为 `variables_order` 决定了环境变量是否会进入 `$_ENV`。
+
 ```php
 use plato\config;
 

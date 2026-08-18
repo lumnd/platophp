@@ -2,7 +2,7 @@
     "name": "PlatoPHP",
     "package": "lumnd/platophp",
     "default_locale": "zh-CN",
-    "generated_at": "2026-08-03T14:12:57.000Z",
+    "generated_at": "2026-08-18T06:56:33.000Z",
     "locales": {
         "zh-CN": {
             "label": "简体中文",
@@ -45,7 +45,7 @@
                     "section": "开始",
                     "source": "source/zh-CN/architecture.md",
                     "page": "site/zh-CN/architecture.html",
-                    "sha256": "24b685575fa8d3d8768c8a06fc6b2ba1172552583cac1f7fcc8337618ce1ff05"
+                    "sha256": "930446a0a7a25924ee8949fbb90523f99d3067deb20d753d332af291221f8c35"
                 },
                 {
                     "title": "引导与配置",
@@ -53,7 +53,7 @@
                     "section": "开始",
                     "source": "source/zh-CN/bootstrap-configuration.md",
                     "page": "site/zh-CN/bootstrap-configuration.html",
-                    "sha256": "3414b3e02844b6f28d3e301ef1a001e7803332380f8ff528f910253f9e41129d"
+                    "sha256": "8b6b3a226f77e77fc7f23208113e9a36f2cd7b08fb23cb8efeeb39a183ca7d0e"
                 },
                 {
                     "title": "路由与中间件",
@@ -226,7 +226,7 @@
                     "section": "Start",
                     "source": "source/en/architecture.md",
                     "page": "site/en/architecture.html",
-                    "sha256": "5978e3d83686868bf0e8bbebf61bb3945ee56665b78d01f31066a3997601ff84"
+                    "sha256": "05b23bbbf38e2e2734a9dde1ce38aadd24ba6b27bcab74a04bd414c066ea97e2"
                 },
                 {
                     "title": "Bootstrap and Configuration",
@@ -234,7 +234,7 @@
                     "section": "Start",
                     "source": "source/en/bootstrap-configuration.md",
                     "page": "site/en/bootstrap-configuration.html",
-                    "sha256": "4fa3d2e921d2349924308e3d8ee7aa16589393ca5a69d491c5b04fbf60489448"
+                    "sha256": "3bdbc4fdc2fec1acfdf23fdd38547c1d27c0c536a3198cacb57b9567bf543cad"
                 },
                 {
                     "title": "Routing and Middleware",

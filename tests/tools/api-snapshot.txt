@@ -369,6 +369,7 @@ plato\database\connection::commit()	public method
 plato\database\connection::config(?string $key = null, $default = null)	public method
 plato\database\connection::cursor(query $q)	public method
 plato\database\connection::delete(query $q)	public method
+plato\database\connection::discard_transactions()	public static method
 plato\database\connection::disconnect()	public method
 plato\database\connection::driver()	public method
 plato\database\connection::grammar()	public method
@@ -399,6 +400,7 @@ plato\database\db	class
 plato\database\db::begin(?string $name = null)	public static method
 plato\database\db::commit(?string $name = null)	public static method
 plato\database\db::connection(?string $name = null)	public static method
+plato\database\db::discard_transactions()	public static method
 plato\database\db::flush_log()	public static method
 plato\database\db::last_query()	public static method
 plato\database\db::log_limit()	public static method
@@ -1061,6 +1063,7 @@ plato\log::log($level, $msg, $context = null)	public static method
 plato\log::memory($key = "memory")	public static method
 plato\log::new_rid()	public static method
 plato\log::notice($msg, $context = null)	public static method
+plato\log::reset()	public static method
 plato\log::save()	public static method
 plato\log::shared_context()	public static method
 plato\log::time($key = "time")	public static method

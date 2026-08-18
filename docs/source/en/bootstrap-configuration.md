@@ -46,6 +46,8 @@ exception is allowed to propagate because accepting the next request with stale 
 
 Configuration is recursively merged from framework `config/` to application `config/`. The application only needs a PHP file with the same name that returns an array. Secrets and environment differences belong in `.env`; configuration files read them through `$_ENV`.
 
+`.env` provides defaults, not overrides: a variable the process was already started with — set by a container, a CI job or a systemd unit — keeps its value, and the file's entry for that key is dropped. Both `$_ENV` and `getenv()` are consulted, because `variables_order` decides whether the environment reaches `$_ENV` at all.
+
 ```php
 use plato\config;
 

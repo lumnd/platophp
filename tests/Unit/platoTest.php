@@ -13,6 +13,7 @@ use plato\database\db;
 use plato\exception\auth_exception;
 use plato\http\reply;
 use plato\http\resp;
+use plato\log;
 use plato\plato;
 
 /**
@@ -138,6 +139,28 @@ it('clears request-scoped cache memoization and query logs', function () {
     db::set_logging($logging);
 });
 
+it('replaces the shared log context with a request id of its own', function () {
+    $before = log::shared_context();
+
+    try
+    {
+        log::context(['rid' => 'from-the-last-request', 'uid' => 7]);
+
+        plato::reset_request();
+
+        $context = log::shared_context();
+
+        // The uid of whoever the last request was would otherwise label every line of this one
+        expect(array_keys($context))->toBe(['rid'])
+            ->and($context['rid'])->toMatch('/^[0-9a-f]{16}$/');
+    }
+    finally
+    {
+        log::reset();
+        log::context($before);
+    }
+});
+
 it('resets application request state after framework state', function () {
     $previous = plato::$config['reset_handle'] ?? null;
     $seen     = null;
@@ -198,6 +221,52 @@ it('falls back from the registry environment to APP_ENV and then to pub', functi
         {
             $_ENV['APP_ENV'] = $app_env;
         }
+    }
+});
+
+it('lets the process environment win over the .env file instead of the other way round', function () {
+    $file = (string) tempnam(sys_get_temp_dir(), 'platoenv');
+    file_put_contents(
+        $file,
+        "PLATO_TEST_ONLY_IN_FILE=from_file\nPLATO_TEST_IN_BOTH=from_file\nPLATO_TEST_ONLY_IN_GETENV=from_file\nPLATO_TEST_BLANK_IN_ENV=from_file\n"
+    );
+
+    $path     = new \ReflectionProperty(plato::class, '_env_path');
+    $previous = $path->getValue();
+
+    $_ENV['PLATO_TEST_IN_BOTH'] = 'from_process';
+    // In the process environment but not in $_ENV, which is what variables_order usually leaves
+    // under CLI -- and the case config files cannot see, since they read $_ENV and nothing else
+    putenv('PLATO_TEST_ONLY_IN_GETENV=from_getenv');
+    putenv('PLATO_TEST_BLANK_IN_ENV=');
+
+    try
+    {
+        $path->setValue(null, $file);
+
+        (new \ReflectionMethod(plato::class, '_load_env'))->invoke(null);
+
+        expect($_ENV['PLATO_TEST_ONLY_IN_FILE'])->toBe('from_file')
+            // The file is a default, so it does not get to replace what the process was started with
+            ->and($_ENV['PLATO_TEST_IN_BOTH'])->toBe('from_process')
+            // Copied over rather than skipped: skipping would leave the key unset and hand the
+            // decision to whatever fallback the config file spells after ??
+            ->and($_ENV['PLATO_TEST_ONLY_IN_GETENV'])->toBe('from_getenv')
+            // Explicitly empty is a decision as much as any other value
+            ->and($_ENV['PLATO_TEST_BLANK_IN_ENV'])->toBe('');
+    }
+    finally
+    {
+        $path->setValue(null, $previous);
+        unset(
+            $_ENV['PLATO_TEST_ONLY_IN_FILE'],
+            $_ENV['PLATO_TEST_IN_BOTH'],
+            $_ENV['PLATO_TEST_ONLY_IN_GETENV'],
+            $_ENV['PLATO_TEST_BLANK_IN_ENV']
+        );
+        putenv('PLATO_TEST_ONLY_IN_GETENV');
+        putenv('PLATO_TEST_BLANK_IN_ENV');
+        @unlink($file);
     }
 });
 

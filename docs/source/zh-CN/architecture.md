@@ -31,3 +31,5 @@ src/
 请求边界负责清理一次请求产生的静态状态；进程边界负责让 fork 后的连接与文件句柄重新建立。前者由 `plato::reset_request()` 处理，每个常驻入口都调用它——`plato\server\dispatcher` 在每条消息前、`plato\queue\worker` 在每个任务前。应用自己的请求态通过 registry 的 `reset_handle` 清理，该回调在框架状态清空后执行。进程边界由 `plato\runtime` 处理。
 
 该设计适合 php-fpm、前台多进程 CLI 和串行常驻 worker，不支持一个进程内同时执行多个请求的协程。
+
+进程边界唯一管不到的是持久连接。`PDO::ATTR_PERSISTENT` 和 phpredis 的 `pconnect()` 把 socket 放在扩展自己的连接池里，按端点复用，`plato\runtime` 无法释放它：fork 出来的 worker 拿到的是父进程那条 socket，两个进程会在同一条连接上交错。两个配置默认都是关闭的，任何会 fork 的进程都应保持关闭。

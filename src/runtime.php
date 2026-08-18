@@ -223,8 +223,13 @@ class runtime
     /**
      * Release every resource of this process.
      *
-     * Two callers: a test, between cases, and plato\pool, in the parent right before it
+     * Two callers: a test, between cases, and plato\pool, in the parent right before each of its
      * forks -- a child that inherits nothing has nothing to get wrong.
+     *
+     * **It runs the closers**, which is right for a connection that can be dialled again and wrong
+     * for an entry that *is* held state: releasing a flock() handle gives the lock up, and nothing
+     * reacquires it. Do not call it, or supervise() a pool, while holding one -- see
+     * plato\console\schedule::_take_lock().
      *
      * @return void
      */

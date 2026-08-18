@@ -20,7 +20,9 @@
 namespace plato\database\driver;
 
 use plato\database\connection;
+use plato\log;
 use plato\runtime;
+use plato\worker;
 use Generator;
 use InvalidArgumentException;
 use PDO;
@@ -404,6 +406,19 @@ class mysql extends connection
         foreach ( (array) $this->config('options', []) as $key => $value )
         {
             $options[$key] = $value;
+        }
+
+        // A persistent connection lives in PDO's own pool, keyed by dsn and credentials, where
+        // plato\runtime cannot reach it: releasing this handle leaves the socket open, and the next
+        // connection built with the same key -- in a forked worker included -- is handed it back.
+        // Two processes then interleave their statements, and their transactions, on one session
+        if ( !empty($options[PDO::ATTR_PERSISTENT]) && worker::in_group() )
+        {
+            log::warning(
+                'database ' . $this->name() . ' is persistent in worker ' . worker::index()
+                . ' of ' . worker::count() . ': a persistent connection is not released by a fork'
+                . ' and is shared with the other workers'
+            );
         }
 
         try

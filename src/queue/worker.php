@@ -14,6 +14,7 @@ use plato\config;
 use plato\exception\queue_exception;
 use plato\log;
 use plato\plato;
+use plato\runtime;
 use Throwable;
 
 /**
@@ -62,11 +63,11 @@ class worker
     private static $_stop = false;
 
     /**
-     * Whether the signal handlers are installed
+     * Runtime epoch the signal handlers were installed in, -1 when they are not
      *
-     * @var bool
+     * @var int
      */
-    private static $_signals = false;
+    private static $_signals = -1;
 
     /**
      * Consume until one of the stop conditions is met.
@@ -434,22 +435,35 @@ class worker
     }
 
     /**
-     * Install the signal handlers, once.
+     * Install the signal handlers, once per process.
      *
      * Nothing is done in the handler beyond setting a flag: a message being processed when the
      * signal arrives is finished first, because an at-most-once driver has already handed it over
      * and there is nothing left to redeliver.
      *
+     * Once per *process*, which is why the guard is the runtime epoch and not a bool. A fork copies
+     * the flag along with the handlers, and the handlers a child inherits are its parent's -- under
+     * plato\pool they set pool::$_stop rather than the flag this loop reads. A child that took the
+     * early return would ignore SIGTERM and be SIGKILLed in the middle of a message once the grace
+     * period ran out.
+     *
      * @return void
      */
     private static function _listen(): void
     {
-        if ( self::$_signals || !function_exists('pcntl_signal') )
+        if ( !function_exists('pcntl_signal') )
         {
             return;
         }
 
-        self::$_signals = true;
+        $epoch = runtime::epoch();
+
+        if ( self::$_signals === $epoch )
+        {
+            return;
+        }
+
+        self::$_signals = $epoch;
 
         foreach ( [SIGTERM, SIGINT, SIGQUIT] as $signal )
         {

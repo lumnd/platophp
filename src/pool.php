@@ -54,11 +54,14 @@ use Throwable;
  * gives up on the whole pool and returns 1 rather than spinning at fork speed. A worker that keeps
  * dying is a bug the supervisor cannot fix, and a supervisor that hides it costs you the CPU as well.
  *
- * **The fork contract.** The master releases everything plato\runtime holds before the first fork,
- * so a child inherits no open socket or file handle and opens its own on first use; it then
- * announces the fork to the registry and reseeds mt_rand(), which fork otherwise copies along with
- * everything else. Two things stay the caller's problem: a resource the callable's *enclosing scope*
- * opened before supervise() was called, and any child of the host process that is not this pool's --
+ * **The fork contract.** The master releases everything plato\runtime holds before every fork, so a
+ * child inherits no open socket or file handle and opens its own on first use; it then announces the
+ * fork to the registry and reseeds mt_rand(), which fork otherwise copies along with everything
+ * else. Three things stay the caller's problem: a resource the callable's *enclosing scope* opened
+ * before supervise() was called, a **persistent** connection -- `PDO::ATTR_PERSISTENT`, phpredis'
+ * `pconnect()` -- which lives in the extension's own pool where the registry cannot reach it and is
+ * handed back to the child as the parent's socket, and any child of the host process that is not
+ * this pool's --
  * the master reaps its own pids by number, never with a wildcard wait, but it cannot stop a SIGCHLD
  * handler the host installed from reaping them first, which makes a clean exit look like a signal
  * death. Do not supervise from a process that reaps children of its own.
@@ -187,12 +190,6 @@ class pool
         }
 
         self::_listen();
-
-        // In the master, before the first fork: a child that inherits no descriptor cannot write
-        // into one the master is using. Nothing reopens it here -- past this point the master only
-        // forks and reaps, and the standard streams are not registry resources, so a child can
-        // still print
-        runtime::flush();
 
         $exit = 0;
 
@@ -386,6 +383,14 @@ class pool
             {
                 continue;
             }
+
+            // Before every fork and not only the first one: a child that inherits no descriptor
+            // cannot write into one the master is using. The master only forks and reaps, but a
+            // notify callback that logs, or a warning raised while it was reaping, is enough to put
+            // a handle back in the registry -- and the worker refilling this slot would then hold
+            // its parent's descriptor open for the rest of its life. The standard streams are not
+            // registry resources, so a child can still print
+            runtime::flush();
 
             $pid = pcntl_fork();
 

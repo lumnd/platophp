@@ -31,3 +31,5 @@ The framework supplies reusable protocols and runtime mechanisms. It does not de
 The request boundary clears static state created by one request. The process boundary rebuilds connections and handles after a fork. `plato::reset_request()` manages the first, and every resident entry point calls it -- `plato\server\dispatcher` before each message, `plato\queue\worker` before each job. An application adds its own request-state cleanup with the registry `reset_handle`, which runs after framework state is clear. `plato\runtime` manages the process boundary.
 
 This design supports php-fpm, foreground multiprocess CLI services, and serial resident workers. It does not support concurrent requests inside one process.
+
+Persistent connections are the one thing the process boundary cannot manage. `PDO::ATTR_PERSISTENT` and phpredis' `pconnect()` keep the socket in the extension's own pool, keyed by endpoint, where `plato\runtime` cannot release it: a forked worker is handed its parent's socket and the two interleave on it. Both settings default to off; leave them off in any process that forks.
