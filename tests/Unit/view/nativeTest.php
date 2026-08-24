@@ -95,6 +95,14 @@ it('drops the assigned variables when it is cleared', function () {
     expect($this->engine->fetch('native/greeting'))->toBe('');
 });
 
+it('drops the assigned variables when it is reconfigured', function () {
+    $this->engine->assign('greeting', 'hello');
+    $this->engine->configure([]);
+
+    // Same as what the Smarty driver does by dropping the engine its variables lived in
+    expect($this->engine->fetch('native/greeting'))->toBe('');
+});
+
 it('renders from a configured template directory instead of the application one', function () {
     $this->engine->configure(['template_dir' => __DIR__ . '/../../Fixtures/app/template/native']);
 

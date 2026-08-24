@@ -143,13 +143,14 @@ class tpl
 
         unset($config['driver']);
 
-        // Assigned before configure() so that a driver whose settings are rejected does not leave
-        // this class rebuilding it on every call
+        // Assigned after configure() so that a driver rejecting its settings is reported on every
+        // call rather than once: a half-configured engine kept here would go on rendering from the
+        // defaults it was built with. Building one again costs nothing -- a driver's constructor is
+        // contractually forbidden from touching the filesystem or building its engine
         $engine = new $driver();
-        self::$_engine = $engine;
         $engine->configure($config);
 
-        return $engine;
+        return self::$_engine = $engine;
     }
 
     /**

@@ -5,6 +5,24 @@ All notable changes to PlatoPHP are documented in this file. Releases follow
 
 ## 0.2.0 - 2026-08-24
 
+### The engine contract says the same thing on both drivers
+
+Each of these is a place where the contract was written down and only one driver honoured it, which
+is the failure mode a two-driver split exists to expose.
+
+- `plato\tpl::engine()` caches the driver only once `configure()` has returned. It cached first, so a
+  driver rejecting its settings threw on the first call and then answered every later one with an
+  instance still holding its defaults -- a wrong template directory rendering quietly instead of an
+  error. Building the driver again costs nothing: the contract forbids its constructor from touching
+  the filesystem or building its engine.
+- `plato\view\native::configure()` drops the assigned variables. The Smarty driver already did, as a
+  consequence of dropping the instance they lived in, and a behaviour a driver cannot avoid is one
+  the interface has to state -- `plato\view\engine::configure()` now does.
+- The Smarty driver decides "the application assigned this already" by the name being present rather
+  than by its value being non-null. `getTemplateVars($name)` answers null for both a name nobody
+  assigned and a name deliberately assigned null, so an application assigning `app_name => null` had
+  the ambient default written over it while the plain PHP driver, working on array keys, kept it.
+
 ### Flaky feature tests, made deterministic
 
 None of them was a flaky assertion about a real race; they were tests that measured wall-clock time,

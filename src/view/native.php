@@ -76,6 +76,12 @@ class native implements engine
     private $_defaults_assigned = false;
 
     /**
+     * Replace the settings, and take the assigned variables with them.
+     *
+     * This driver has nothing built from its settings to drop -- there is no engine behind it --
+     * but the contract says the variables do not survive a reconfiguration, and a driver deciding
+     * that for itself is how two engines end up disagreeing about what configure() means.
+     *
      * @param array<string, mixed> $config
      *
      * @return void
@@ -83,6 +89,8 @@ class native implements engine
     public function configure(array $config): void
     {
         $this->_config = $config + self::DEFAULT_CONFIG;
+
+        $this->clear();
     }
 
     /**

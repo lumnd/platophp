@@ -516,7 +516,10 @@ class smarty implements engine
      * Variables every template can count on, added once per request.
      *
      * A name the application already assigned is left alone, so a controller assigning its own
-     * `app_name` keeps it -- these are a floor, not an override.
+     * `app_name` keeps it -- these are a floor, not an override. Assigned is decided by the key
+     * being there rather than by the value being non-null, because getTemplateVars($name) answers
+     * null for both a name nobody assigned and a name deliberately assigned null, and the plain PHP
+     * driver keeps that second one.
      *
      * @param \Smarty\Smarty $smarty
      *
@@ -538,9 +541,11 @@ class smarty implements engine
             'clear_cache' => '?' . time(),
         ];
 
+        $assigned = (array) $smarty->getTemplateVars();
+
         foreach ( $defaults as $name => $value )
         {
-            if ( $smarty->getTemplateVars($name) === null )
+            if ( !array_key_exists($name, $assigned) )
             {
                 $smarty->assign($name, $value);
             }

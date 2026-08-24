@@ -18,6 +18,38 @@ afterEach(function () {
     tpl::$output = null;
 });
 
+/** A driver that refuses to be configured, which is what the facade has to keep reporting. */
+class tpl_test_strict_engine implements engine
+{
+    public function configure(array $config): void
+    {
+        throw new RuntimeException('settings rejected');
+    }
+
+    public function config(?string $key = null)
+    {
+        return $key === null ? [] : null;
+    }
+
+    public function assign($tpl_var, $value = null): void
+    {
+    }
+
+    public function exists(string $tpl): bool
+    {
+        return false;
+    }
+
+    public function fetch(string $tpl): string
+    {
+        return '';
+    }
+
+    public function clear(): void
+    {
+    }
+}
+
 it('builds the driver named by template.driver, once', function () {
     $engine = tpl::engine();
 
@@ -64,6 +96,15 @@ it('refuses a driver that does not implement the contract', function () {
 
     expect(fn () => tpl::engine())
         ->toThrow(RuntimeException::class, 'does not implement');
+});
+
+it('keeps reporting a driver that rejected its settings', function () {
+    tpl::configure(['driver' => tpl_test_strict_engine::class]);
+
+    expect(fn () => tpl::engine())->toThrow(RuntimeException::class, 'settings rejected')
+        // The second call has to throw as well: a half-configured engine kept from the first one
+        // would render from the defaults it was built with instead
+        ->and(fn () => tpl::engine())->toThrow(RuntimeException::class, 'settings rejected');
 });
 
 it('keeps the rendered page for output instead of echoing it', function () {

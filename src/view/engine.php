@@ -34,6 +34,12 @@ interface engine
     /**
      * Replace the driver's settings and drop whatever was derived from the previous ones.
      *
+     * **The assigned variables go too.** An engine built from the old settings is what a driver
+     * derives from them, and a driver that keeps its variables in that engine loses them when it is
+     * dropped -- so this is the one behaviour every driver can offer, and leaving it unsaid is what
+     * would let two engines disagree about whether a variable assigned before configure() is still
+     * there afterwards.
+     *
      * @param array<string, mixed> $config The `template` section without its `driver` key
      *
      * @return void

@@ -141,3 +141,10 @@ it('lets an application variable win over an ambient one', function () {
 
     expect(trim(tpl::fetch('hello.tpl')))->toBe('|overridden|');
 });
+
+it('counts a variable assigned null as assigned rather than as missing', function () {
+    tpl::assign('app_name', null);
+
+    // Same as what the plain PHP driver does with its array keys: null was a decision
+    expect(trim(tpl::fetch('hello.tpl')))->toBe('||');
+});
