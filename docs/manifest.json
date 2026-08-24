@@ -2,7 +2,7 @@
     "name": "PlatoPHP",
     "package": "lumnd/platophp",
     "default_locale": "zh-CN",
-    "generated_at": "2026-08-21T13:23:07.000Z",
+    "generated_at": "2026-08-24T08:11:47.000Z",
     "locales": {
         "zh-CN": {
             "label": "简体中文",
@@ -37,7 +37,7 @@
                     "section": "开始",
                     "source": "source/zh-CN/installation.md",
                     "page": "site/zh-CN/installation.html",
-                    "sha256": "6f0fb374a60f5e2200a4cd61592bfbd6f2f9ffc4294367d5ea633c6448167efa"
+                    "sha256": "cc63727ab86ae0ab54d27c56dbcfd822f3d3f514f388371b557989909a44c12a"
                 },
                 {
                     "title": "架构与目录",
@@ -218,7 +218,7 @@
                     "section": "Start",
                     "source": "source/en/installation.md",
                     "page": "site/en/installation.html",
-                    "sha256": "6b8a1c2c7416a852ba8992c1dad5c244512d4b091328ef46affb563d9a9edae0"
+                    "sha256": "332210cc8eed883c78e3bb5764a9166c76e980d7f8b82f3a60ed9883a365fd4a"
                 },
                 {
                     "title": "Architecture and Layout",

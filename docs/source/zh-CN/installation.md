@@ -26,6 +26,12 @@ composer require lumnd/platophp
 
 缺少可选依赖时，只有对应能力会在首次使用时明确报错，其余框架功能仍可运行。
 
+## 安装后包里有什么
+
+dist 安装（`composer require` 的默认方式）只包含运行期文件：`src/`、`config/`、`bin/`、`composer.json`，以及面向使用者的 `README`、`CHANGELOG`、`LICENSE` 与 `SECURITY`。文档源码、测试套件、CI workflow 和开发期配置都标了 `export-ignore`，不会被下载，因此正常安装下 `vendor/lumnd/platophp/docs` 和 `vendor/lumnd/platophp/tests` 并不存在，文档请看 [platophp.com](https://platophp.com)。
+
+源码安装（`composer require lumnd/platophp --prefer-source`、`composer install --prefer-source` 或直接 `git clone`）克隆的是完整仓库，`export-ignore` 对它不生效：`docs/` 与 `tests/` 都在，包目录本身就是一个 git 工作副本。要跑测试或提交补丁就用这种方式安装。
+
 ## 宿主项目
 
 PlatoPHP 是框架包，不创建应用目录。宿主项目负责入口文件、配置、控制器、模板和运行期目录，并通过 Composer 注册自己的命名空间：

@@ -3,7 +3,7 @@
 All notable changes to PlatoPHP are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.2.0 - 2026-08-24
 
 ### Flaky feature tests, made deterministic
 
@@ -158,6 +158,15 @@ boundary was defeated from outside the registry.
   error let the driver fall back. Redis 5 was safe only by accident, rejecting the command outright,
   and CI ran redis 7, which left 6.2 the one version nothing covered. The tests now run against 6.2
   as well.
+
+### Installation, documented as delivered
+
+- An installed package is not a checkout of this repository, and the documentation had never said so.
+  `composer require` downloads a dist archive built by `git archive`, which honours `export-ignore`:
+  `docs/`, `tests/`, the workflows and the development configuration are absent, so anyone looking
+  for the documentation or the suite under `vendor/lumnd/platophp` finds neither. Both READMEs and
+  both installation pages now state what a dist install contains and that `--prefer-source`, or a
+  clone, is what yields the complete repository.
 
 ## 0.1.1 - 2026-08-06
 

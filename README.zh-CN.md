@@ -18,6 +18,9 @@ PHP 8.0 或更高版本，并安装 `json`、`mbstring`、`openssl`、`zlib`。C
 composer require lumnd/platophp
 ```
 
+这样装到的只有运行期文件 —— `src/`、`config/`、`bin/` 和面向使用者的文档。文档源码、测试套件与
+CI 配置标了 `export-ignore`，不会被下载；源码安装（`--prefer-source` 或直接克隆）拿到的才是完整仓库。
+
 运行期核心没有强制第三方 Composer 依赖。可选能力在首次使用时检查对应依赖：
 
 | 能力 | 依赖 |

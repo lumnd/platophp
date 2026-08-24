@@ -55,6 +55,11 @@ Install the package:
 composer require lumnd/platophp
 ```
 
+That installs the runtime tree only -- `src/`, `config/`, `bin/` and the package-facing documents.
+The documentation sources, the test suite and the CI configuration are marked `export-ignore` and
+are not downloaded; a source installation (`--prefer-source`, or a clone) checks out the complete
+repository instead.
+
 The host project owns its entry point, configuration, controllers, templates, and writable paths.
 Register application namespaces through the host's Composer configuration:
 

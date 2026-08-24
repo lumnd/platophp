@@ -26,6 +26,12 @@ The runtime core requires no other Composer packages. Install optional dependenc
 
 When an optional dependency is missing, the related capability fails clearly on first use while the rest of the framework remains available.
 
+## What the installed package contains
+
+A dist installation -- what `composer require` performs by default -- contains the runtime tree only: `src/`, `config/`, `bin/`, `composer.json`, and the package-facing `README`, `CHANGELOG`, `LICENSE`, and `SECURITY` files. The documentation sources, the test suite, the CI workflows, and the development configuration are marked `export-ignore` and are never downloaded, so `vendor/lumnd/platophp/docs` and `vendor/lumnd/platophp/tests` do not exist in a normal install. Read the documentation at [platophp.com](https://platophp.com) instead.
+
+A source installation -- `composer require lumnd/platophp --prefer-source`, `composer install --prefer-source`, or a plain `git clone` -- clones the complete repository. `export-ignore` does not apply to it: `docs/` and `tests/` are present, and the package directory is a git working copy. That is the form to install for running the suite or sending a patch.
+
 ## Host project
 
 PlatoPHP is a framework package and does not create application directories. The host owns entry points, configuration, controllers, templates, and writable runtime paths. It also registers application namespaces with Composer:
