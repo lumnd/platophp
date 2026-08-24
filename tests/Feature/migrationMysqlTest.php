@@ -334,7 +334,7 @@ it('keeps its ledger in the table it was told to use', function () {
         ->and(db::table(MIGRATION_MYSQL_REPOSITORY)->count())->toBe(1);
 });
 
-it('leaves the schema alone when a migration throws half way through', function () {
+it('fails the run and leaves the migration pending when it throws half way through', function () {
     migration_mysql_cli(['migrate']);
 
     migration_mysql_file(
@@ -352,5 +352,9 @@ it('leaves the schema alone when a migration throws half way through', function 
 
     [, $after] = migration_mysql_cli(['migrate:status']);
 
-    expect($after)->toMatch('/pending\s+batch=-\s+20260101_000003_broken/');
+    expect($after)->toMatch('/pending\s+batch=-\s+20260101_000003_broken/')
+        // What the failed migration already did to the schema is still there: the migrator runs
+        // no transaction around a migration, and MySQL would commit the CREATE TABLE regardless.
+        // Re-running the migration is the fix, so a migration has to tolerate its own leftovers
+        ->and(schema::has_table('#PB#_ci_order_lines'))->toBeTrue();
 });

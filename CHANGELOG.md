@@ -23,6 +23,15 @@ is the failure mode a two-driver split exists to expose.
   assigned and a name deliberately assigned null, so an application assigning `app_name => null` had
   the ambient default written over it while the plain PHP driver, working on array keys, kept it.
 
+### `migrate` does not undo a migration that threw
+
+The MySQL case claiming it "leaves the schema alone when a migration throws half way through" proved
+no such thing: the migrator runs no transaction around a migration and MySQL commits DDL regardless,
+so a table created before the throw is still there. What the run does guarantee is that the migration
+is not recorded as applied, which is what the case is now named after -- and it asserts the
+half-created table is still present, because tolerating its own leftovers on the next run is what
+that leaves a migration responsible for.
+
 ### Flaky feature tests, made deterministic
 
 None of them was a flaky assertion about a real race; they were tests that measured wall-clock time,
