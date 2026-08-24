@@ -210,8 +210,17 @@ return [
         'query_toggle_count' => 25,
     ],
 
-    // Smarty settings, owned by plato\tpl.
+    // Template settings, owned by plato\tpl. Only `driver` is read by plato\tpl itself; everything
+    // else is passed to the driver whole, so the keys below are the ones plato\view\smarty
+    // understands and change entirely with the driver. plato\view\native, the plain PHP driver,
+    // reads `template_dir` and `extension` and nothing else.
     'template' => [
+        'driver'          => plato\view\smarty::class,
+        // All three empty means "work it out from the application paths": template/ under the app
+        // path, and template/compile and template/cache under the data path
+        'template_dir'    => '',
+        'compile_dir'     => '',
+        'cache_dir'       => '',
         'left_delimiter'  => '{',
         'right_delimiter' => '}',
         // true recompiles a template whose source changed, at one stat per render. Off in

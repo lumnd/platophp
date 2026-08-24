@@ -12,7 +12,7 @@ composer require lumnd/platophp
 
 | 能力 | 依赖 |
 | --- | --- |
-| Smarty 模板 | `smarty/smarty:^5.5` |
+| Smarty 模板（`native` driver 渲染纯 PHP，无依赖） | `smarty/smarty:^5.5` |
 | MySQL / MariaDB | `ext-pdo_mysql` |
 | MongoDB | `ext-mongodb` |
 | Redis 缓存、队列、锁 | `ext-redis` |

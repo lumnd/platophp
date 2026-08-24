@@ -19,7 +19,6 @@ use plato\http\resp;
 use plato\http\route;
 use plato\log;
 use plato\plato;
-use plato\view\msgbox;
 use RuntimeException;
 
 /**
@@ -527,7 +526,7 @@ class security
     public static function csrf_show_error(): reply
     {
         log::error(req::ip() . ' - ' . req::query_string(), 'CSRF Error');
-        return msgbox::error(403);
+        return resp::error(403);
     }
 
     /**

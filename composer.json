@@ -4,11 +4,21 @@
     "type" : "library",
     "keywords": [
         "framework",
+        "php-framework",
         "http",
+        "http-framework",
         "websocket",
+        "websocket-server",
         "tcp",
+        "tcp-server",
         "cli",
-        "multiprocess"
+        "cli-framework",
+        "multiprocess",
+        "queue",
+        "migration",
+        "redis",
+        "mysql",
+        "php8"
     ],
     "homepage": "https://platophp.com",
     "license" : "MIT",
@@ -26,7 +36,7 @@
         "ext-zlib": "*"
     },
     "suggest": {
-        "smarty/smarty": "^5.5, the engine behind plato\\tpl. Nothing else in the framework touches it -- an application serving JSON or running on the CLI never builds the instance, so this is only needed by one that renders templates",
+        "smarty/smarty": "^5.5, the engine behind plato\\view\\smarty, the default template driver. Nothing else in the framework touches it, and plato\\view\\native renders plain PHP templates with no package at all -- so this is only needed by an application that chose Smarty and renders templates",
         "ext-pdo_mysql": "MySQL and MariaDB connections (plato\\database\\driver\\mysql). Without it the database layer has no SQL engine to talk to",
         "ext-redis": "Redis cache store, the redis and stream queue drivers, and plato\\lock -- which has no other backend",
         "ext-memcached": "Memcached cache store. The older ext-memcache is not supported",

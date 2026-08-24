@@ -1,7 +1,6 @@
 plato\arr	class
 plato\arr::del(&$array, $key)	public static method
 plato\arr::filter_prefixed(array $array, string $prefix, bool $remove_prefix = true)	public static method
-plato\arr::filter_value(array $array, $value)	public static method
 plato\arr::get($array, $key = null, $default = null)	public static method
 plato\arr::group_by(array $rows, $key)	public static method
 plato\arr::is_assoc(array $arr)	public static method
@@ -915,6 +914,7 @@ plato\http\resp::configure(array $config)	public static method
 plato\http\resp::cookie(string $name, string $value, array $options = [])	public static method
 plato\http\resp::download(string $path, ?string $name = null, ?string $mime = null)	public static method
 plato\http\resp::encode($data, int $flags = self::JSON_FLAGS)	public static method
+plato\http\resp::error(int $status, ?string $detail = null)	public static method
 plato\http\resp::file(string $path, ?string $mime = null)	public static method
 plato\http\resp::forget_cookie(string $name, array $options = [])	public static method
 plato\http\resp::header(string $name, string $value)	public static method
@@ -1484,24 +1484,45 @@ plato\str::random(string $type = 'alnum', int $length = 16)	public static method
 plato\str::remove_invisible_characters(string $str, bool $url_encoded = true)	public static method
 plato\str::unique_id()	public static method
 plato\tpl	class
-plato\tpl::$cache_dir	public static property
-plato\tpl::$compile_dir	public static property
-plato\tpl::$config	public static property
 plato\tpl::$output	public static property
-plato\tpl::$template_dir	public static property
-plato\tpl::DEFAULT_CONFIG	public const
-plato\tpl::PLUGIN_TYPES	public const
+plato\tpl::DEFAULT_DRIVER	public const
 plato\tpl::assign($tpl_var, $value = null)	public static method
+plato\tpl::config(?string $key = null)	public static method
+plato\tpl::configure(array $config)	public static method
 plato\tpl::decorate($html)	public static method
 plato\tpl::display($tpl)	public static method
+plato\tpl::engine()	public static method
 plato\tpl::exists($tpl)	public static method
 plato\tpl::fetch($tpl)	public static method
-plato\tpl::instance()	public static method
 plato\tpl::output()	public static method
 plato\tpl::reset()	public static method
-plato\view\msgbox	class
-plato\view\msgbox::error($http_code = '404')	public static method
-plato\view\msgbox::show($title, $msg, $gourl = '', $limittime = 3000)	public static method
+plato\tpl::reset_config()	public static method
+plato\view\engine	interface
+plato\view\engine::assign($tpl_var, $value = null)	public method
+plato\view\engine::clear()	public method
+plato\view\engine::config(?string $key = null)	public method
+plato\view\engine::configure(array $config)	public method
+plato\view\engine::exists(string $tpl)	public method
+plato\view\engine::fetch(string $tpl)	public method
+plato\view\native	class : engine
+plato\view\native::DEFAULT_CONFIG	public const
+plato\view\native::assign($tpl_var, $value = null)	public method
+plato\view\native::clear()	public method
+plato\view\native::config(?string $key = null)	public method
+plato\view\native::configure(array $config)	public method
+plato\view\native::e($value)	public method
+plato\view\native::exists(string $tpl)	public method
+plato\view\native::fetch(string $tpl)	public method
+plato\view\smarty	class : engine
+plato\view\smarty::DEFAULT_CONFIG	public const
+plato\view\smarty::PLUGIN_TYPES	public const
+plato\view\smarty::assign($tpl_var, $value = null)	public method
+plato\view\smarty::clear()	public method
+plato\view\smarty::config(?string $key = null)	public method
+plato\view\smarty::configure(array $config)	public method
+plato\view\smarty::exists(string $tpl)	public method
+plato\view\smarty::fetch(string $tpl)	public method
+plato\view\smarty::raw()	public method
 plato\worker	class
 plato\worker::count()	public static method
 plato\worker::enter(int $index, int $count)	public static method

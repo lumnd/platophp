@@ -60,11 +60,6 @@ it('keeps only the keys carrying a prefix', function () {
     expect(arr::filter_prefixed($data, 'db_', false))->toBe(['db_host' => 'h', 'db_port' => 1]);
 });
 
-it('drops the elements holding a given value', function () {
-    expect(arr::filter_value(['a' => 1, 'b' => 2, 'c' => 1], 1))->toBe(['b' => 2]);
-    expect(arr::filter_value(['a' => 1, 'b' => 2], [1, 2]))->toBe([]);
-});
-
 it('merges recursively, appending a colliding numeric key', function () {
     $merged = arr::merge(['a' => ['x' => 1], 'list' => [1]], ['a' => ['y' => 2], 'list' => [2]]);
 

@@ -694,6 +694,61 @@ class resp
     }
 
     /**
+     * The framework's own answer to a request it will not fulfil.
+     *
+     * This is the reply an application that configured nothing gets: a 401 from an action declaring
+     * `auth = required` that nobody was signed in for, a 403 from a failed csrf check, and whatever
+     * status an uncaught exception resolved to. All three used to answer differently -- the routing
+     * failures negotiated on Accept while the 401 and the 403 returned a fixed HTML page, so a JSON
+     * client that failed csrf got a document it could not decode -- and going through one method is
+     * what stops them from drifting apart again.
+     *
+     * The body is JSON for a request that asked for JSON and text/plain otherwise. Deliberately not
+     * HTML: an error page is a design decision, and the framework has no template of the
+     * application's to render one with. Applications wanting one return their own reply from the
+     * `error_handle` callback or from the authorisation callback.
+     *
+     * @param int         $status HTTP status
+     * @param string|null $detail Message; null for the standard reason phrase of $status. A caller
+     *                            passing detail has decided the reader is allowed to see it
+     *
+     * @return reply
+     */
+    public static function error(int $status, ?string $detail = null): reply
+    {
+        $detail = $detail ?? self::_status_message($status);
+
+        if ( req::is_json() )
+        {
+            return self::status($status)
+                ->type('application/json')
+                ->response_error(-$status, $detail);
+        }
+
+        return self::status($status)
+            ->type('text/plain')
+            ->text($detail);
+    }
+
+    /**
+     * The reason phrase shown for a status when the caller has nothing safer to say.
+     *
+     * Only the statuses the framework itself answers with are named; anything else an application
+     * passes gets the generic phrase rather than a table of every code in the registry.
+     */
+    private static function _status_message(int $status): string
+    {
+        return [
+            400 => 'Bad Request',
+            401 => 'Unauthorized',
+            403 => 'Forbidden',
+            404 => 'Not Found',
+            405 => 'Method Not Allowed',
+            500 => 'Internal Server Error',
+        ][$status] ?? 'Request Failed';
+    }
+
+    /**
      * json_encode with the float precision PHP's default gets wrong.
      *
      * serialize_precision defaults to 17 in some builds, which turns 0.1 into 0.100000000000000006.

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Smarty template engine wrapper
+ * Template facade: the configured engine, and the decoration a finished page gets
  *
  * @package  PlatoPHP
  * @license  MIT
@@ -13,428 +13,185 @@ namespace plato;
 use plato\debug\benchmark;
 use plato\debug\profiler;
 use plato\http\req;
-use plato\http\rewrite;
-use plato\security\security;
-use Smarty\Smarty;
+use plato\view\engine;
+use plato\view\smarty;
 
 /**
- * Template engine implementation, backed by Smarty 5.
+ * What a controller renders through, and the owner of the `template` configuration section.
  *
- * Rendering never echoes anything: fetch() stores the page in self::$output and
- * error_handler::shutdown_handler() calls output() at the very end of the request, so the
- * benchmark placeholders and the profiler panel can still be appended to a finished page.
- * An application whose controllers return replies instead never reaches output() and calls
- * decorate() on the response body, which is the same decoration without the echo.
+ *     tpl::assign('row', $row);
+ *     return resp::html(tpl::fetch('order/list'));
  *
- * The Smarty instance is built lazily on first use, so a JSON or CLI request that never
- * renders a template does not pay for it. That laziness is why smarty/smarty is a suggestion
- * rather than a requirement: instance() is the only place the class is named at runtime, and
- * the framework itself never calls it. Its two touchpoints here -- plato::reset_request()
- * calling reset(), and error_handler::shutdown_handler() calling output() -- work on
- * self::$output alone and never reach the engine.
+ * **The engine behind it is a driver.** `template.driver` names a class implementing
+ * plato\view\engine -- plato\view\smarty by default, plato\view\native for plain PHP templates with
+ * no third-party package at all -- and everything else in the section is that driver's own. This
+ * class reads `driver` and nothing more, which is why a Smarty delimiter is not part of its
+ * vocabulary and a different engine can name a completely different set of settings.
  *
- * @version $Id$
+ * The driver is built on first use, so a JSON or CLI request that never renders a template does not
+ * pay for one. That laziness is what lets the template engines stay Composer suggestions: engine()
+ * is the only place a driver class is named at runtime, and the framework itself never calls it.
+ * Its two touchpoints here -- plato::reset_request() calling reset(), and
+ * error_handler::shutdown_handler() calling output() -- work on self::$output alone and never reach
+ * the engine.
+ *
+ * **Rendering never echoes anything.** fetch() stores the page in self::$output and
+ * error_handler::shutdown_handler() calls output() at the very end of the request, so the benchmark
+ * placeholders and the profiler panel can still be appended to a finished page. An application
+ * whose controllers return replies instead never reaches output() and calls decorate() on the
+ * response body, which is the same decoration without the echo.
  */
 class tpl
 {
     /**
-     * Default template settings, overridden by the `template` section of config/config.php.
+     * The driver used when the application configures none.
      */
-    public const DEFAULT_CONFIG = array(
-        'left_delimiter'  => '{',
-        'right_delimiter' => '}',
-        'compile_check'   => true,
-        'force_compile'   => false,
-        'escape_html'     => true,
-        'debugging'       => false,
-        'caching'         => false,
-        'cache_lifetime'  => 120,
-        'plugins'         => array('smarty_plugins'),
-    );
-
-    /**
-     * Plugin types loaded from `{type}.{name}.php` files inside the plugin directories.
-     */
-    public const PLUGIN_TYPES = array('function', 'modifier', 'modifiercompiler', 'block', 'compiler');
-
-    /**
-     * Plugins the framework ships, as [type, template name, method on this class].
-     *
-     * Framework plugins are private methods registered through Closure::fromCallable().
-     */
-    private const BUILTIN_PLUGINS = array(
-        array('block', 'rewrite', '_plugin_rewrite'),
-        array('function', 'form_token', '_plugin_form_token'),
-        array('function', 'plato_page_data', '_plugin_plato_page_data'),
-        array('function', 'request_em', '_plugin_request_em'),
-        array('function', 'string_array', '_plugin_string_array'),
-        array('modifier', 'date_f', '_plugin_date_f'),
-        array('modifier', 'day2date', '_plugin_day2date'),
-    );
-
-    /**
-     * Effective template settings, filled in on first use.
-     */
-    public static $config = array();
-
-    /**
-     * Directory overrides, resolved from the application paths when left empty.
-     */
-    public static $template_dir = null;
-    public static $compile_dir = null;
-    public static $cache_dir = null;
+    public const DEFAULT_DRIVER = smarty::class;
 
     /**
      * Rendered page, echoed by output() at shutdown.
+     *
+     * @var string|null
      */
     public static $output;
 
-    private static $_instance = null;
+    /**
+     * The `template` section, null until config() reads it.
+     *
+     * @var array<string, mixed>|null
+     */
+    private static $_config = null;
 
     /**
-     * Smarty instance, created on first call.
+     * The configured engine, null until the first call that renders.
      *
-     * @return Smarty
-     * @throws \RuntimeException When smarty/smarty is not installed
+     * @var engine|null
      */
-    public static function instance()
+    private static $_engine = null;
+
+    /**
+     * The `template` settings, read on the first call that needs them.
+     *
+     * @param string|null $key One setting, or null for all of them
+     *
+     * @return mixed
+     */
+    public static function config(?string $key = null)
     {
-        if ( self::$_instance !== null )
+        if ( self::$_config === null )
         {
-            return self::$_instance;
+            self::$_config = (array) config::instance('config')->get('template');
         }
 
-        if ( !class_exists(Smarty::class) )
+        return $key === null ? self::$_config : (self::$_config[$key] ?? null);
+    }
+
+    /**
+     * Hand the settings over instead of letting them be read from config/config.php.
+     *
+     * Merges on top of the file settings, so an override names only what it changes. The engine is
+     * dropped rather than reconfigured: a driver change has to build a different class, and a
+     * driver that stayed the same is cheap to build again.
+     *
+     * @param array<string, mixed> $config Same shape as the `template` section
+     *
+     * @return void
+     */
+    public static function configure(array $config): void
+    {
+        self::$_config = $config + (array) self::config();
+        self::$_engine = null;
+    }
+
+    /**
+     * Drop the overrides, so the next read comes from the file again.
+     *
+     * @return void
+     */
+    public static function reset_config(): void
+    {
+        self::$_config = null;
+        self::$_engine = null;
+    }
+
+    /**
+     * The configured engine, built on the first call.
+     *
+     * @return engine
+     *
+     * @throws \RuntimeException When template.driver names something that is not an engine
+     */
+    public static function engine(): engine
+    {
+        if ( self::$_engine !== null )
+        {
+            return self::$_engine;
+        }
+
+        $config = (array) self::config();
+        $driver = (string) ($config['driver'] ?? '');
+        $driver = $driver !== '' ? $driver : self::DEFAULT_DRIVER;
+
+        if ( !class_exists($driver) || !is_subclass_of($driver, engine::class) )
         {
             throw new \RuntimeException(
-                'plato\tpl needs the smarty/smarty package, which this framework only suggests: '
-                . 'run `composer require smarty/smarty`. Nothing else in the framework renders '
-                . 'templates, so an application serving JSON or running on the CLI does not need it'
+                'template.driver is set to "' . $driver . '", which does not implement '
+                . engine::class . '. The drivers this package ships are ' . smarty::class
+                . ' and ' . \plato\view\native::class
             );
         }
 
-        self::$config = array_merge(
-            self::DEFAULT_CONFIG,
-            (array) config::instance('config')->get('template')
-        );
+        unset($config['driver']);
 
-        self::$template_dir = self::$template_dir ?: plato::app_path('template');
-        self::$compile_dir  = self::$compile_dir  ?: plato::data_path('template' . DIRECTORY_SEPARATOR . 'compile');
-        self::$cache_dir    = self::$cache_dir    ?: plato::data_path('template' . DIRECTORY_SEPARATOR . 'cache');
+        // Assigned before configure() so that a driver whose settings are rejected does not leave
+        // this class rebuilding it on every call
+        $engine = new $driver();
+        self::$_engine = $engine;
+        $engine->configure($config);
 
-        $smarty = new Smarty();
-        $smarty->setTemplateDir(self::$template_dir);
-        $smarty->setCompileDir(file::path_exists(self::$compile_dir));
-        $smarty->setCacheDir(file::path_exists(self::$cache_dir));
-        $smarty->setLeftDelimiter(self::$config['left_delimiter']);
-        $smarty->setRightDelimiter(self::$config['right_delimiter']);
-        $smarty->setCompileCheck(self::$config['compile_check'] ? Smarty::COMPILECHECK_ON : Smarty::COMPILECHECK_OFF);
-        $smarty->setForceCompile((bool) self::$config['force_compile']);
-        $smarty->setEscapeHtml((bool) self::$config['escape_html']);
-        $smarty->setDebugging((bool) self::$config['debugging']);
-        $smarty->setCaching(self::$config['caching'] ? Smarty::CACHING_LIFETIME_CURRENT : Smarty::CACHING_OFF);
-        $smarty->setCacheLifetime((int) self::$config['cache_lifetime']);
-
-        self::$_instance = $smarty;
-
-        self::_register_plugins($smarty);
-        self::_assign_defaults($smarty);
-
-        return $smarty;
-    }
-
-    /**
-     * Register the application's `{type}.{name}.php` plugin files, then whatever the framework
-     * ships that the application did not already claim.
-     *
-     * Application files are loaded here and handed to registerPlugin() one by one. The supported
-     * `smarty_{type}_{name}` function naming is retained. The application goes first and the first
-     * definition of a name wins, so a framework plugin is overridden the same way a config file is.
-     *
-     * @param Smarty $smarty
-     * @return void
-     */
-    private static function _register_plugins(Smarty $smarty)
-    {
-        foreach ( (array) self::$config['plugins'] as $name )
-        {
-            $dir = plato::app_path($name);
-            if ( !is_dir($dir) )
-            {
-                continue;
-            }
-
-            foreach ( self::PLUGIN_TYPES as $type )
-            {
-                foreach ( (array) glob($dir . DIRECTORY_SEPARATOR . $type . '.?*.php') as $filename )
-                {
-                    $plugin = substr(basename($filename), strlen($type) + 1, -4);
-                    if ( $plugin === '' || $smarty->getRegisteredPlugin($type, $plugin) !== null )
-                    {
-                        continue;
-                    }
-
-                    require_once $filename;
-
-                    $callback = 'smarty_' . $type . '_' . $plugin;
-                    if ( function_exists($callback) )
-                    {
-                        $smarty->registerPlugin($type, $plugin, $callback);
-                    }
-                }
-            }
-        }
-
-        foreach ( self::BUILTIN_PLUGINS as $builtin )
-        {
-            list($type, $plugin, $method) = $builtin;
-
-            if ( $smarty->getRegisteredPlugin($type, $plugin) !== null )
-            {
-                continue;
-            }
-
-            // fromCallable rather than a plain [self::class, $method] pair: the closure carries
-            // this class's scope, so Smarty can invoke it while the methods stay private
-            $smarty->registerPlugin($type, $plugin, \Closure::fromCallable(array(self::class, $method)));
-        }
-    }
-
-    /**
-     * Block plugin `rewrite`: rewrites every link in the body through the rewrite rules.
-     *
-     *     <{rewrite}>...<{/rewrite}>
-     *
-     * @param  array            $params
-     * @param  string|null      $content  Null on the opening tag, the captured body on the closing one
-     * @param  \Smarty\Template $template
-     * @param  bool             $repeat
-     * @return string
-     */
-    private static function _plugin_rewrite($params, $content, $template, &$repeat)
-    {
-        // Opening tag: the body has not been captured yet
-        if ( $content === null )
-        {
-            return '';
-        }
-
-        return rewrite::convert_url($content);
-    }
-
-    /**
-     * Function plugin `form_token`: the csrf token, as a hidden input or as the bare value.
-     * Empty string when csrf_token_on is off.
-     *
-     *     <{form_token}>             hidden input
-     *     <{form_token type="raw"}>  token value only
-     *
-     * @param  array            $params
-     * @param  \Smarty\Template $template
-     * @return string
-     */
-    private static function _plugin_form_token($params, $template)
-    {
-        $token = security::get_csrf_hash();
-        if ( $token === null )
-        {
-            return '';
-        }
-
-        $type  = empty($params['type']) ? 'form' : $params['type'];
-
-        if ( $type !== 'form' )
-        {
-            return $token;
-        }
-
-        return '<input type="hidden" name="' . security::get_csrf_token_name() . '" value="' . $token . '" />';
-    }
-
-    /**
-     * Function plugin `plato_page_data`: dumps the template variables into a JSON object inside
-     * a <script> tag, so the page javascript can read what the controller assigned. Without
-     * `key` everything is exported.
-     *
-     *     <{plato_page_data}>                          window.PLATO_PAGE_DATA = {...}
-     *     <{plato_page_data key='row'}>                only the `row` variable
-     *     <{plato_page_data key=['row', 'total']}>     several variables
-     *     <{plato_page_data bind_name='PAGE'}>         bind to another name
-     *
-     * @param  array            $params
-     * @param  \Smarty\Template $template
-     * @return string
-     */
-    private static function _plugin_plato_page_data($params, $template)
-    {
-        // Includes the variables assigned on the engine, not only the ones local to this template
-        $tpl_vars = $template->getTemplateVars();
-
-        if ( !empty($params['key']) )
-        {
-            $value = array();
-            foreach ( (array) $params['key'] as $key )
-            {
-                $value[$key] = $tpl_vars[$key] ?? null;
-            }
-        }
-        else
-        {
-            $value = $tpl_vars;
-        }
-
-        // JSON_HEX_TAG and friends keep a value containing "</script>" from breaking out of the tag
-        $json = json_encode(
-            $value,
-            JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
-        );
-
-        $bind_name = empty($params['bind_name']) ? 'PLATO_PAGE_DATA' : (string) $params['bind_name'];
-        if ( !preg_match('/^[A-Za-z_$][A-Za-z0-9_$]*$/', $bind_name) )
-        {
-            $bind_name = 'PLATO_PAGE_DATA';
-        }
-
-        return "<script> var {$bind_name} = {$json}; </script>";
-    }
-
-    /**
-     * Function plugin `request_em`: reads an element that may not be there, returning an empty
-     * string instead of raising an undefined index notice. Without `array` the lookup goes to
-     * the request.
-     *
-     *     <{request_em key='page_no' default='1'}>
-     *     <{request_em array=$row key='title'}>
-     *
-     * @param  array            $params
-     * @param  \Smarty\Template $template
-     * @return mixed
-     */
-    private static function _plugin_request_em($params, $template)
-    {
-        if ( empty($params['key']) )
-        {
-            return '';
-        }
-
-        if ( !empty($params['array']) )
-        {
-            $arr = (array) $params['array'];
-            return $arr[$params['key']] ?? '';
-        }
-
-        return req::item($params['key'], $params['default'] ?? '');
-    }
-
-    /**
-     * Function plugin `string_array`: splits a delimited string and assigns the result to a
-     * template variable, so the template can iterate over it. Outputs nothing. The delimiter
-     * defaults to a newline.
-     *
-     *     <{string_array val=$row.tags name='tags' spstring=','}>
-     *     <{foreach $tags as $tag}>...<{/foreach}>
-     *
-     * @param  array            $params
-     * @param  \Smarty\Template $template
-     * @return string
-     */
-    private static function _plugin_string_array($params, $template)
-    {
-        if ( empty($params['name']) )
-        {
-            return '';
-        }
-
-        $spstring = empty($params['spstring']) ? "\n" : $params['spstring'];
-        $value    = isset($params['val']) ? (string) $params['val'] : '';
-
-        $template->assign($params['name'], $value === '' ? array() : explode($spstring, $value));
-
-        return '';
-    }
-
-    /**
-     * Modifier plugin `date_f`: formats a unix timestamp with the given date() format.
-     *
-     *     <{$timestamp|date_f:'Y-m-d'}>
-     *
-     * @param  int|string $t Unix timestamp
-     * @param  string     $f date() format
-     * @return string
-     */
-    private static function _plugin_date_f($t, $f)
-    {
-        return date($f, (int) $t);
-    }
-
-    /**
-     * Modifier plugin `day2date`: expands a YYMMDDHH string back into `20YY-MM-DD HH(havg)`.
-     *
-     *     <{$dayh|day2date}>
-     *
-     * @param  string $dayh
-     * @return string
-     */
-    private static function _plugin_day2date($dayh)
-    {
-        $y = substr($dayh, 0, 2);
-        $m = substr($dayh, 2, 2);
-        $d = substr($dayh, 4, 2);
-        $h = substr($dayh, 6, 2);
-
-        return "20{$y}-{$m}-{$d} {$h}(havg)";
-    }
-
-    /**
-     * Variables every template can count on.
-     *
-     * @param Smarty $smarty
-     * @return void
-     */
-    private static function _assign_defaults(Smarty $smarty)
-    {
-        $smarty->assign('app_name', $_ENV['APP_NAME'] ?? 'platoapp');
-        $smarty->assign('request', req::$forms);
-        // Cache buster appended to asset urls, `<img src="a.png<{$clear_cache}>">`
-        $smarty->assign('clear_cache', '?' . time());
+        return $engine;
     }
 
     /**
      * Assign a template variable, or a whole array of them when $value is omitted.
      *
-     * @param array|string $tpl_var
-     * @param mixed        $value
+     * @param array<string, mixed>|string $tpl_var
+     * @param mixed                       $value
+     *
      * @return void
      */
     public static function assign($tpl_var, $value = null)
     {
-        self::instance()->assign($tpl_var, $value);
+        self::engine()->assign($tpl_var, $value);
     }
 
     /**
      * @param string $tpl
+     *
      * @return bool
      */
     public static function exists($tpl)
     {
-        return self::instance()->templateExists($tpl);
+        return self::engine()->exists((string) $tpl);
     }
 
     /**
      * Render a template and keep it for output(). Nothing is echoed here.
      *
      * @param string $tpl
+     *
      * @return string
      */
     public static function fetch($tpl)
     {
-        return self::$output = self::instance()->fetch($tpl);
+        return self::$output = self::engine()->fetch((string) $tpl);
     }
 
     /**
      * Alias of fetch(), kept because controllers read better with it.
      *
      * @param string $tpl
+     *
      * @return string
      */
     public static function display($tpl)
@@ -444,14 +201,20 @@ class tpl
 
     /**
      * Clear template state that belongs to the previous request of a resident process.
+     *
+     * The engine is cleared rather than dropped -- its compiled templates and registered plugins
+     * are process state worth keeping -- and only when one was built, so a request that rendered
+     * nothing does not construct an engine on its way out.
+     *
+     * @return void
      */
     public static function reset(): void
     {
         self::$output = '';
 
-        if ( self::$_instance !== null )
+        if ( self::$_engine !== null )
         {
-            self::$_instance->clearAllAssign();
+            self::$_engine->clear();
         }
     }
 
@@ -525,11 +288,11 @@ class tpl
         if ( strpos($output, '{elapsed_time}') !== false || strpos($output, '{memory_usage}') !== false )
         {
             $output = str_replace(
-                array('{elapsed_time}', '{memory_usage}'),
-                array(
+                ['{elapsed_time}', '{memory_usage}'],
+                [
                     benchmark::elapsed_time('total_execution_start', 'total_execution_end'),
                     benchmark::elapsed_memory('total_execution_start', 'total_execution_end'),
-                ),
+                ],
                 $output
             );
         }
@@ -538,8 +301,8 @@ class tpl
         {
             $total = plato::app_total();
             $output = str_replace(
-                array('{exec_time}', '{mem_usage}'),
-                array((string) round($total[0], 4), (string) round($total[1] / pow(1024, 2), 3)),
+                ['{exec_time}', '{mem_usage}'],
+                [(string) round($total[0], 4), (string) round($total[1] / pow(1024, 2), 3)],
                 $output
             );
         }

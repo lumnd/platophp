@@ -27,7 +27,6 @@ use plato\debug\benchmark;
 use plato\debug\error_handler;
 use plato\debug\profiler;
 use plato\security\security;
-use plato\view\msgbox;
 use Throwable;
 
 /**
@@ -817,7 +816,7 @@ class plato
                 {
                     log::info($name . ' - ' . req::ip(), 'Unauthenticated');
 
-                    return msgbox::error(401);
+                    return resp::error(401);
                 }
 
                 // Assigned only once it is known to be an identity, so that a callback that broke

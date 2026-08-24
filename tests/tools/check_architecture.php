@@ -59,6 +59,7 @@ const CONFIG_OWNERS = [
     'request'  => 'src/http/req.php',
     'security' => 'src/security/security.php',
     'sign'     => 'src/security/sign.php',
+    'template' => 'src/tpl.php',
 ];
 
 /**
@@ -104,7 +105,8 @@ const CONFIG_RESET = [
     'plato\queue\queue'      => 'queue connections',
     'plato\security\security' => 'security settings',
     'plato\storage\storage'  => 'storage disks',
-    'plato\tpl'              => 'template settings; the same class also clears request state',
+    'plato\tpl'              => 'template settings, including which engine is built; reset_config()'
+        . ' is the configuration half and reset() the request scoped one',
     'plato\server\dispatcher'    => 'dispatch settings',
     'plato\server\server'        => 'server settings',
     'plato\database\db'      => 'query log settings',

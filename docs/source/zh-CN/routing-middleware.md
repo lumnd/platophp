@@ -77,6 +77,9 @@ public static array $actions = [
 `required` 的 action 在回调没找到人时，由框架渲染一个 401 作答，和 CSRF 校验失败作答 403 是同一
 套路：这是访客的状态，不是代码写错。想换成别的应答，就从回调里返回自己的 `reply`。
 
+两者都走 `resp::error()`，未配置 `error_handle` 回调时未捕获异常的应答也走它：请求要 JSON 就回
+JSON，否则回 `text/plain`。框架不渲染自己的 HTML 错误页——它没有你的模板可用。
+
 只有两种情况算集成错误：回调返回了既非身份对象也非 `reply` 的值，以及 `required` 却根本没配置回
 调——什么都没问过，也就无从判断来的是谁。这两类抛 `plato\exception\auth_exception`，报 500。
 

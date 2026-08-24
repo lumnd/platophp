@@ -2,7 +2,7 @@
     "name": "PlatoPHP",
     "package": "lumnd/platophp",
     "default_locale": "zh-CN",
-    "generated_at": "2026-08-18T08:33:39.000Z",
+    "generated_at": "2026-08-21T13:23:07.000Z",
     "locales": {
         "zh-CN": {
             "label": "简体中文",
@@ -29,7 +29,7 @@
                     "section": "开始",
                     "source": "source/zh-CN/index.md",
                     "page": "site/zh-CN/index.html",
-                    "sha256": "ff48b7cd3271f4c31c8ebbf1c9d93bd0ddfbcb0d2946efe86e740c73880e2ca8"
+                    "sha256": "9e0e9c503da0eb44f823802b9e2902b78eb20d95bd2b3543a548da7f614bc2ae"
                 },
                 {
                     "title": "安装",
@@ -37,7 +37,7 @@
                     "section": "开始",
                     "source": "source/zh-CN/installation.md",
                     "page": "site/zh-CN/installation.html",
-                    "sha256": "6ddb2daecd965c712e206001f1583734ef21dc590a173dd4a55531e2cf490889"
+                    "sha256": "6f0fb374a60f5e2200a4cd61592bfbd6f2f9ffc4294367d5ea633c6448167efa"
                 },
                 {
                     "title": "架构与目录",
@@ -61,7 +61,7 @@
                     "section": "HTTP",
                     "source": "source/zh-CN/routing-middleware.md",
                     "page": "site/zh-CN/routing-middleware.html",
-                    "sha256": "9e080c4cd73c01971c5479a201ec3327ad41fb2fe19567641d100158ebc4f453"
+                    "sha256": "d95039ff2dc1d3ee0964cd073174894bb0efbee26654374c71d818286c19765d"
                 },
                 {
                     "title": "请求与响应",
@@ -125,7 +125,7 @@
                     "section": "数据",
                     "source": "source/zh-CN/storage-templates.md",
                     "page": "site/zh-CN/storage-templates.html",
-                    "sha256": "ed52f0cb2167484868d7d1512d1fbf6d228343ff1f293a557bbf3ba3c8e1ed4c"
+                    "sha256": "2bad5c60756413f34ec8c6e6f473c689f4a0d235b8a2ff45c64c14424ab28b3b"
                 },
                 {
                     "title": "命令行与调度",
@@ -210,7 +210,7 @@
                     "section": "Start",
                     "source": "source/en/index.md",
                     "page": "site/en/index.html",
-                    "sha256": "696df7d628a90b190af949fc07bd80ffead81f247301f27e82966bb2adc7d2e1"
+                    "sha256": "fc6910be2df2dda54e6272e04be593ee0acf602c44f3ae5bfedb4e7a94c357e5"
                 },
                 {
                     "title": "Installation",
@@ -218,7 +218,7 @@
                     "section": "Start",
                     "source": "source/en/installation.md",
                     "page": "site/en/installation.html",
-                    "sha256": "63ffdf148e42cab2fbef25af4e820dd778ce7e8056979e17d12b1979821b80f3"
+                    "sha256": "6b8a1c2c7416a852ba8992c1dad5c244512d4b091328ef46affb563d9a9edae0"
                 },
                 {
                     "title": "Architecture and Layout",
@@ -242,7 +242,7 @@
                     "section": "HTTP",
                     "source": "source/en/routing-middleware.md",
                     "page": "site/en/routing-middleware.html",
-                    "sha256": "c0eb5ddfa10ee8ad4bcd37b41807f5e95d3f54c168ecd0693f384628e9691887"
+                    "sha256": "7e9339be4ac6896f645c026a7804dc66f5df02b9fe9b356c2873102705b333fb"
                 },
                 {
                     "title": "Requests and Responses",
@@ -306,7 +306,7 @@
                     "section": "Data",
                     "source": "source/en/storage-templates.md",
                     "page": "site/en/storage-templates.html",
-                    "sha256": "18b48b402384b91d47bcb8ea060e3dc04650f66e7e9559e70119f81a1e3a318a"
+                    "sha256": "130d7dd1f57bbc84365cdd6bd5f2a5e84279cd43f4d6e4050b0d7cd8476913bd"
                 },
                 {
                     "title": "Console and Scheduling",

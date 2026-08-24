@@ -12,7 +12,7 @@ The runtime core requires no other Composer packages. Install optional dependenc
 
 | Capability | Dependency |
 | --- | --- |
-| Smarty templates | `smarty/smarty:^5.5` |
+| Smarty templates (the `native` driver renders plain PHP with no dependency) | `smarty/smarty:^5.5` |
 | MySQL / MariaDB | `ext-pdo_mysql` |
 | MongoDB | `ext-mongodb` |
 | Redis cache, queues, and locks | `ext-redis` |

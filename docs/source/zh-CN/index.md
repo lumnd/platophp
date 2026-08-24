@@ -11,7 +11,7 @@ PlatoPHP 是面向 PHP 8 的轻量级服务框架，覆盖 php-fpm HTTP、常驻
 - CLI 命令、cron 调度和前台多进程监督
 - 常驻服务 driver 契约、连接对象与消息到控制器的调度，websocket 与 tcp 同一套
 - CSRF、CORS、限流、输入校验、请求签名与加密信封
-- 文件存储、Smarty 模板、日志、错误处理、事件和常用数据工具
+- 文件存储、模板（Smarty 或纯 PHP）、日志、错误处理、事件和常用数据工具
 
 ## 运行模型
 

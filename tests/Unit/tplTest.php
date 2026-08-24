@@ -1,106 +1,99 @@
 <?php
 /**
- * tpl: the Smarty 5 wrapper.
+ * tpl: the template facade and the owner of the `template` configuration section.
  *
- * Templates and application plugins are resolved from the fixture application, the same way they
- * would be in a real one: app_path/template and app_path/smarty_plugins.
+ * What the engine behind it does with a template belongs to the driver's own test file; what is
+ * here is the driver choice, the request boundary, and the decoration a finished page gets.
  */
 
 use plato\debug\profiler;
-use plato\http\req;
 use plato\plato;
-use plato\security\security;
 use plato\tpl;
+use plato\view\engine;
+use plato\view\native;
+use plato\view\smarty;
 
-it('returns a configured Smarty 5 engine', function () {
-    $smarty = tpl::instance();
-
-    expect($smarty)->toBeInstanceOf(\Smarty\Smarty::class);
-    expect($smarty->getLeftDelimiter())->toBe('<{');
-    expect($smarty->getRightDelimiter())->toBe('}>');
-    // Same instance on every call
-    expect(tpl::instance())->toBe($smarty);
+afterEach(function () {
+    tpl::reset_config();
+    tpl::$output = null;
 });
 
-it('registers the framework plugins from the plugin directory', function () {
-    $smarty = tpl::instance();
+it('builds the driver named by template.driver, once', function () {
+    $engine = tpl::engine();
 
-    expect($smarty->getRegisteredPlugin('function', 'form_token'))->not->toBeNull();
-    expect($smarty->getRegisteredPlugin('function', 'plato_page_data'))->not->toBeNull();
-    expect($smarty->getRegisteredPlugin('modifier', 'date_f'))->not->toBeNull();
-    expect($smarty->getRegisteredPlugin('block', 'rewrite'))->not->toBeNull();
+    expect($engine)->toBeInstanceOf(smarty::class)
+        ->and($engine)->toBeInstanceOf(engine::class)
+        // Same instance on every call
+        ->and(tpl::engine())->toBe($engine);
 });
 
-it('renders the token from the effective request configuration', function () {
-    plato::$config['cli_csrf'] = true;
-    req::configure([
-        'csrf_token_on' => true,
-        'csrf_secret'   => str_repeat('s', 32),
-        'csrf_binding'  => static fn(): string => 'template-session',
-    ]);
+it('hands the driver the section without the key naming it', function () {
+    $config = tpl::engine()->config();
 
-    try
-    {
-        security::capture();
-        $token = security::get_csrf_hash();
-        $out   = tpl::instance()->fetch('string:<{form_token}>');
-
-        expect($out)->toContain('name="csrf_token_name"')
-            ->and($out)->toContain('value="' . $token . '"');
-    }
-    finally
-    {
-        plato::$config['cli_csrf'] = false;
-        req::reset_config();
-        security::capture();
-    }
+    expect($config)->not->toHaveKey('driver')
+        // The fixture application overrides the delimiters, the rest are framework defaults
+        ->and($config['left_delimiter'])->toBe('<{')
+        ->and($config['cache_lifetime'])->toBe(120);
 });
 
-it('tells known templates from unknown ones', function () {
-    expect(tpl::exists('hello.tpl'))->toBeTrue();
-    expect(tpl::exists('no_such_template.tpl'))->toBeFalse();
+it('switches engine when the driver setting changes', function () {
+    expect(tpl::engine())->toBeInstanceOf(smarty::class);
+
+    tpl::configure(['driver' => native::class]);
+
+    expect(tpl::engine())->toBeInstanceOf(native::class);
 });
 
-it('renders variables, defaults and plugins', function () {
+it('merges an override on top of the file settings instead of replacing them', function () {
+    tpl::configure(['cache_lifetime' => 5]);
+
+    expect(tpl::config('cache_lifetime'))->toBe(5)
+        // Untouched by the override, so still the fixture application's value
+        ->and(tpl::config('left_delimiter'))->toBe('<{');
+});
+
+it('reads the file again after reset_config', function () {
+    tpl::configure(['cache_lifetime' => 5]);
+    tpl::reset_config();
+
+    expect(tpl::config('cache_lifetime'))->toBe(120);
+});
+
+it('refuses a driver that does not implement the contract', function () {
+    tpl::configure(['driver' => stdClass::class]);
+
+    expect(fn () => tpl::engine())
+        ->toThrow(RuntimeException::class, 'does not implement');
+});
+
+it('keeps the rendered page for output instead of echoing it', function () {
+    tpl::configure(['driver' => native::class]);
+
+    $out = tpl::fetch('native/plain');
+
+    expect(trim($out))->toBe('plain')
+        ->and(tpl::$output)->toBe($out);
+});
+
+it('clears the assigned variables at the request boundary', function () {
+    tpl::configure(['driver' => native::class]);
     tpl::assign('greeting', 'hello');
-    tpl::assign('row', ['title' => 'plato']);
 
-    $out = trim(tpl::fetch('hello.tpl'));
+    expect(tpl::fetch('native/greeting'))->toBe('hello');
 
-    expect($out)->toBe('hello|' . $_ENV['APP_NAME'] . '|plato');
-    // fetch keeps the page for output() instead of echoing it
-    expect(trim(tpl::$output))->toBe($out);
+    plato::reset_request();
+
+    expect(tpl::$output)->toBe('')
+        ->and(tpl::fetch('native/greeting'))->toBe('');
 });
 
-it('scans the application plugins first, so they override the framework ones', function () {
-    tpl::assign('ts', mktime(0, 0, 0, 3, 4, 2026));
+it('does not build an engine for a request that rendered nothing', function () {
+    tpl::reset();
 
-    // Fixtures/app/smarty_plugins ships app_marker plus its own date_f
-    expect(trim(tpl::fetch('app_plugins.tpl')))->toBe('app_marker|app:2026-03-04');
-});
+    $built = new ReflectionProperty(tpl::class, '_engine');
 
-it('runs function and block plugins', function () {
-    expect(trim(tpl::fetch('plugins.tpl')))->toBe('[a][b][c]|keep');
-});
-
-it('escapes values that could break out of the plato_page_data script tag', function () {
-    tpl::assign('payload', ['html' => '</script><script>alert(1)</script>']);
-
-    $out = trim(tpl::fetch('page_data.tpl'));
-
-    expect($out)->toStartWith('<script> var PAGE = ');
-    expect($out)->not->toContain('</script><script>');
-    expect(json_decode(
-        substr($out, strlen('<script> var PAGE = '), -strlen('; </script>')),
-        true
-    ))->toBe(['payload' => ['html' => '</script><script>alert(1)</script>']]);
-});
-
-it('escapes ordinary template variables by default', function () {
-    tpl::assign('unsafe', '<script>alert(1)</script>');
-
-    expect(trim(tpl::fetch('escape.tpl')))
-        ->toBe('&lt;script&gt;alert(1)&lt;/script&gt;');
+    expect($built->getValue())->toBeNull()
+        ->and(tpl::$output)->toBe('');
 });
 
 it('replaces the request total placeholders on output', function () {
@@ -111,8 +104,6 @@ it('replaces the request total placeholders on output', function () {
     $out = ob_get_clean();
 
     expect($out)->toMatch('/^took [0-9.]+s [0-9.]+MB$/');
-
-    tpl::$output = null;
 });
 
 it('decorates a page a controller returns instead of echoing', function () {
@@ -169,6 +160,5 @@ it('renders zero when the memory peak is below the request baseline', function (
     finally
     {
         $start_mem->setValue(null, $previous);
-        tpl::$output = null;
     }
 });

@@ -42,8 +42,9 @@ use Exception;
  * Where the other halves of the job live:
  *
  * - **SQL**: bound parameters, through the query builder. No amount of input rewriting substitutes.
- * - **HTML**: Smarty escapes plain variables by default (`template.escape_html`), and
- *   `view\msgbox` escapes what it builds itself.
+ * - **HTML**: the template engine, which escapes plain variables by default. The framework builds
+ *   no HTML of its own -- `resp::error()` answers text/plain or JSON -- so there is no second
+ *   escaping rule to keep in step with it.
  * - **Rich text**: an allowlist sanitiser the application chooses and keeps patched.
  * - **Reporting why a value is wrong**, and rules like a minimum length or a national id format:
  *   `security\validate`, which answers with messages instead of with a rewritten value.

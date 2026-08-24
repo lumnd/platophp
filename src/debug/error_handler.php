@@ -409,6 +409,11 @@ class error_handler
     /**
      * The response an application that configured no error_handle callback gets.
      *
+     * Only the decision this class is the one to make is made here: whether the reader is allowed
+     * to see the exception's own message. Everything else -- the content negotiation, and the
+     * reason phrase used when they are not -- is resp::error(), which the 401 and the 403 raised
+     * outside this class answer through as well.
+     *
      * @param int    $status
      * @param string $errstr
      *
@@ -416,20 +421,9 @@ class error_handler
      */
     private static function _default_reply(int $status, string $errstr): reply
     {
-        $detail = plato::debug() || self::$_debug_safe_ip
-            ? $errstr
-            : self::_status_message($status);
+        $exposed = plato::debug() || self::$_debug_safe_ip;
 
-        if ( req::is_json() )
-        {
-            return resp::status($status)
-                ->type('application/json')
-                ->response_error(-$status, $detail);
-        }
-
-        return resp::status($status)
-            ->type('text/plain')
-            ->text($detail);
+        return resp::error($status, $exposed ? $errstr : null);
     }
 
     /**
@@ -652,19 +646,6 @@ class error_handler
         }
 
         return 500;
-    }
-
-    /**
-     * Public message for an error response when debug details are disabled.
-     */
-    private static function _status_message(int $status): string
-    {
-        return [
-            400 => 'Bad Request',
-            404 => 'Not Found',
-            405 => 'Method Not Allowed',
-            500 => 'Internal Server Error',
-        ][$status] ?? 'Request Failed';
     }
 
     /**

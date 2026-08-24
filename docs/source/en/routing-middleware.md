@@ -82,6 +82,11 @@ A `required` action the callback found nobody for is answered with a framework-r
 same way a failed CSRF check is answered with a 403. That is the visitor's state, not a mistake in
 the code. Return your own `reply` from the callback to answer it any other way.
 
+Both go through `resp::error()`, which is also what answers an uncaught exception when no
+`error_handle` callback is configured: JSON for a request that asked for JSON, `text/plain`
+otherwise. The framework renders no HTML error page of its own — it has no template of yours to
+render one with.
+
 Two things are integration errors rather than visitor states: a value that is neither an identity
 nor a `reply`, and a `required` action with no callback configured at all — nothing was asked, so
 nothing can be concluded about who is here. Both raise `plato\exception\auth_exception` and report

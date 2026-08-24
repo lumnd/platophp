@@ -7,24 +7,35 @@
 [![Latest version](https://img.shields.io/packagist/v/lumnd/platophp?logo=packagist&logoColor=white)](https://packagist.org/packages/lumnd/platophp)
 [![License](https://img.shields.io/packagist/l/lumnd/platophp)](LICENSE)
 
-PlatoPHP is a lightweight HTTP, resident socket, and multiprocess CLI service framework for PHP 8.
-It is installed as a Composer library and supplies framework capabilities only: no administration
-UI, domain model, application skeleton, business configuration, or sample site.
+PlatoPHP is a lightweight PHP 8 framework for HTTP APIs, WebSocket/TCP services, queues, migrations,
+and multiprocess CLI workers. It is installed as a Composer library, so an application keeps control
+of its entry points, directory layout, domain model, configuration, and deployment model.
+
+Use PlatoPHP when you want:
+
+- Plain PHP controllers for JSON APIs or server-rendered routes
+- One framework surface for php-fpm requests, foreground workers, queues, cron jobs, and resident
+  socket servers
+- Built-in drivers for MySQL, ClickHouse, MongoDB, Redis, Memcached, Kafka, migrations, validation,
+  sessions, CSRF, CORS, throttling, signing, encryption, logs, and profiling
+- A small runtime core with optional dependencies loaded only when a capability is used
+- No mandatory admin UI, application skeleton, base controller, ORM model hierarchy, or business
+  configuration format
+
+PlatoPHP is deliberately not a coroutine framework. Each process handles one request or message at a
+time, which keeps static request state predictable across php-fpm, forked workers, and resident
+server adapters.
 
 ## Requirements
 
 PHP 8.0 or later with `json`, `mbstring`, `openssl`, and `zlib`. CI covers PHP 8.0 through 8.5.
-
-```bash
-composer require lumnd/platophp
-```
 
 The runtime core has no mandatory third-party Composer dependency. Optional capabilities declare
 their dependency when first used:
 
 | Capability | Dependency |
 | --- | --- |
-| Smarty templates | `smarty/smarty:^5.5` |
+| Smarty templates (the `native` driver renders plain PHP with no dependency) | `smarty/smarty:^5.5` |
 | MySQL / MariaDB | `ext-pdo_mysql` |
 | MongoDB | `ext-mongodb` |
 | Redis cache, queues, and distributed locks | `ext-redis` |
@@ -37,6 +48,12 @@ their dependency when first used:
 | PSR-3 / PSR-16 adapters | `psr/log`, `psr/simple-cache` |
 
 ## Quick Start
+
+Install the package:
+
+```bash
+composer require lumnd/platophp
+```
 
 The host project owns its entry point, configuration, controllers, templates, and writable paths.
 Register application namespaces through the host's Composer configuration:

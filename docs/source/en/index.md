@@ -11,7 +11,7 @@ PlatoPHP is a lightweight service framework for PHP 8. It covers php-fpm HTTP, r
 - Console commands, cron scheduling, and foreground process supervision
 - A resident server driver contract, connection object, and message-to-controller dispatcher, for websocket and tcp alike
 - CSRF, CORS, rate limiting, validation, request signing, and encrypted envelopes
-- File storage, Smarty templates, logs, error handling, events, and data helpers
+- File storage, templates (Smarty or plain PHP), logs, error handling, events, and data helpers
 
 ## Runtime model
 

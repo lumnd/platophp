@@ -262,3 +262,47 @@ it('leaves a text body alone even while encryption is on', function () {
     // A file, a redirect or a plain text answer has no envelope to be encrypted into
     expect(resp_capture(fn () => resp::text('plain')))->toBe('plain');
 });
+
+it('answers a framework error as text, with the reason phrase of the status', function () {
+    $body = resp_capture(fn () => resp::error(403));
+
+    expect($body)->toBe('Forbidden')
+        ->and(resp::pending()['status'])->toBe(403)
+        ->and(resp::pending()['headers']['Content-Type'])->toStartWith('text/plain');
+});
+
+it('answers the same error as the classic envelope for a json request', function () {
+    $accept = $_SERVER['HTTP_ACCEPT'] ?? null;
+    $_SERVER['HTTP_ACCEPT'] = 'application/json';
+
+    try
+    {
+        $body = resp_capture(fn () => resp::error(401));
+
+        expect(json_decode($body, true))
+            ->toMatchArray(['code' => -401, 'msg' => 'Unauthorized'])
+            ->and(resp::pending()['status'])->toBe(401);
+    }
+    finally
+    {
+        if ( $accept === null )
+        {
+            unset($_SERVER['HTTP_ACCEPT']);
+        }
+        else
+        {
+            $_SERVER['HTTP_ACCEPT'] = $accept;
+        }
+    }
+});
+
+it('says what the caller told it to say instead of the reason phrase', function () {
+    $body = resp_capture(fn () => resp::error(500, 'Division by zero'));
+
+    expect($body)->toBe('Division by zero')
+        ->and(resp::pending()['status'])->toBe(500);
+});
+
+it('falls back to a generic phrase for a status it does not name', function () {
+    expect(resp_capture(fn () => resp::error(418)))->toBe('Request Failed');
+});

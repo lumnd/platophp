@@ -5,6 +5,46 @@ All notable changes to PlatoPHP are documented in this file. Releases follow
 
 ## Unreleased
 
+### Public API, settled before 1.0
+
+Three decisions that semantic versioning would otherwise hold until a major release. All three are
+breaking; all three are recorded in `tests/tools/api-snapshot.txt`.
+
+- **`plato\tpl` is a facade over a driver contract.** `plato\view\engine` is six calls --
+  `configure()`, `config()`, `assign()`, `exists()`, `fetch()`, `clear()` -- and `template.driver`
+  names the class that answers them. `plato\tpl` reads that one key and passes the rest of the
+  section to the driver whole, so a Smarty delimiter is no longer part of the facade's vocabulary
+  and a different engine names a different set of settings. `tpl::instance()`, which returned a
+  `Smarty`, is now `tpl::engine()`, which returns an `engine`; `plato\view\smarty::raw()` is the way
+  back to the Smarty instance for the things the contract deliberately does not cover.
+  `tpl::$config`, `$template_dir`, `$compile_dir`, `$cache_dir`, `DEFAULT_CONFIG` and
+  `PLUGIN_TYPES` are gone from the facade -- the three directories are the `template_dir`,
+  `compile_dir` and `cache_dir` settings, and the rest belong to `plato\view\smarty`. The facade
+  gained the axis A trio (`config()`, `configure()`, `reset_config()`) and now owns the `template`
+  section outright.
+- **`plato\view\native` renders plain PHP templates**, with no third-party package at all. It exists
+  because a contract with a single implementation is a guess about what varies: it and the Smarty
+  driver disagree about compilation, delimiters, plugins and caching, and what survived that
+  disagreement is the contract above. Templates escape through `$this->e()` and render partials
+  through `$this->fetch()`; a name that climbs out of the template directory is refused rather than
+  included.
+- **Both drivers assign `app_name`, `request` and `clear_cache` per render** rather than once when
+  the engine is built. The Smarty driver assigned them at build time and `clear()` took them away
+  with everything else, so a resident worker rendered its second request with the first request's
+  input and cache buster, and every request after the first boundary with none of the three. A name
+  the application already assigned is left alone, which is what the build-time ordering used to
+  guarantee.
+- **`plato\view\msgbox` is gone**, and with it the `plato\view` namespace's only occupant before the
+  contract moved in. `show()` -- a message page with a redirect -- had no caller in this package and
+  is an application's design decision rather than a framework capability. `error()` was the
+  framework's own 401 and 403, and answered HTML unconditionally: a JSON client that failed a CSRF
+  check got a document it could not decode, while an uncaught exception at the same moment
+  negotiated on Accept. Both now go through the new `resp::error(int $status, ?string $detail =
+  null)`, which is also what `error_handler::_default_reply()` builds, so 401, 403, 404 and 500
+  answer the same way. The framework renders no HTML error page of its own; it has no template of
+  the application's to render one with.
+- **`arr::filter_value()` is gone.** It had no caller outside its own test.
+
 ### Process and request safety
 
 Found by reviewing the two boundaries against each other. The fork boundary held up; these are the

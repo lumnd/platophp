@@ -291,33 +291,6 @@ class arr
     }
 
     /**
-     * Drop every element whose value is in $value, preserving keys.
-     *
-     * The comparison is deliberately loose: it was written for request input, where everything
-     * arrives as a string, matched against values written as literals in an application config
-     * file, so filter_value($data, [0]) has to drop the string '0'.
-     *
-     * @param  array $array
-     * @param  mixed $value A single value or a list of values
-     *
-     * @return array
-     */
-    public static function filter_value(array $array, $value): array
-    {
-        $value = (array) $value;
-
-        foreach ( $array as $k => $v )
-        {
-            if ( in_array($v, $value) )
-            {
-                unset($array[$k]);
-            }
-        }
-
-        return $array;
-    }
-
-    /**
      * Merge arrays recursively. Differs from array_merge_recursive() in two ways:
      * - when two values collide and are not both arrays, the later one overwrites the earlier
      *   instead of both being collected into an array
