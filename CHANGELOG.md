@@ -5,6 +5,37 @@ All notable changes to PlatoPHP are documented in this file. Releases follow
 
 ## Unreleased
 
+### Flaky feature tests, made deterministic
+
+None of them was a flaky assertion about a real race; they were tests that measured wall-clock time,
+or inherited state they did not control. What they hid is worth more than what they proved: a suite
+that goes red at random is one people re-run rather than read.
+
+- `queueStreamTest` no longer sleeps. The delayed-message case pushed with `delay => 1` and asserted
+  "not due yet" -- but `push_delay()` scores the entry `time() + $delay` and the migrator asks for
+  everything scored at or below `time()`, both at whole-second resolution, so a push landing near
+  the end of a second was already due by the next statement. It is now two cases: one holds a
+  message back a minute and checks it does not move, the other rewrites the due score into the past
+  and checks it does. The takeover case slept 20ms against a 1ms `claim_idle_ms`; it now hands the
+  entry to another consumer name with `XCLAIM ... IDLE`, which ages it 5 seconds in one command --
+  and makes the case mean its name, since `_consumer()` is `hostname:pid` and the two pops were
+  otherwise the same consumer reclaiming its own entry. The file lost a second of runtime with the
+  `sleep()`.
+- `httpClientTest` starts from an empty state directory. The counter files that decide how many times
+  the far end fails live in a path that does not vary per process, and `afterAll` only removes them
+  when the suite finished normally -- so a killed run left every retry case talking to a far end that
+  had used up its failures, and the `Retry-After` case measured no wait at all. `afterAll` also
+  checks that the pid it is about to kill is still the server this run started.
+- **A duration is read from `hrtime()`, not from `microtime()`.** Five cases across four files
+  asserted that a wait really happened by subtracting two wall-clock readings, and a wall clock is
+  not a duration source: the one the suite runs against is stepped by its time daemon, and a
+  correction of about 170ms landing inside the second being measured made the `Retry-After` case
+  report 0.83s for a sleep that had lasted a second -- roughly one run in six, which is what was
+  left of that case's flakiness after the state directory was dealt with. A monotonic reading
+  cannot be walked back. That case now also asserts `attempts()`, which is what it is really
+  claiming -- that the header was honoured over the backoff -- and which holds whatever the clock
+  does; the elapsed time only tells the two wait lengths apart.
+
 ### The migration toolchain is covered against a real server
 
 `migrate`, `migrate:rollback`, `db:seed` and the schema builder were asserted only on the SQL they

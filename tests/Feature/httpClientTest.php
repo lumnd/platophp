@@ -33,6 +33,18 @@ function http_test_dir(): string
 
 beforeAll(function () {
     $dir = http_test_dir();
+
+    // Start from an empty directory rather than trusting the last run to have cleaned up. The
+    // counter files carry how many times each ?key= has been asked, in a path that does not vary
+    // per process, and afterAll only removes them when the suite finished normally. A run that was
+    // killed left every retry case looking at a far end that had already used up its failures: the
+    // request succeeded first time, so nothing retried, and the Retry-After case measured no wait
+    // at all. That is the whole of what made these four cases flaky.
+    foreach ( (array) glob($dir . '/*') as $stale )
+    {
+        @unlink((string) $stale);
+    }
+
     is_dir($dir) || mkdir($dir, 0777, true);
 
     // A router that answers whatever the path asks it to. The retry cases need a far end that
@@ -135,9 +147,15 @@ afterAll(function () {
     $dir      = http_test_dir();
     $pid_file = $dir . '/server.pid';
 
-    if ( is_file($pid_file) )
+    $pid = is_file($pid_file) ? (int) file_get_contents($pid_file) : 0;
+
+    // Only kill it if it is still the server this run started. beforeAll empties the directory, so
+    // the pid file cannot be an older run's -- but `php -S` also fails to bind when something else
+    // already holds the port, and the pid recorded for that short-lived process may have been
+    // handed to somebody else's by now.
+    if ( $pid > 0 && strpos((string) shell_exec('ps -p ' . $pid . ' -o args= 2>/dev/null'), 'router.php') !== false )
     {
-        shell_exec('kill ' . (int) file_get_contents($pid_file));
+        shell_exec('kill ' . $pid);
     }
 
     foreach ( (array) glob($dir . '/*') as $file )
@@ -255,12 +273,12 @@ it('reports a transport failure as status 0 with an error', function () {
 });
 
 it('honours the request timeout', function () {
-    $started = microtime(true);
+    $started = hrtime(true);
 
     $answer = $this->client->get(http_test_url('/slow?seconds=5'), ['timeout' => 1]);
 
     expect($answer->status())->toBe(0)
-        ->and(microtime(true) - $started)->toBeLessThan(3.0);
+        ->and((hrtime(true) - $started) / 1e9)->toBeLessThan(3.0);
 });
 
 it('throws only when it was asked to', function () {
@@ -322,7 +340,11 @@ it('does not retry a POST unless it is told the method is safe to repeat', funct
 });
 
 it('waits as long as Retry-After says rather than as long as the backoff does', function () {
-    $started = microtime(true);
+    // hrtime rather than microtime, because what is being asserted is a duration and the wall clock
+    // is not a duration source: the clock the suite runs against is stepped by its time daemon, and
+    // a correction of about 170ms landing inside the second the client sleeps made this case read
+    // 0.83s for a sleep that really did last a second. A monotonic reading cannot be walked back.
+    $started = hrtime(true);
 
     $answer = $this->client->get(http_test_url('/flaky?key=e&times=1&retry_after=1'), [
         'retries'    => 2,
@@ -330,8 +352,11 @@ it('waits as long as Retry-After says rather than as long as the backoff does', 
         'backoff_ms' => [1],
     ]);
 
+    // attempts() carries the actual claim -- that the header was honoured over the backoff -- and
+    // holds it whatever the clock does; the elapsed time only distinguishes the two wait lengths.
     expect($answer->ok())->toBeTrue()
-        ->and(microtime(true) - $started)->toBeGreaterThan(0.9);
+        ->and($answer->attempts())->toBe(2)
+        ->and((hrtime(true) - $started) / 1e9)->toBeGreaterThan(0.9);
 });
 
 /*

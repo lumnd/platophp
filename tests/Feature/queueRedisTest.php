@@ -139,12 +139,14 @@ it('writes an envelope another consumer can read', function () {
 });
 
 it('blocks for a message and returns null when none arrives', function () {
-    $started = microtime(true);
+    // hrtime rather than microtime: the clock this runs against is stepped by its time daemon, and
+    // a correction landing inside the second being measured reads back as a wait that never happened
+    $started = hrtime(true);
 
     expect(queue::pop(queue_test_name(), 1000))->toBeNull();
 
     // BLPOP waited in redis rather than returning at once
-    expect(microtime(true) - $started)->toBeGreaterThan(0.9);
+    expect((hrtime(true) - $started) / 1e9)->toBeGreaterThan(0.9);
 });
 
 it('reads the queues it was given in priority order', function () {

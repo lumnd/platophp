@@ -477,11 +477,13 @@ it('waits in the broker for a message and returns null when none arrives', funct
     // Join the group first, or what is timed below is the rebalance rather than the read
     kafka_test_pop($topic, 5000);
 
-    $started = microtime(true);
+    // hrtime rather than microtime: the clock this runs against is stepped by its time daemon, and
+    // a correction landing inside the second being measured reads back as a wait that never happened
+    $started = hrtime(true);
 
     expect(queue::pop($topic, 1000))->toBeNull();
 
-    expect(microtime(true) - $started)->toBeGreaterThan(0.9);
+    expect((hrtime(true) - $started) / 1e9)->toBeGreaterThan(0.9);
 });
 
 it('returns null from a synchronous push the broker never acknowledged', function () {

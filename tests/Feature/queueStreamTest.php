@@ -17,7 +17,6 @@
  */
 
 use plato\cache\redis as client;
-use plato\queue\message;
 use plato\queue\queue;
 use plato\queue\stream;
 
@@ -174,19 +173,31 @@ it('keeps a message pending until it is acknowledged', function () {
 
 it('hands a message another consumer abandoned to the next one', function () {
     $queue = stream_test_name();
+    $key   = 'platophpstream:queue:' . $queue;
 
-    // Anything pending at all is fair game, so the takeover can be observed without waiting
-    stream_test_configure(0 + 1);
+    stream_test_configure(1000);
 
     queue::push($queue, ['n' => 1]);
 
     $first = queue::pop($queue, 0);
     expect($first)->not->toBeNull();
 
-    // The first consumer never acknowledges it. After claim_idle_ms the entry is claimable, and
-    // pop() looks for abandoned entries before it reads new ones
-    usleep(20000);
+    // Give the entry to a consumer that will never come back, and age it past claim_idle_ms in the
+    // same command. XCLAIM's IDLE is what makes this deterministic: the entry is 5 seconds idle
+    // because redis was told so, not because the test slept and hoped the machine was not busy.
+    // It also makes the case mean what its name says -- _consumer() is hostname:pid, so without
+    // this the two pops are the same consumer reclaiming its own entry.
+    //
+    // The id comes from XPENDING rather than from $first->id(): a message id is the envelope's,
+    // and what XCLAIM takes is the stream entry's.
+    $handle  = stream_test_client();
+    $pending = (array) $handle->xPending($key, 'test', '-', '+', 1);
 
+    expect($pending)->toHaveCount(1);
+
+    $handle->xClaim($key, 'test', 'gone-consumer', 0, [(string) $pending[0][0]], ['IDLE' => 5000]);
+
+    // pop() looks for abandoned entries before it reads new ones
     $second = queue::pop($queue, 0);
 
     expect($second)->not->toBeNull()
@@ -227,21 +238,42 @@ it('puts a released message back as a new entry rather than leaving it pending',
         ->and($again->payload())->toBe(['n' => 1]);
 });
 
-it('holds a delayed message back and migrates it when it comes due', function () {
+it('holds a delayed message back until it is due', function () {
     $queue = stream_test_name();
 
-    queue::push($queue, ['n' => 1], ['delay' => 1]);
+    queue::push($queue, ['n' => 1], ['delay' => 60]);
+
+    // A minute, not a second. push_delay() scores the entry `time() + $delay` and the migrator asks
+    // for everything scored at or below `time()`, both at whole-second resolution -- so a one
+    // second delay is due the moment the clock ticks over, and "not due yet" was a race the test
+    // lost whenever the push landed near the end of a second.
+    list($moved, $next_at) = queue::connection()->migrate_delayed($queue);
 
     expect(queue::size($queue))->toBe(0)
-        ->and(queue::connection()->pending($queue)['delayed'])->toBe(1);
+        ->and(queue::connection()->pending($queue)['delayed'])->toBe(1)
+        ->and($moved)->toBe(0)
+        // The migrator reports when to come back, which is what a worker sleeps on
+        ->and($next_at)->toBeGreaterThan(time());
+});
 
-    // Not due yet
-    expect(queue::connection()->migrate_delayed($queue)[0])->toBe(0);
+it('migrates a delayed message once it comes due', function () {
+    $queue   = stream_test_name();
+    $delayed = 'platophpstream:queue:' . $queue . ':delayed';
 
-    sleep(1);
+    queue::push($queue, ['n' => 1], ['delay' => 60]);
+
+    // Bring the due time forward rather than wait for it: the score is the unix second the message
+    // comes due, so rewriting it puts the set in exactly the state a minute of sleeping would.
+    $handle = stream_test_client();
+    $member = (array) $handle->zRange($delayed, 0, 0);
+
+    expect($member)->toHaveCount(1);
+
+    $handle->zAdd($delayed, time() - 1, (string) reset($member));
 
     expect(queue::connection()->migrate_delayed($queue)[0])->toBe(1)
-        ->and(queue::size($queue))->toBe(1);
+        ->and(queue::size($queue))->toBe(1)
+        ->and(queue::connection()->pending($queue)['delayed'])->toBe(0);
 
     $message = queue::pop($queue, 0);
 
@@ -295,12 +327,14 @@ it('reads the queues it was given in priority order', function () {
 });
 
 it('blocks for a message and returns null when none arrives', function () {
-    $started = microtime(true);
+    // hrtime rather than microtime: the clock this runs against is stepped by its time daemon, and
+    // a correction landing inside the second being measured reads back as a wait that never happened
+    $started = hrtime(true);
 
     expect(queue::pop(stream_test_name(), 1000))->toBeNull();
 
     // The wait happened in redis rather than in usleep()
-    expect(microtime(true) - $started)->toBeGreaterThan(0.9);
+    expect((hrtime(true) - $started) / 1e9)->toBeGreaterThan(0.9);
 });
 
 it('reports that it can delay', function () {
