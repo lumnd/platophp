@@ -98,18 +98,15 @@ it('boots the framework from cli options without APPPATH / ENVPATH constants', f
 
     plato_test_rmdir($data);
 
-    // Booting is what is under test here: either the migration status comes back, or the database
-    // is unreachable and it reports a connection error. What must not happen any more is a
-    // bootstrap failure over a path or an undefined constant.
-    expect($output)->not->toContain('APPPATH')
+    // Booting is what is under test here, and it has to end in a migration status rather than in a
+    // bootstrap failure over a path or an undefined constant. This used to accept a connection
+    // error as well, which made it a case that passed without a database -- what the migrator does
+    // against a real one is tests/Feature/migrationMysqlTest.php.
+    expect($status)->toBe(0, $output)
+        ->and($output)->not->toContain('APPPATH')
         ->and($output)->not->toContain('Application directory does not exist')
         ->and($output)->not->toContain('Migration directory does not exist')
         ->and($output)->not->toContain('vendor/autoload.php');
-
-    if ($status !== 0)
-    {
-        expect($output)->toContain('migrate:status failed:');
-    }
 });
 
 it('writes a migration file the migrator can load', function () {

@@ -5,6 +5,26 @@ All notable changes to PlatoPHP are documented in this file. Releases follow
 
 ## Unreleased
 
+### The migration toolchain is covered against a real server
+
+`migrate`, `migrate:rollback`, `db:seed` and the schema builder were asserted only on the SQL they
+compile. The one case that booted the console against the fixture application accepted a connection
+error as a pass -- "either the status comes back, or the database is unreachable" -- so the suite
+went green on a machine with no MySQL at all, and the workflow's MySQL service was started for
+nothing.
+
+- `tests/Feature/migrationMysqlTest.php` runs every verb through `bin/plato` as a subprocess against
+  the service and reads the result back through `schema::has_table()` / `has_column()` and
+  `db::table()`: a created table has the columns the blueprint declared, a second run migrates
+  nothing, `migrate:rollback` reverses the last batch and only the last batch -- including the
+  `ALTER` a later migration made to an earlier migration's table -- a seeder run twice leaves the
+  same rows, and a migration that throws fails the run instead of being recorded as applied.
+- `migrationCliTest.php` requires the bootstrap case to end in exit code 0. It is the case that
+  used to accept the connection error.
+- The workflow waits for `platophptest` rather than for `mysqladmin ping`: the entrypoint answers a
+  ping while it is still creating `MYSQL_DATABASE`, and every case above connects to that database
+  by name.
+
 ### Public API, settled before 1.0
 
 Three decisions that semantic versioning would otherwise hold until a major release. All three are

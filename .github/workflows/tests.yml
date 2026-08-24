@@ -109,13 +109,16 @@ jobs:
       - name: Install dependencies
         run: composer update --prefer-dist --no-progress --no-interaction
 
+      # ping answers while the entrypoint is still creating MYSQL_DATABASE, and the migration cases
+      # connect to that database by name -- so the wait is for the schema, not for the server.
       - name: Wait for MySQL
         run: |
           for i in $(seq 1 30); do
-            if mysqladmin ping -h 127.0.0.1 --silent; then exit 0; fi
+            if mysql -h 127.0.0.1 -u root -e 'use platophptest' 2>/dev/null; then exit 0; fi
             sleep 1
           done
-          echo 'MySQL did not become reachable' >&2
+          echo 'MySQL did not become reachable, or platophptest was never created' >&2
+          mysqladmin ping -h 127.0.0.1 || true
           exit 1
 
       - name: Unit tests
@@ -297,13 +300,16 @@ jobs:
       - name: Install dependencies
         run: composer update --prefer-dist --no-progress --no-interaction
 
+      # ping answers while the entrypoint is still creating MYSQL_DATABASE, and the migration cases
+      # connect to that database by name -- so the wait is for the schema, not for the server.
       - name: Wait for MySQL
         run: |
           for i in $(seq 1 30); do
-            if mysqladmin ping -h 127.0.0.1 --silent; then exit 0; fi
+            if mysql -h 127.0.0.1 -u root -e 'use platophptest' 2>/dev/null; then exit 0; fi
             sleep 1
           done
-          echo 'MySQL did not become reachable' >&2
+          echo 'MySQL did not become reachable, or platophptest was never created' >&2
+          mysqladmin ping -h 127.0.0.1 || true
           exit 1
 
       # The floor (--min in composer.json) is deliberately well below where the suite is today: a
