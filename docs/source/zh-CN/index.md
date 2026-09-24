@@ -24,3 +24,5 @@ PlatoPHP 是面向 PHP 8 的轻量级服务框架，覆盖 php-fpm HTTP、常驻
 本包不内置事件循环、socket 监听、协议分帧、TLS 或 worker 管理。适配器实现 `plato\server\driver`，并把完整消息交给 `plato\server\dispatcher`；它说什么协议由它自己决定，websocket 是默认值而不是上限。这样框架负责路由与请求状态，事件循环由独立适配器包负责。
 
 从[安装](installation.md)开始，或先阅读[架构与目录](architecture.md)。
+
+在线工具站 [tools.platophp.com](https://tools.platophp.com) 的后端就跑在 PlatoPHP 上。

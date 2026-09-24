@@ -24,3 +24,5 @@ Process-owned resources are managed by `plato\runtime`. `plato\pool` flushes res
 This package does not implement an event loop, socket listener, protocol framing, TLS, or worker management. An adapter implements `plato\server\driver` and passes complete messages to `plato\server\dispatcher`. Which protocol it speaks is its own choice — websocket is the default, not the limit. The framework owns routing and request state; a separate adapter owns the event loop.
 
 Continue with [Installation](installation.md), or read [Architecture and Layout](architecture.md).
+
+The online tools at [tools.platophp.com](https://tools.platophp.com) run on PlatoPHP.
