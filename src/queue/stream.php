@@ -743,8 +743,10 @@ LUA;
     /**
      * Create the consumer group on a stream, once per key per process.
      *
-     * MKSTREAM so the first consumer does not have to wait for the first producer. BUSYGROUP means
-     * somebody else got there first, which is the expected answer rather than an error.
+     * MKSTREAM so the first consumer does not have to wait for the first producer. BUSYGROUP --
+     * somebody else got there first -- is the expected answer rather than an error, and phpredis
+     * reports it as a false return with a getLastError() message, not as an exception, so the
+     * return value is deliberately unread. A lost connection still throws.
      *
      * @param  string $key Stream key
      * @return void
@@ -758,19 +760,9 @@ LUA;
 
         $this->_groups[$key] = true;
 
-        try
-        {
-            // '$' would skip everything already in the stream: a group created after a producer
-            // started would silently never see the backlog
-            $this->_redis()->xGroup('CREATE', $key, $this->_group, '0', true);
-        }
-        catch ( RedisException $e )
-        {
-            if ( strpos($e->getMessage(), 'BUSYGROUP') === false )
-            {
-                throw $e;
-            }
-        }
+        // '$' would skip everything already in the stream: a group created after a producer
+        // started would silently never see the backlog
+        $this->_redis()->xGroup('CREATE', $key, $this->_group, '0', true);
     }
 
     /**

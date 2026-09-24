@@ -3,6 +3,18 @@
 All notable changes to PlatoPHP are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### The stream queue's BUSYGROUP catch had never run
+
+- `plato\queue\stream::_ensure_group()` created the consumer group inside a `try` and swallowed a
+  `RedisException` whose message contained BUSYGROUP. phpredis does not throw there: a group somebody
+  else created first comes back as a `false` return with the message in `getLastError()`, so the only
+  thing that catch could ever see was a lost connection -- which it rethrew unchanged. Removing it
+  leaves the runtime behaviour identical and the comment above it true. phpstan reported it as a dead
+  catch from 2.2.15 on; the static leg resolves the analyser fresh on every run, which is how a commit
+  touching nothing but documentation turned the build red.
+
 ## 0.2.0 - 2026-08-24
 
 ### The engine contract says the same thing on both drivers
